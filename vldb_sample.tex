@@ -175,13 +175,28 @@ The rest of the paper are organized as follow: In Sec.2 we describe the details 
 
 A \emph{sequential} computation (as opposed to parallel/distributed computation) is composed of a sequence of operations on input. These operations can be classified into two categories, the aggregate operations and the non-aggregate operations. We focus on numerical aggregation in this paper.
  \subsection{Aggregate/Non-Aggregate Operations}
-An \emph{\textbf{aggregate operation}} is a function $g()$ that requires more than one variables as input, i.e., $g(X)$ where $X=\{x_1, x_2, \ldots, x_n\}$, and outputs zero or more values. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations. A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs are grouped by key, and the values in each group are aggregated to obtain a new set of key-value pairs. In other words, the group-by aggregation is composed of multiple subset aggregate operations.
+An \emph{\textbf{aggregate operation}} is a function $g()$ that requires more than one variables as input, i.e., $g(X)$ where $X=\{x_1, x_2, \ldots, x_n\}$, and outputs zero or more values. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations.% A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs are grouped by key, and the values in each group are aggregated to obtain a new set of key-value pairs. In other words, the group-by aggregation is composed of multiple subset aggregate operations.
+To apply the aggregate operation on The whole dataset. We define aggregation function $G$ as follow: 
+\begin{definition}
+	\begin{align}
+		 Y&=\{Y_0 \cup Y_1 \cup ... \cup Y_n\}\notag\\	 
+	 G(Y)&=\{g(Y_0) \cup g(Y_1) \cup \dots \cup g(Y_n)\} \notag
+ \end{align}
+\end{definition}
+Note that there might be intersection between different subset,i.e. $Y_i \cup Y_j \neq \emptyset $
+On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that takes only one value as input, i.e., $f(x)$, and outputs zero or more values. Since non-aggregate operation only takes one value unit as input,Here we gives a new operation $F(X)$ which apply $f$ on the whole set.\begin{definition}
+	\begin{align}
+	X&=\{x_0, x_1, ... x_n\}\notag\\	 
+	F(X)&=\{f(x_0) \cup f(x_1) \cup \dots \cup f(x_n)\} \notag
+	\end{align}
+\end{definition}
 
-On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that takes only one value as input, i.e., $f(x)$, and outputs zero or more values. Since non-aggregate operation only takes one value unit as input, it has the \emph{distributive} property, i.e., $f(x\cup y)=f(x)\cup f(y)$. In essence, the aggregate operation implies a \emph{data fusion}, while a non-aggregate operation implies a \emph{data transformation}.
+ It is obvious that $F(X)$ has a distributivity upon $\cup$ operator, i.e.$F(X \cup Y)=F(X) \cup F(Y)$.
+In essence, the aggregate operation implies a \emph{data fusion}, while a non-aggregate operation implies a \emph{data transformation}.
 
 Note that, the aggregate and non-aggregate operation should be judged according to the number of \emph{variable} inputs instead of constant inputs. For example, the join operation in relational algebra is in general an aggregation since it merges two data sets into one. It takes two inputs $A$ and $B$ and produces one output. However in distributed join implementation, the whole data set $B$ can be small enough to be cached on all distributed workers, which implies that $B$ is a constant input for the distributed join operations. By partitioning and distributing $A$, the join operation is achieved by merging a part of $A$ and the locally cached whole $B$ on each worker. In such a case, the join operation is considered as a non-aggregate operation because each distributed join operation only takes a part of $A$ as a variable input which is different on different processor, where $B$ is the constant for all processors.
 
-\textbf{Parallelization}:Non-aggregate operation only takes one input and does not rely on any other variable, which makes it have the distributive property. By partitioning and distributing the input to many workers, the non-aggregate operations can be embarrassingly parallel \emph{without communication} between workers. Aggregate operation takes multiple inputs which may originate from other workers, so that these aggregate operations or the group-by aggregation can be parallelized but \emph{with communication} between workers. If the inputs for multiple aggregate operations are disjoint, these aggregate operations can be parallelized without communication by carefully partitioning the inputs. However, this is usually impossible since the inputs probably result from the previous computations on other workers and cannot be particularly partitioned.
+\textbf{Parallelization}:Non-aggregate operation $f$ only takes one input and does not rely on any other variable, which makes $F$ have the distributive property. By partitioning and distributing the input to many workers, the non-aggregate operations can be embarrassingly parallel \emph{without communication} between workers. Aggregate operation takes multiple inputs which may originate from other workers, so that these aggregate operations or the group-by aggregation can be parallelized but \emph{with communication} between workers. If the inputs for multiple aggregate operations are disjoint, these aggregate operations can be parallelized without communication by carefully partitioning the inputs. However, this is usually impossible since the inputs probably result from the previous computations on other workers and cannot be particularly partitioned.
 
 
 
@@ -231,7 +246,7 @@ In order to make asynchronous aggregation feasible, we introduce a particular ty
 	(\textbf{Accumulated Recursive Program}) Accumulated recursive program is represented as follows.
 	\begin{equation}\label{eq:accumasync}
 	\begin{aligned}
-	\Delta X^{k+1}=(G\circ F)^n(\Delta X^k)
+	\Delta X^{k+1}=(G\circ F)(\Delta X^k)
 	\end{aligned}
 	\end{equation}
 	It starts from $\Delta X^0=X^0$ and terminates when The 2-norm of $\Delta X^k$ is 0 or small enough. The final result is the aggregation of all intermediate results, i.e., $X^{k+1}=g(\Delta X^{0} \cup \Delta X^{1} \cup \ldots \cup \Delta X^{k})$. Alternatively, the result can be represented as follows.
@@ -328,46 +343,6 @@ First, the $f()$ and $g()$ functions and the conditions have to be translated in
 
 For the accumulative and commutative conditions in Theorem \ref{th:monotone} and the order independent condition in Theorem \ref{th:async}, the condition verification problems can be reduced to SMT satisfiability problems via the following theorem.
 
-\begin{theorem}
-	\label{th:auto:1}
-	(\textbf{Accumulative, Commutative, and Order Independent}) $\forall x_1,x_2,x_3$, the condition 1 or 2 or 3 is true if and only if $\phi_{F_l}^{o1,\ldots,o_m}\wedge \phi_{F_r}^{o_1',\ldots,o_m'}\wedge (\vee_{i=1}^m{o_i\neq o_i'})$ is not satisfiable, where
-	\begin{itemize}
-		\item condition 1: accumulative, $F_l=g(x_1,x_2,x_3)$ and $F_r=g(g(x_1,x_2),x_3)$;
-		\item condition 2: commutative, $F_l=g(x_1,x_2)$ and $F_r=g(x_2,x_1)$;
-		\item condition 3: order independent, $F_l=g(f(g(x_1,x_2)))$ and $F_r=g(f(x_1),f(x_2))$.
-	\end{itemize}
-\end{theorem}
-
-In the theorem, $\wedge$ denotes AND operator and $\vee$ denotes OR operator. Note that, SMT solver cannot answer ``whether a formula $F$ is always true?'' but only answers ``whether a formula $F$ is satisfiable?''. A formula $F$ is \emph{satisfiable} if there is some assignment of appropriate values to its uninterpreted function and constant symbols under which $F$ evaluates to true. Thus, to verify a condition (that should be always true), we convert the ``$F$ is always true'' problem to the ``not $F$ is not satisfiable'' problem. If $F$ is always true, then ``not $F$'' is always false, and then ``not $F$'' will not have any satisfying assignment
-
-here need new description
-
-
-\begin{theorem}
-\label{th:auto:2}
-(\textbf{Eliminable}) $\forall x$, the eliminable condition is true if $\phi_{F}^{o_1,\ldots,o_m}\wedge (\vee_{i=1}^m{o_i\preceq x})$ is not satisfiable, where $F=g'(f(x))$ and $\preceq$ is the partial order induced by $g'()$.
-\end{theorem}
-
-Similarly, we use Theorem \ref{th:auto:2} to verify the eliminable condition in Theorem \ref{th:convert}. The intuition is that the contraction property $g'(f(x))\preceq x$ implies the eliminable property, which can be used as a sufficient condition for verifying the eliminable condition.
-
-%We provide the proof in Appendix Sec. \ref{}.
-
-\begin{theorem}
-\label{th:auto:3}
-(\textbf{Monotonic}) $\forall x_1,x_2$, the monotonic condition is true if and only if $\phi_{F}^{o_1,\ldots,o_m}\wedge ((\vee_{i=1}^m{x_1\neq o_j})\vee (\vee_{i=1}^m{x_2\neq o_j}))$ is not satisfiable, where $F=f(g(x_1,x_2))$.
-\end{theorem}
-
-We use Theorem \ref{th:auto:3} to verify the monotonic condition in Theorem \ref{th:monotone}. The formula implies that, neither are $x_1,x_2$ contained in the result set nor is any of them contained in the result set.
-
-
-\begin{theorem}
-\label{th:auto:4}
-(\textbf{Convertable}) $\forall x_1,x_2$, the convertable condition is true if $\phi_{F_l}^{o1,\ldots,o_m}\wedge \phi_{F_r}^{o_1',\ldots,o_m'}\wedge (\vee_{i=1}^m{o_i\neq o_i'})$ is satisfiable, where $F_l=g(x_1,x_2)$, $F_r=g'(x_1,x_2,c)$, and $c$ is a constant.
-\end{theorem}
-
-Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g'()$ in Theorem \ref{th:convert}. We declare a constant $c$ and declare a function $g'()$ without defining the specific computation. Following Theorem \ref{th:auto:4}, we use Z3 to check the satisfiability. If the formula is satisfiable, it will return the possible $g'()$ and $c$, otherwise it will return unknown or unsatisfiable. We can then convert the returned $g'()$ to a program to achieve automatic conversion.
-
-
 \newtheorem{corollary}{Corollary}
 \begin{corollary}
 	\label{coro:auto:1}
@@ -378,6 +353,14 @@ Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g
 		\item condition 3: order independent, $F_l=g(f(g(x_1,x_2)))$ and $F_r=g(f(x_1),f(x_2))$.
 	\end{itemize}
 \end{corollary}
+
+In the theorem, $\wedge$ denotes AND operator and $\vee$ denotes OR operator. Note that, SMT solver cannot answer ``whether a formula $F$ is always true?'' but only answers ``whether a formula $F$ is satisfiable?''. A formula $F$ is \emph{satisfiable} if there is some assignment of appropriate values to its uninterpreted function and constant symbols under which $F$ evaluates to true. Thus, to verify a condition (that should be always true), we convert the ``$F$ is always true'' problem to the ``not $F$ is not satisfiable'' problem. If $F$ is always true, then ``not $F$'' is always false, and then ``not $F$'' will not have any satisfying assignment
+
+here need new description
+
+
+Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g'()$ in Theorem \ref{th:convert}. We declare a constant $c$ and declare a function $g'()$ without defining the specific computation. Following Theorem \ref{th:auto:4}, we use Z3 to check the satisfiability. If the formula is satisfiable, it will return the possible $g'()$ and $c$, otherwise it will return unknown or unsatisfiable. We can then convert the returned $g'()$ to a program to achieve automatic conversion.
+
 
 
 
