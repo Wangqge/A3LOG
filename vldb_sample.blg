@@ -1,0 +1,12 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: vldb_sample.aux
+White space in argument---line 7 of file vldb_sample.aux
+ : \citation{distribute
+ :                      aggregate from ms}
+I'm skipping whatever remains of this command
+The style file: abbrv.bst
+Database file #1: vldb_sample.bib
+Warning--I didn't find a database entry for "socialite"
+Warning--I didn't find a database entry for "bigdatalog"
+Warning--can't use both volume and number fields in 53e486195688442995f82bfe28c55731
+Warning--empty publisher in 53e486195688442995f82bfe28c55731
+(There was 1 error message)
