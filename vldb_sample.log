@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.5.15)  1 JUN 2018 21:33
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.5.15)  2 JUN 2018 20:35
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -501,49 +501,63 @@ ML/cmm/m/it/9 f$ \OT1/cmr/m/n/9 only takes one
  []
 
 
-Overfull \hbox (2.39832pt too wide) in paragraph at lines 208--209
+Overfull \hbox (5.36354pt too wide) in paragraph at lines 208--210
 \OT1/cmr/m/n/9 tion $\OMS/cmsy/m/n/9 f\OML/cmm/m/it/9 y[]; y[]; [] ; y[]\OMS/cm
 sy/m/n/9 g$\OT1/cmr/m/n/9 and $\OML/cmm/m/it/9 X$ \OT1/cmr/m/n/9 de-note the in
--puts $\OMS/cmsy/m/n/9 f\OML/cmm/m/it/9 x[]; x[]; [] ; x[]\OMS/cmsy/m/n/9 g$
+-puts of non-aggregate
  []
 
 
-Overfull \hbox (4.81769pt too wide) in paragraph at lines 218--219
+Overfull \hbox (4.81769pt too wide) in paragraph at lines 219--220
 []\OT1/cmr/bx/n/9 Example 1: SSSP \OT1/cmr/m/n/9 The sin-gle source short-est p
 ath (SSSP)
  []
 
-[3]
-Overfull \hbox (7.6176pt too wide) in paragraph at lines 222--222
+
+Overfull \hbox (7.6176pt too wide) in paragraph at lines 223--223
 []\secfnt AUTOMATIC ASYN-CHRONOUS AG-GRE-
+ []
+
+[3]
+Overfull \hbox (2.747pt too wide) in paragraph at lines 305--305
+[] 
+ []
+
+
+Overfull \hbox (1.39375pt too wide) in paragraph at lines 305--308
+\OML/cmm/m/it/9 G\OT1/cmr/m/n/9 ([] \OMS/cmsy/m/n/9 [ \OML/cmm/m/it/9 FG\OT1/cm
+r/m/n/9 (\OML/cmm/m/it/9 Y[]\OT1/cmr/m/n/9 ) \OMS/cmsy/m/n/9 [ []\OT1/cmr/m/n/9
+ )$, We can eas-ily found that $(\OML/cmm/m/it/9 F \OMS/cmsy/m/n/9 ^^N \OML/cmm
+/m/it/9 G\OT1/cmr/m/n/9 )[](\OML/cmm/m/it/9 Y\OT1/cmr/m/n/9 ) =
  []
 
 [4]
 
-LaTeX Warning: Reference `sec:app:example' on page 5 undefined on input line 30
-9.
-
-
-LaTeX Warning: Reference `sec:app:proof:convert' on page 5 undefined on input l
-ine 330.
-
-
 LaTeX Warning: Reference `sec:app:example' on page 5 undefined on input line 33
 2.
 
+
+LaTeX Warning: Reference `sec:app:proof:convert' on page 5 undefined on input l
+ine 353.
+
+
+LaTeX Warning: Reference `sec:app:example' on page 5 undefined on input line 35
+5.
+
+[5]
 \c@corollary=\count141
 
-Overfull \hbox (7.15924pt too wide) in paragraph at lines 349--351
+Overfull \hbox (7.15924pt too wide) in paragraph at lines 372--374
 []\OT1/cmr/m/it/9 (\OT1/cmr/bx/it/9 Accumulative, Com-mu-ta-tive, and Or-
  []
 
-[5]
-Overfull \hbox (3.28143pt too wide) in paragraph at lines 357--358
+
+Overfull \hbox (3.28143pt too wide) in paragraph at lines 380--381
 \OT1/cmr/m/n/9 OR op-er-a-tor. Note that, SMT solver can-not an-swer ``whether
  []
 
 
-LaTeX Warning: Reference `th:auto:4' on page 6 undefined on input line 362.
+LaTeX Warning: Reference `th:auto:4' on page 6 undefined on input line 385.
 
 Package epstopdf Info: Source file: <fig/overview.eps>
 (epstopdf)                    date: 2018-05-16 11:33:13
@@ -553,19 +567,19 @@ Package epstopdf Info: Source file: <fig/overview.eps>
 (epstopdf)                    size: 359136 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/overview-eps-converted
 -to.pdf fig/overview.eps>
-(epstopdf)             \includegraphics on input line 377.
+(epstopdf)             \includegraphics on input line 400.
 Package epstopdf Info: Output file is already uptodate.
-<fig/overview-eps-converted-to.pdf, id=43, 508.90125pt x 384.43625pt>
+<fig/overview-eps-converted-to.pdf, id=41, 508.90125pt x 384.43625pt>
 File: fig/overview-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/overview-eps-converted-to.pdf>
-Package pdftex.def Info: fig/overview-eps-converted-to.pdf used on input line 3
-77.
+Package pdftex.def Info: fig/overview-eps-converted-to.pdf used on input line 4
+00.
 (pdftex.def)             Requested size: 231.26378pt x 174.70172pt.
  [6 <./fig/overview-eps-converted-to.pdf>]
 
-LaTeX Warning: Reference `sec:app:example' on page 7 undefined on input line 42
-6.
+LaTeX Warning: Reference `sec:app:example' on page 7 undefined on input line 44
+9.
 
 Package epstopdf Info: Source file: <fig/flow.eps>
 (epstopdf)                    date: 2018-05-16 11:33:13
@@ -575,16 +589,16 @@ Package epstopdf Info: Source file: <fig/flow.eps>
 (epstopdf)                    size: 44651 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/flow-eps-converted-to.
 pdf fig/flow.eps>
-(epstopdf)             \includegraphics on input line 433.
+(epstopdf)             \includegraphics on input line 456.
 Package epstopdf Info: Output file is already uptodate.
 <fig/flow-eps-converted-to.pdf, id=93, 427.5975pt x 273.02pt>
 File: fig/flow-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/flow-eps-converted-to.pdf>
-Package pdftex.def Info: fig/flow-eps-converted-to.pdf used on input line 433.
+Package pdftex.def Info: fig/flow-eps-converted-to.pdf used on input line 456.
 (pdftex.def)             Requested size: 202.35622pt x 129.20259pt.
 
-Overfull \hbox (1.46158pt too wide) in paragraph at lines 449--450
+Overfull \hbox (1.46158pt too wide) in paragraph at lines 472--473
 \OT1/cmr/m/n/9 main-tains the com-pu-ta-tion states, which are ini-tial-ized ba
 sed
  []
@@ -597,22 +611,22 @@ Package epstopdf Info: Source file: <fig/asynctable.eps>
 (epstopdf)                    size: 185321 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/asynctable-eps-convert
 ed-to.pdf fig/asynctable.eps>
-(epstopdf)             \includegraphics on input line 453.
+(epstopdf)             \includegraphics on input line 476.
 Package epstopdf Info: Output file is already uptodate.
 <fig/asynctable-eps-converted-to.pdf, id=94, 497.86pt x 222.8325pt>
 File: fig/asynctable-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/asynctable-eps-converted-to.pdf>
 Package pdftex.def Info: fig/asynctable-eps-converted-to.pdf used on input line
- 453.
+ 476.
 (pdftex.def)             Requested size: 231.26378pt x 103.51064pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1107) has occurred while \output is active []
 
  [7 <./fig/flow-eps-converted-to.pdf> <./fig/asynctable-eps-converted-to.pdf>]
 
-LaTeX Warning: Reference `sec:app:example' on page 8 undefined on input line 46
-7.
+LaTeX Warning: Reference `sec:app:example' on page 8 undefined on input line 49
+0.
 
 Package epstopdf Info: Source file: <fig/runtime.eps>
 (epstopdf)                    date: 2018-05-16 11:33:13
@@ -622,27 +636,30 @@ Package epstopdf Info: Source file: <fig/runtime.eps>
 (epstopdf)                    size: 91901 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/runtime-eps-converted-
 to.pdf fig/runtime.eps>
-(epstopdf)             \includegraphics on input line 474.
+(epstopdf)             \includegraphics on input line 497.
 Package epstopdf Info: Output file is already uptodate.
 <fig/runtime-eps-converted-to.pdf, id=175, 562.1pt x 379.4175pt>
 File: fig/runtime-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/runtime-eps-converted-to.pdf>
-Package pdftex.def Info: fig/runtime-eps-converted-to.pdf used on input line 47
-4.
+Package pdftex.def Info: fig/runtime-eps-converted-to.pdf used on input line 49
+7.
 (pdftex.def)             Requested size: 209.58255pt x 141.46489pt.
 
 
-LaTeX Warning: Reference `sec:async:pri' on page 8 undefined on input line 490.
+LaTeX Warning: Reference `sec:async:pri' on page 8 undefined on input line 513.
 
 
 
-LaTeX Warning: Reference `sec:app:expr' on page 8 undefined on input line 502.
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[8 <./fig/runtime-eps-converted-to.pdf>]
+ [8 <./fig/runtime-eps-converted-to.pdf>]
+
+LaTeX Warning: Reference `sec:app:expr' on page 9 undefined on input line 525.
+
 
 LaTeX Warning: Reference `sec:expr:aggregations' on page 9 undefined on input l
-ine 513.
+ine 536.
 
 Package epstopdf Info: Source file: <fig/single-result.eps>
 (epstopdf)                    date: 2018-05-16 11:33:13
@@ -652,14 +669,14 @@ Package epstopdf Info: Source file: <fig/single-result.eps>
 (epstopdf)                    size: 29327 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/single-result-eps-conv
 erted-to.pdf fig/single-result.eps>
-(epstopdf)             \includegraphics on input line 518.
+(epstopdf)             \includegraphics on input line 541.
 Package epstopdf Info: Output file is already uptodate.
 <fig/single-result-eps-converted-to.pdf, id=185, 499.8675pt x 265.99374pt>
 File: fig/single-result-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/single-result-eps-converted-to.pdf>
 Package pdftex.def Info: fig/single-result-eps-converted-to.pdf used on input l
-ine 518.
+ine 541.
 (pdftex.def)             Requested size: 216.81pt x 115.36946pt.
 Package epstopdf Info: Source file: <fig/dist-result.eps>
 (epstopdf)                    date: 2018-05-16 11:33:13
@@ -669,7 +686,7 @@ Package epstopdf Info: Source file: <fig/dist-result.eps>
 (epstopdf)                    size: 30791 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/dist-result-eps-conver
 ted-to.pdf fig/dist-result.eps>
-(epstopdf)             \includegraphics on input line 530.
+(epstopdf)             \includegraphics on input line 553.
 Package epstopdf Info: Output file is already uptodate.
 
 <fig/dist-result-eps-converted-to.pdf, id=186, 498.86375pt x 334.24875pt>
@@ -677,10 +694,10 @@ File: fig/dist-result-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/dist-result-eps-converted-to.pdf>
 Package pdftex.def Info: fig/dist-result-eps-converted-to.pdf used on input lin
-e 530.
+e 553.
 (pdftex.def)             Requested size: 173.44756pt x 116.21358pt.
 
-Overfull \hbox (11.7059pt too wide) in paragraph at lines 537--538
+Overfull \hbox (11.7059pt too wide) in paragraph at lines 560--561
 \OT1/cmr/m/n/9 GraphLab per-forms much bet-ter than asyn-chronous GraphLab,
  []
 
@@ -692,14 +709,14 @@ Package epstopdf Info: Source file: <fig/single-optimize.eps>
 (epstopdf)                    size: 41615 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/single-optimize-eps-co
 nverted-to.pdf fig/single-optimize.eps>
-(epstopdf)             \includegraphics on input line 545.
+(epstopdf)             \includegraphics on input line 568.
 Package epstopdf Info: Output file is already uptodate.
 <fig/single-optimize-eps-converted-to.pdf, id=187, 499.8675pt x 295.1025pt>
 File: fig/single-optimize-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/single-optimize-eps-converted-to.pdf>
 Package pdftex.def Info: fig/single-optimize-eps-converted-to.pdf used on input
- line 545.
+ line 568.
 (pdftex.def)             Requested size: 202.35622pt x 119.4618pt.
 Package epstopdf Info: Source file: <fig/single-optimize.eps>
 (epstopdf)                    date: 2018-05-16 11:33:13
@@ -709,124 +726,121 @@ Package epstopdf Info: Source file: <fig/single-optimize.eps>
 (epstopdf)                    size: 41615 bytes
 (epstopdf)             Command: <repstopdf --outfile=fig/single-optimize-eps-co
 nverted-to.pdf fig/single-optimize.eps>
-(epstopdf)             \includegraphics on input line 553.
+(epstopdf)             \includegraphics on input line 576.
 Package epstopdf Info: Output file is already uptodate.
 File: fig/single-optimize-eps-converted-to.pdf Graphic file (type pdf)
 
 <use fig/single-optimize-eps-converted-to.pdf>
 Package pdftex.def Info: fig/single-optimize-eps-converted-to.pdf used on input
- line 553.
+ line 576.
 (pdftex.def)             Requested size: 202.35622pt x 119.4618pt.
 
-Overfull \hbox (49.07597pt too wide) in paragraph at lines 566--614
+Overfull \hbox (49.07597pt too wide) in paragraph at lines 589--637
  [][] 
  []
 
+
+LaTeX Warning: Reference `sec:app:example' on page 9 undefined on input line 64
+3.
+
 [9 <./fig/single-result-eps-converted-to.pdf> <./fig/dist-result-eps-converted-
-to.pdf> <./fig/single-optimize-eps-converted-to.pdf>]
-
-LaTeX Warning: Reference `sec:app:example' on page 10 undefined on input line 6
-20.
-
-
-Underfull \vbox (badness 1210) has occurred while \output is active []
-
-
-Overfull \hbox (11.74692pt too wide) in paragraph at lines 635--636
+to.pdf>] [10 <./fig/single-optimize-eps-converted-to.pdf>]
+Overfull \hbox (11.74692pt too wide) in paragraph at lines 658--659
 \OT1/cmr/bx/n/9 Coordination Avoid-ance \OT1/cmr/m/n/9 Min-i-miz-ing co-or-di-n
 a-tion, or block-
  []
 
-[10]
-Overfull \hbox (4.19048pt too wide) in paragraph at lines 637--638
+
+Overfull \hbox (4.19048pt too wide) in paragraph at lines 660--661
 \OT1/cmr/bx/n/9 Asynchronous Com-pu-ta-tion in Graph An-a-lyt-ics \OT1/cmr/m/n/
 9 Asyn-
  []
 
 
-Overfull \hbox (1.36296pt too wide) in paragraph at lines 637--638
+Overfull \hbox (1.36296pt too wide) in paragraph at lines 660--661
 \OT1/cmr/m/n/9 asyn-chronous it-er-a-tive al-go-rithms with sparse com-pu-ta-ti
 onal
  []
 
 
-Overfull \hbox (2.69554pt too wide) in paragraph at lines 637--638
+Overfull \hbox (2.69554pt too wide) in paragraph at lines 660--661
 \OT1/cmr/m/n/9 chronous com-pu-ta-tion while keep-ing the vertex-centric model
  []
 
 
-Overfull \hbox (1.37195pt too wide) in paragraph at lines 637--638
+Overfull \hbox (1.37195pt too wide) in paragraph at lines 660--661
 \OT1/cmr/m/n/9 Maiter [48] pro-poses delta-based asyn-chronous it-er-a-tive com
 -
  []
 
 
-Overfull \hbox (10.19865pt too wide) in paragraph at lines 637--638
+Overfull \hbox (10.19865pt too wide) in paragraph at lines 660--661
 \OT1/cmr/m/n/9 pu-ta-tion model (DAIC) and sup-ports dis-tributed asyn-chronous
 
  []
 
 
-Overfull \hbox (2.4731pt too wide) in paragraph at lines 637--638
+Overfull \hbox (2.4731pt too wide) in paragraph at lines 660--661
 \OT1/cmr/m/n/9 graph com-pu-ta-tion in GPUs. Un-for-tu-nately, the above graph
  []
 
 
-Overfull \hbox (4.19048pt too wide) in paragraph at lines 641--642
+Underfull \vbox (badness 1558) has occurred while \output is active []
+
+
+Overfull \hbox (4.19048pt too wide) in paragraph at lines 664--665
 \OT1/cmr/bx/n/9 Asynchronous Com-pu-ta-tion in Graph An-a-lyt-ics \OT1/cmr/m/n/
 9 Asyn-
  []
 
 
-Overfull \hbox (1.36296pt too wide) in paragraph at lines 641--642
+Overfull \hbox (1.36296pt too wide) in paragraph at lines 664--665
 \OT1/cmr/m/n/9 asyn-chronous it-er-a-tive al-go-rithms with sparse com-pu-ta-ti
 onal
  []
 
 
-Overfull \hbox (2.69554pt too wide) in paragraph at lines 641--642
+Overfull \hbox (2.69554pt too wide) in paragraph at lines 664--665
 \OT1/cmr/m/n/9 chronous com-pu-ta-tion while keep-ing the vertex-centric model
  []
 
 
-Overfull \hbox (1.37195pt too wide) in paragraph at lines 641--642
+Overfull \hbox (1.37195pt too wide) in paragraph at lines 664--665
 \OT1/cmr/m/n/9 Maiter [48] pro-poses delta-based asyn-chronous it-er-a-tive com
 -
  []
 
 
-Overfull \hbox (10.19865pt too wide) in paragraph at lines 641--642
+Overfull \hbox (10.19865pt too wide) in paragraph at lines 664--665
 \OT1/cmr/m/n/9 pu-ta-tion model (DAIC) and sup-ports dis-tributed asyn-chronous
 
  []
 
 
-Overfull \hbox (2.4731pt too wide) in paragraph at lines 641--642
+Overfull \hbox (2.4731pt too wide) in paragraph at lines 664--665
 \OT1/cmr/m/n/9 graph com-pu-ta-tion in GPUs. Un-for-tu-nately, the above graph
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (2.9935pt too wide) in paragraph at lines 649--650
+Overfull \hbox (2.9935pt too wide) in paragraph at lines 672--673
 \OT1/cmr/m/n/9 ma-chine learn-ing, some al-go-rithms with non-serializable lock
 -
  []
 
-[11] (./vldb_sample.bbl
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [11]
+(./vldb_sample.bbl
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [12])
-Overfull \hbox (7.31824pt too wide) in paragraph at lines 690--690
+Overfull \hbox (7.31824pt too wide) in paragraph at lines 713--713
 [] 
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-
-Overfull \hbox (3.68217pt too wide) in paragraph at lines 718--718
+Overfull \hbox (3.68217pt too wide) in paragraph at lines 741--741
 [] 
  []
 
@@ -843,7 +857,7 @@ LaTeX Warning: There were multiply-defined labels.
 Here is how much of TeX's memory you used:
  5533 strings out of 494953
  80887 string characters out of 6180977
- 169900 words of memory out of 5000000
+ 172900 words of memory out of 5000000
  8683 multiletter control sequences out of 15000+600000
  31813 words of font info for 79 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
@@ -875,7 +889,7 @@ ive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
 mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on vldb_sample.pdf (14 pages, 1161533 bytes).
+Output written on vldb_sample.pdf (14 pages, 1162242 bytes).
 PDF statistics:
  353 PDF objects out of 1000 (max. 8388607)
  166 compressed objects within 2 object streams
