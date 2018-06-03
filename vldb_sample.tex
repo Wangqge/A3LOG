@@ -12,6 +12,7 @@
 	basicstyle=\ttfamily,
 	mathescape
 }
+\usepackage{comment}
 \usepackage{booktabs}
 \usepackage[caption=false,font=footnotesize]{subfig}
 \usepackage{amsmath}
@@ -285,9 +286,10 @@ Here we provide the formal proof :
   Line (1) is true because of the accumulative property. and Line (2) is true because of the monotonic property.
   Repeat applying these two property ,we can reduce all the low order items in turn.
  \end{proof}
-{\color{red} The previous formula is the standard computing formula,but there must be intersection between different recursion.due to the monotonic property.therefore Here we give an incremental computing formula.}
+
+{\color{red} The previous formula is the standard computing formula,but there must be intersection between different recursion.due to the monotonic property.therefore Here we give an incremental computing formula.
 	\begin{theorem}
-		Define$f'$ function as $f'(X)=f(X)\backslash X$.The incremental recursive function defined as follow has the same result with the Normal Recursive program. 
+		Define function$f'(x)$ as $f'(x)=f(x)\backslash x$ and likely $F'(X)$.The incremental recursive function defined as follow has the same result with the Normal Recursive program. 
 	 \begin{align}
 	 	&G(\Delta X^0\cup (F'\circ G)(\Delta X^0)\cup\ldots\cup (F'\circ G)^k(\Delta X^0))\notag 
 	 \end{align}
@@ -305,6 +307,7 @@ Here we provide the formal proof :
  	\end{align}
  	Line(1) is true because of the definition of $F'$,due to the accumulative property, $G(\ldots \cup GFG(Y^0)\cup \ldots)$is equal to $G(\ldots \cup FG(Y^0)\cup \ldots)$, line(2)can be obtain.Then we can easily found that $(F \circ G)^n(Y)=Y \cup (F'\circ G)(Y)\cup \ldots(F' \circ G)^{n-1}$,
  \end{proof}
+}
  The accumulative property is essential for efficiency execution engine design. If the accumulative condition is satisfied, only the aggregation result $x^k=g(\Delta x^{0},\ldots,\Delta x^{k-1})$ needs to be maintained and is updated by accumulating a new $\Delta x^{k+1}$, i.e., $x^{k+1}=g(x^k,\Delta x^{k})$. Otherwise, the large set $\Delta X^{k}$ needs to be maintained for every recursion $k$.which incur a large storage cost. The accumulative property will be used in our system design to save a lot of maintaining cost.
 
 For example, the SSSP computation (Example 1) can be executed as an accumulated recursive program. Its non-aggregate operation $f()$ on node $i$ outputs not only the tuples set $\{\langle j,td_j^{k+1}\rangle\}$ for its outgoing neighbors $j$ but also its previous recursion's aggregation result $\langle i,d_i^k\rangle$. That is, $\{\langle i,td_i^{k+1}\rangle\}$ and $\langle i,d_i^k\rangle$ are contained in $X^{k+1}$, while $\langle i,d_i^k\rangle$ is already contained in $X^{k}$. Hence, $X^{k}\subseteq X^{k+1}$ and the monotonic condition is satisfied. In addition, the aggregate operation $g()$ which is MIN has the accumulative and commutative conditions.
@@ -317,18 +320,18 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 
 \begin{theorem}
 	\label{th:async}
-	(\textbf{Asynchronizability}) With asynchronous aggregation, an accumulated recursive program will yield to the same result as with synchronous aggregation, as long as the following order independent condition is satisfied.
+	(\textbf{Asynchronizability}) With asynchronous aggregation as Definition \ref{def:asyncaggre} proposed, an accumulated recursive program will yield to the same result as with synchronous aggregation, as long as the following order independent condition is satisfied.
 	\begin{itemize}
 		\item \textbf{order independent}: $g\circ f\circ g(X)=g\circ f(X)$;
 	\end{itemize}
 \end{theorem}
 
-By asynchronous aggregation, the partial aggregation result is immediately used by the next $f()$ operation. The order independent property implies that no matter the $f()$ operation is first applied or the $g()$ operation is first applied, the effect is the same. As long as the same number of $f()$ operations are applied on all data, the eventual aggregation result will be the same.Here we details the proof:
+By asynchronous aggregation, the partial aggregation result is immediately used by the next $f()$ operation. The order independent property implies that no matter the $f()$ operation is first applied or the $g()$ operation is first applied, the effect is the same. As long as the same number of $f()$ operations are applied on all data, the eventual aggregation result will be the same.We details the proof in Appendix\ref{sec:app:proof:correct}
 
 
 
 
-For the SSSP example, the $f()$ operation expands the BFS searching scope to one-hop-away nodes, and the $g()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $g\circ f(X)$ or making aggregation first $f\circ g(X)$, i.e., $min_j(d_j+w)=min_j(d_j)+w$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (13 programs in Appendix Sec. \ref{sec:app:example}).
+For the SSSP example, the $f()$ operation expands the BFS searching scope to one-hop-away nodes, and the $g()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $g\circ f(X)$ or making aggregation first $f\circ g(X)$, i.e., $min_j(d_j+w)=min_j(d_j)+w$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
 
 
 \subsection{Conversion Possibilities}
@@ -349,15 +352,20 @@ Fortunately, these computations can be converted to be qualified for asynchronou
 	where the $g'()$ and $f()$ operations are \textbf{order independent} $g'\circ f\circ g'(X)=g'\circ f(X)$, $y$ is a constant value, and \textbf{0} is the identity element of the $g'()$ operation. The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
 \end{theorem}
 
-The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $g'()$ that is with an additional constant input value $y$ but always returns the same result as $g()$, i.e., $g(X)=g'(X\cup y)$. The constant input implies the set containment relation between result and input, which makes it satisfy the monotonic condition that is required for accumulated recursive program. In addition, the eliminable property guarantees the accumulated recursive program to converge, such that the result is independent of $X$. Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as $(g'\circ f)^n(x)$ is ``small'' enough.
+The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $g'()$ that is with an additional constant input value $y$ but always returns the same result as $g()$, i.e., $g(X)=g'(X\cup y)$. The constant input implies the set containment relation between result and input, which makes it satisfy the %monotonic
+accumulative condition that is required for accumulated recursive program. In addition, the eliminable property guarantees the % accumulated recursive program to converge, 
+the accumulated recursive converge to the same result with NRP %such that the result is independent of $X$. 
+Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as $(g'\circ f)^n(x)$ is ``small'' enough.
 
-For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form \cite{maiter}. In original PageRank, $g(\{x_j\})=\sum_j{x_j}+0.15$. The $g()$ function can be rewritten as $g(X)=g'(X\cup y)$ where the $g'()$ function can be ``SUM'', $X=\{x_j\}$ is the input values set, and the constant value $y$ can be 0.15. Apparently, $g'()$ (i.e., ``SUM'') has the accumulative and commutative property. In addition, the $f()$ operation in PageRank contains a constant damping factor 0.85, which leads to $(g'\circ f)(x)<x$ and $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=0$. Furthermore, the $f()$ operation and $g'()$ operation in PageRank is order independent, which makes it suitable for asynchronous aggregation. The resulted ranking scores are the same no matter making decay first $g\circ f(X)$ or making summation first $f\circ g(X)$, i.e., $\sum_j(0.85*\frac{r_j}{d})=0.85*\frac{\sum_j(r_j)}{d}$. There exist other convertable algorithms, such as Program 13 Jacobi Method in Appendix Sec. \ref{sec:app:example}.
+For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form %\cite{maiter}. 
+In original PageRank, $g(\{x_j\})=\sum_j{x_j}+0.15$. The $g()$ function can be rewritten as $g(X)=g'(X\cup y)$ where the $g'()$ function can be ``SUM'', $X=\{x_j\}$ is the input values set, and the constant value $y$ can be 0.15. Apparently, $g'()$ (i.e., ``SUM'') has the accumulative and commutative property. In addition, the $f()$ operation in PageRank contains a constant damping factor 0.85, which leads to $(g'\circ f)(x)<x$ and $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=0$. Furthermore, the $f()$ operation and $g'()$ operation in PageRank is order independent, which makes it suitable for asynchronous aggregation. The resulted ranking scores are the same no matter making decay first $g\circ f(X)$ or making summation first $f\circ g(X)$, i.e., $\sum_j(0.85*\frac{r_j}{d})=0.85*\frac{\sum_j(r_j)}{d}$. There exist other convertable algorithms, such as Program 13 Jacobi Method in Appendix Sec. \ref{sec:app:example}.
 
 
 \subsection{Automatic Asynchronization}
 \label{sec:async:autoasync}
 
-Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these conditions manually. It is even harder to find an aggregate function $g'()$ in order to convert a normal recursive program to an accumulated recursive program. To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this subsection, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations\footnote{The $g$ and $f$ operations in Datalog programs can be identified as will be shown in next section.}.
+Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these conditions manually. It is even harder to find an aggregate function $g'()$ in order to convert a normal recursive program to an accumulated recursive program.
+ To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this subsection, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations\footnote{The $g$ and $f$ operations in Datalog programs can be identified as will be shown in next section.}.
 
 The condition verification problem can be thought of as a form of the constraint satisfaction problem, which can be analyzed with the help of \emph{satisfiability modulo theories} (SMT) \cite{53e486195688442995f82bfe28c55731}. The satisfiability of these conditions can then be checked by an SMT solver, such as Z3 \cite{DeMoura:2008:ZES:1792734.1792766}. Next, we show how to reduce these condition verification problems into SMT satisfiability solving problems.
 
@@ -392,7 +400,7 @@ Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g
 \section{A3Log System}
 \label{sec:system}
 
-In this section, we propose a Datalog System A3Log to support asynchronous aggregation, which is built by modifying Socialite \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572}. Datalog is an excellent candidate language for expressing computation logic because of its high-level \emph{declarative} semantics and support for recursion. In particular, Datalog program only defines how the output depends on the inputs but not how the outputs are produced. It operates on a relation at a time, exposing plenty of opportunities for parallelization and asynchronization by virtue of the size of the data sets, so that we have the flexibility to design specific runtime engines to support \emph{automatic} parallelization and \emph{automatic} asynchronization. In addition, the program size of Datalog is much smaller than that of the imperative languages such as Java, C++. For these reasons, we choose Datalog as the high-level language.
+In this section, we propose a Datalog System A3Log to support asynchronous aggregation, which is built by modifying Socialite \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572}. Datalog is an excellent candidate language for expressing computation logic because of its high-level \emph{declarative} semantics and support for recursion. In particular, Datalog program only defines how the output depends on the inputs but not how the outputs are produced. It operates on a relation at a time, exposing plenty of opportunities for parallelization and asynchronization by virtue of the size of the data sets, so that we have the flexibility to design specific runtime engines to support ACCUMULATIVE RECURSIVE PROGRAM \emph{automatic} parallelization and \emph{automatic} asynchronization. In addition, the program size of Datalog is much smaller than that of the imperative languages such as Java, C++. For these reasons, we choose Datalog as the high-level language.
 
 \begin{figure}[!t]
     \centering
@@ -697,8 +705,9 @@ We have presented A3, Automatic Asynchronous Aggregation. We clearly define the 
 
 \begin{appendix}
 You can use an appendix for optional proofs or details of your evaluation which are not absolutely necessary to the core understanding of your paper.
-\subsection{Proof of Theorem Monotonic}
+\subsection{Proof of Theorem Asynchronous}
  \begin{proof}
+ \label{sec:app:proof:correct}
  In this section .Since $X$ has been divided into two disjoint set. we exchange the subset belongs to any two adjacent recursion,and the prove that they have the same formula.It
  \begin{align}
  &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^i_0 \cup \Delta X^{i+1}_1)\cup\ F\circ G(\Delta X^{i+1}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots\cup \Delta X^n)\tag{1} \\
@@ -717,6 +726,7 @@ The formula as line(8) shown has the same result with the synchronous one.And it
  \end{proof}
  \subsection{Proof of Theorem Convertibility}
  \begin{proof}
+ 	\ref{sec:app:proof:convert}
  \begin{align}
 &(G \circ F)^n(X^0)=(G \circ F)^{n-1}G \circ F(X^{0})\notag\\
 =&(G \circ F)^{n-1}G'\circ (F(X^{0}) \cup C)\tag{1}\\
