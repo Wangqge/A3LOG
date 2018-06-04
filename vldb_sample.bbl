@@ -86,6 +86,11 @@ W.~Fan, J.~Xu, Y.~Wu, W.~Yu, J.~Jiang, Z.~Zheng, B.~Zhang, Y.~Cao, and C.~Tian.
 \newblock Parallelizing sequential graph computations.
 \newblock In {\em SIGMOD '17}, pages 495--510, 2017.
 
+\bibitem{Gatterbauer:2015:LSB:2735479.2735490}
+W.~Gatterbauer, S.~G\"{u}nnemann, D.~Koutra, and C.~Faloutsos.
+\newblock Linearized and single-pass belief propagation.
+\newblock {\em Proc. VLDB Endow.}, 8(5):581--592, Jan. 2015.
+
 \bibitem{DBLP:journals/corr/GonzalezBJFHGS15}
 J.~E. Gonzalez, P.~Bailis, M.~I. Jordan, M.~J. Franklin, J.~M. Hellerstein,
   A.~Ghodsi, and I.~Stoica.
@@ -112,9 +117,19 @@ J.~M. Hellerstein.
   distributed logic.
 \newblock {\em SIGMOD Rec.}, 39(1):5--19, Sept. 2010.
 
+\bibitem{Jeh:2002:SMS:775047.775126}
+G.~Jeh and J.~Widom.
+\newblock Simrank: A measure of structural-context similarity.
+\newblock In {\em KDD '02}, pages 538--543, 2002.
+
 \bibitem{konect}
 The koblenz network collection, 2017.
 \newblock http://konect.uni-koblenz.de/.
+
+\bibitem{910572}
+F.~R. Kschischang, B.~J. Frey, and H.~A. Loeliger.
+\newblock Factor graphs and the sum-product algorithm.
+\newblock {\em IEEE Trans. on Information Theory}, 47(2):498--519, Feb 2001.
 
 \bibitem{kryo}
 Kryo serializers for some jdk types, 2017.

@@ -1,4 +1,6 @@
-This is BibTeX, Version 0.99dThe top-level auxiliary file: vldb_sample.aux
+This is BibTeX, Version 0.99d (TeX Live 2015/Debian)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: vldb_sample.aux
 White space in argument---line 7 of file vldb_sample.aux
  : \citation{distribute
  :                      aggregate from ms}
@@ -9,4 +11,45 @@ Warning--I didn't find a database entry for "socialite"
 Warning--I didn't find a database entry for "bigdatalog"
 Warning--can't use both volume and number fields in 53e486195688442995f82bfe28c55731
 Warning--empty publisher in 53e486195688442995f82bfe28c55731
+You've used 51 entries,
+            2118 wiz_defined-function locations,
+            785 strings with 13207 characters,
+and the built_in function-call counts, 21174 in all, are:
+= -- 2019
+> -- 1106
+< -- 22
++ -- 446
+- -- 390
+* -- 1555
+:= -- 3210
+add.period$ -- 143
+call.type$ -- 51
+change.case$ -- 358
+chr.to.int$ -- 0
+cite$ -- 53
+duplicate$ -- 792
+empty$ -- 1647
+format.name$ -- 390
+if$ -- 4556
+int.to.chr$ -- 0
+int.to.str$ -- 51
+missing$ -- 42
+newline$ -- 248
+num.names$ -- 82
+pop$ -- 445
+preamble$ -- 1
+purify$ -- 307
+quote$ -- 0
+skip$ -- 654
+stack$ -- 0
+substring$ -- 1352
+swap$ -- 275
+text.length$ -- 22
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 202
+warning$ -- 2
+while$ -- 170
+width$ -- 53
+write$ -- 530
 (There was 1 error message)
