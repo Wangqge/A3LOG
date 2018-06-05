@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.5.15)  5 JUN 2018 10:13
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.5.15)  5 JUN 2018 11:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -796,43 +796,43 @@ t line 130.
 LaTeX Warning: Reference `tab:wrokload' on page 10 undefined on input line 147.
 
 
-) (./con.tex
-Overfull \hbox (4.19048pt too wide) in paragraph at lines 8--9
+
+Overfull \hbox (4.19048pt too wide) in paragraph at lines 156--157
 \OT1/cmr/bx/n/9 Asynchronous Com-pu-ta-tion in Graph An-a-lyt-ics \OT1/cmr/m/n/
 9 Asyn-
  []
 
 
-Overfull \hbox (1.36296pt too wide) in paragraph at lines 8--9
+Overfull \hbox (1.36296pt too wide) in paragraph at lines 156--157
 \OT1/cmr/m/n/9 asyn-chronous it-er-a-tive al-go-rithms with sparse com-pu-ta-ti
 onal
  []
 
 
-Overfull \hbox (2.69554pt too wide) in paragraph at lines 8--9
+Overfull \hbox (2.69554pt too wide) in paragraph at lines 156--157
 \OT1/cmr/m/n/9 chronous com-pu-ta-tion while keep-ing the vertex-centric model
  []
 
 
-Overfull \hbox (1.37195pt too wide) in paragraph at lines 8--9
+Overfull \hbox (1.37195pt too wide) in paragraph at lines 156--157
 \OT1/cmr/m/n/9 Maiter [51] pro-poses delta-based asyn-chronous it-er-a-tive com
 -
  []
 
 
-Overfull \hbox (10.19865pt too wide) in paragraph at lines 8--9
+Overfull \hbox (10.19865pt too wide) in paragraph at lines 156--157
 \OT1/cmr/m/n/9 pu-ta-tion model (DAIC) and sup-ports dis-tributed asyn-chronous
 
  []
 
 
-Overfull \hbox (2.4731pt too wide) in paragraph at lines 8--9
+Overfull \hbox (2.4731pt too wide) in paragraph at lines 156--157
 \OT1/cmr/m/n/9 graph com-pu-ta-tion in GPUs. Un-for-tu-nately, the above graph
  []
 
 [10 <./fig/single-scalability-eps-converted-to.pdf> <./fig/dist-scalability-eps
 -converted-to.pdf>]
-Overfull \hbox (2.9935pt too wide) in paragraph at lines 16--17
+Overfull \hbox (2.9935pt too wide) in paragraph at lines 164--165
 \OT1/cmr/m/n/9 ma-chine learn-ing, some al-go-rithms with non-serializable lock
 -
  []
@@ -938,8 +938,8 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 6562 strings out of 494953
- 97364 string characters out of 6180977
+ 6559 strings out of 494953
+ 97345 string characters out of 6180977
  218800 words of memory out of 5000000
  9673 multiletter control sequences out of 15000+600000
  31813 words of font info for 79 fonts, out of 8000000 for 9000
@@ -972,7 +972,7 @@ ive/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-di
 st/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/typ
 e1/urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/ut
 mr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on vldb_sample.pdf (15 pages, 1207078 bytes).
+Output written on vldb_sample.pdf (15 pages, 1207011 bytes).
 PDF statistics:
  362 PDF objects out of 1000 (max. 8388607)
  173 compressed objects within 2 object streams
