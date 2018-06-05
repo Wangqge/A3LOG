@@ -23,6 +23,7 @@ The formula as line(8) shown has the same result with the synchronous one.And it
  \subsection{Proof of Theorem Convertibility}
  \begin{proof}
  	\ref{sec:app:proof:convert}
+ 	Since $g$ and $f$ satisfied the previous properties,the convertible condition of $G$ can be express as$G(X)=G'(X \cup C)$ where C is the constant vector which has the same size with the result of $G$. each item should be aggregate by the corresponding $g$ operations.and the result of $${\lim_{n \to +\infty}(F \circ G')(Y^0)}$$ is a zero vector size of the result of $G$ operations.
  \begin{align}
 &(G \circ F)^n(X^0)=(G \circ F)^{n-1}G \circ F(X^{0})\notag\\
 =&(G \circ F)^{n-1}G'\circ (F(X^{0}) \cup C)\tag{1}\\
@@ -34,11 +35,10 @@ The formula as line(8) shown has the same result with the synchronous one.And it
 =&G(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C))\tag{5} \\
 =&G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \cup  C)\tag{6}
  \end{align}
-line (1) is gain from the equation TAG and  line (2) is true because \textbf{accumulative} property.Line (3) is true because the \textbf{order-indenpendent} property.Line(4) is true because of the \textbf{distributive} property.
+line (1) is obtained from the convertible condition and  line (2) is true because \textbf{accumulative} property.Line (3) is true because the \textbf{order-indenpendent} property.Line(4) is true because of the \textbf{distributive} property.
 line(5,6) is the final result by Repeat applying these three property on line(4).
-
-Due to the \textbf{elimited} Condition $${\lim_{n \to +\infty}(F \circ G')(Y^0)=0}$$
-then we have:
+Due to the \textbf{elimited} Condition $${\lim_{n \to +\infty}(F \circ G')(Y^0)=\textbf{0}}$$
+we have:
 \begin{align}
 &{\lim_{n\to +\infty}}G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \notag\\
 &\cup C)\notag\\

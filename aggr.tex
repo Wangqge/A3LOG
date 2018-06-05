@@ -3,28 +3,30 @@
 
 A \emph{sequential} computation (as opposed to parallel/distributed computation) is composed of a sequence of operations on input. These operations can be classified into two categories, the aggregate operations and the non-aggregate operations. We focus on numerical aggregation in this paper.
  \subsection{Aggregate/Non-Aggregate Operations}
-An \emph{\textbf{aggregate operation}} is a function $g()$ that requires more than one variables as input, i.e., $g(X)$ where $X=\{x_1, x_2, \ldots, x_n\}$, and outputs zero or more values. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations.% A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs are grouped by key, and the values in each group are aggregated to obtain a new set of key-value pairs. In other words, the group-by aggregation is composed of multiple subset aggregate operations.
-To apply the aggregate operation on The whole dataset. We define aggregation function $G$ as follow: 
+An \emph{\textbf{aggregate operation}} is a function $g()$ that requires more than one variables as input, i.e., $g(Y)$ where $Y=\{y_1, y_2, \ldots, y_n\}$, and outputs one value. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations.A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs are grouped by key, and the values in each group are aggregated to obtain a new set of key-value pairs. In other words, the group-by aggregation is composed of multiple subset aggregate operations.
+To apply the aggregate operation on the whole dataset. We define GROUP BY aggregation $G$ of $g$ as follow: 
 \begin{definition}
 	\begin{align}
 		 Y&=\{Y_0 \cup Y_1 \cup ... \cup Y_n\}\notag\\	 
 	 G(Y)&=\{g(Y_0) \cup g(Y_1) \cup \dots \cup g(Y_n)\} \notag
  \end{align}
 \end{definition}
-Note that there might be intersection between different subset,i.e. $Y_i \cup Y_j \neq \emptyset $
+
+The input is a vector output by non-aggregate operations denotes as $Y$. in which $Y_i$is the $i$th subset .The output is a vector,the $i$th item is the aggregate result of $Y_i$.Note that there is no intersection between different subset,i.e.$Y_i \cup Y_j = \emptyset $
+ 
 On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that takes only one value as input, i.e., $f(x)$, and outputs zero or more values. Since non-aggregate operation only takes one value unit as input,Here we gives a new operation $F(X)$ which apply $f$ on the whole set.\begin{definition}
 	\begin{align}
 	X&=\{x_0, x_1, ... x_n\}\notag\\	 
 	F(X)&=\{f(x_0) \cup f(x_1) \cup \dots \cup f(x_n)\} \notag
 	\end{align}
 \end{definition}
-
- It is obvious that $F(X)$ has a distributivity upon $\cup$ operator, i.e.$F(X \cup Y)=F(X) \cup F(Y)$.
+Input $X$is a vector of  initial values or the aggregate results.outputs is vector which catenated by all the non-aggregate results. 
+ It is obvious that $F(X)$ has a distributivity property upon $\cup$ operator, i.e.$F(X \cup Y)=F(X) \cup F(Y)$.
 In essence, the aggregate operation implies a \emph{data fusion}, while a non-aggregate operation implies a \emph{data transformation}.
 
 Note that, the aggregate and non-aggregate operation should be judged according to the number of \emph{variable} inputs instead of constant inputs. For example, the join operation in relational algebra is in general an aggregation since it merges two data sets into one. It takes two inputs $A$ and $B$ and produces one output. However in distributed join implementation, the whole data set $B$ can be small enough to be cached on all distributed workers, which implies that $B$ is a constant input for the distributed join operations. By partitioning and distributing $A$, the join operation is achieved by merging a part of $A$ and the locally cached whole $B$ on each worker. In such a case, the join operation is considered as a non-aggregate operation because each distributed join operation only takes a part of $A$ as a variable input which is different on different processor, where $B$ is the constant for all processors.
 
-\textbf{Parallelization}:Non-aggregate operation $f$ only takes one input and does not rely on any other variable, which makes $F$ have the distributive property. By partitioning and distributing the input to many workers, the non-aggregate operations can be embarrassingly parallel \emph{without communication} between workers. Aggregate operation takes multiple inputs which may originate from other workers, so that these aggregate operations or the group-by aggregation can be parallelized but \emph{with communication} between workers. If the inputs for multiple aggregate operations are disjoint, these aggregate operations can be parallelized without communication by carefully partitioning the inputs. However, this is usually impossible since the inputs probably result from the previous computations on other workers and cannot be particularly partitioned.
+\textbf{Parallelization}:Non-aggregate operation $f$ only takes one input and does not rely on any other variable, which makes the group operation $F$ have the distributive property. By partitioning and distributing the inputs to many workers, the non-aggregate operations can be embarrassingly parallel \emph{without communication} between workers. Aggregate operation takes multiple inputs which may originate from other workers, so that these aggregate operations or the group-by aggregation can be parallelized but \emph{with communication} between workers. If the inputs for multiple aggregate operations are disjoint, these aggregate operations can be parallelized without communication by carefully partitioning the inputs. However, this is usually impossible since the inputs probably result from the previous computations on other workers and cannot be particularly partitioned.
 
 
 
@@ -34,7 +36,7 @@ Note that, the aggregate and non-aggregate operation should be judged according 
 \emph{Recursive aggregation} is a sequence of interleaving aggregate and non-aggregate operations where all the aggregate operations are the same and all the non-aggregate operations are the same\footnote{There are also recursive programs without aggregations, which can be embarrassingly parallel.}. It is very common in graph algorithms, data mining and machine learning algorithms. The program with recursive aggregation is referred to as \emph{recursive program}. In this paper, we will focus on optimizing the computations with recursive aggregation.
 
 Let $Y$ denote a set of input variables of aggregate operation $\{y_0,y_1,\dots,y_m\}$and $X$ denote the inputs of non-aggregate  operation.$\{x_0,x_1,\dots,x_n\}$%Define $F(X)$ as $\{f(x_0^k) \cup f(x_1^k) \cup \dots \cup f(x_n^k)\}$ that is performing non-aggregation function $f(\dot)$for each item in the set and then combine them. Similarly, We define $G(Y)$as $\{g(Y_0) \cup g(Y_1) \cup \dots \cup g(Y_n)\}$ in which $X_i$ is a subset of inputs X,note that there may be an intersection between any two subsets.
-Then a recursive program can be represented as follows.
+Then a recursive program can be represented as follow.
 \begin{equation}
 \label{eq:recursive2}
 \begin{aligned}

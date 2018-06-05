@@ -5,16 +5,16 @@ In this section, we first formally define asynchronous aggregation and introduce
 \subsection{Asynchronous Aggregation}
 \label{sec:async:async}
 
-The recursive program in Equation (\ref{eq:recursive2}) is defined with synchronous aggregation. In parallel or distributed computing, the \emph{synchronous} aggregation means that all the parallel $f()$ operations have to be completed before the next $G()$ operation starts. %The $g()$ operation has to be applied on the whole set $X^k$.
+The recursive program in Equation (\ref{eq:recursive2}) is defined with synchronous aggregation. In parallel or distributed computing, the \emph{synchronous} aggregation means $F()$ operations have to be completed on each subset before the next $G()$ operation starts. %The $g()$ operation has to be applied on the whole set $X^k$.
 Correspondingly, we define asynchronous aggregation as follows.
 
 \begin{definition}
 	%wqg
 	\label{def:asyncaggre}
-	(\textbf{Asynchronous Aggregation}) In a recursive program, we assume that the set $X$  is partitioned into $m$ disjoint subsets,and denote $X_i^k$ i.e., $X=\{X_1^k,X_2^k,\ldots,X_m^k\}$, and $\forall i,j, X_i^k\cap X_j^k=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions, i.e., $g(X_i^k\cup X_j^{l})$ where $k\neq l$.
+	(\textbf{Asynchronous Aggregation}) In a recursive program, we assume that the set $X$  is partitioned into $m$ disjoint subsets,and denote $X_i^k$ i.e., $X=\{X_1^k,X_2^k,\ldots,X_m^k\}$, and $\forall i,j, X_i^k\cap X_j^k=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions, i.e., $G(X_1^k \ldots X_i^k\cup X_j^{l}...X_m^k)$ where $k\neq l$.
 \end{definition}
 
-From the definition of recursive aggregation as shown in Equation (\ref{eq:recursive2}), $X^{k+1}$ is resulted from $Y^k$, and $Y^k$ is resulted from $X^k$. $X^{k+1}$ does not exist before applying $g()$ on the complete set of $X^k$. Thus, the asynchronous aggregation $g(X_i^k\cup X_j^{k+1})$ is only possible after $X^{k+1}$ is obtained. In other words, $X^{k+1}$ is a \emph{replacement} of $X^k$ and is closer to the final result. The asynchronous aggregation of $X^{k+1}$ and $X^k$ may result in a wrong result since $X^k$ is a replaced result which is not supposed to be aggregated.
+From the definition of recursive aggregation as shown in Equation (\ref{eq:recursive2}), $X^{k+1}$ is resulted from $Y^k$, and $Y^k$ is resulted from $X^k$. $X^{k+1}$ does not exist before applying $g()$ on the complete set of $X^k$. Thus, the asynchronous aggregation $g(\ldots X_i^k\cup X_j^{k+1} \ldots)$ is only possible after the $j$th subset of $X^{k+1}$ is obtained. In other words, $X^{k+1}$ is a \emph{replacement} of $X^k$ and is closer to the final result. The asynchronous aggregation of $X^{k+1}$ and $X^k$ may result in a wrong result since $X^k$ is a replaced result which is not supposed to be aggregated.
 
 \subsection{Accumulated Recursive Program}
 \label{sec:async:accrec}
@@ -26,42 +26,41 @@ In order to make asynchronous aggregation feasible, we introduce a particular ty
 	(\textbf{Accumulated Recursive Program}) Accumulated recursive program is represented as follows.
 	\begin{equation}\label{eq:accumasync}
 	\begin{aligned}
-	\Delta X^{k+1}=(G\circ F)(\Delta X^k)\notag
+	\Delta Y^{k}= F(\Delta X^k)\notag\\
+	\Delta X^{k+1}= G(\Delta Y^{k})\notag
 	\end{aligned}
 	\end{equation}
-	It starts from $\Delta X^0=X^0$ and terminates when The 2-norm of $\Delta X^k$ is 0 or small enough. The final result is the aggregation of all intermediate results, i.e., $X^{k+1}=g(\Delta X^{0} \cup \Delta X^{1} \cup \ldots \cup \Delta X^{k})$. Alternatively, the result can be represented as follows.
+	It starts from $\Delta X^0=X^0$ and terminates when The 2-norm of $\Delta X^k$ is 0 or small enough. The final result is the aggregation of all intermediate results, i.e., $X^{k+1}=G(\Delta Y^{0} \cup \Delta Y^{1} \cup \ldots \cup \Delta Y^{k})$. Alternatively, the result can be represented as follows.
 	\begin{equation}
 	\label{eq:accumasyncres}
-	g\Big(\Delta X^0\cup (F\circ G)(\Delta X^0)\cup\ldots\cup (F\circ G)^k(\Delta X^0)\Big).\notag
+	G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big).
 	\end{equation}
 \end{definition}
 
 Intuitively, the accumulated recursive program performs the same computation as normal recursive program, but the final result is the aggregation of all the intermediate results as shown in Equation (\ref{eq:accumasyncres}). The asynchronous aggregation becomes meaningful in accumulated recursive programs, since the final result is the \emph{aggregation} of all recursions' results but not the last recursion's result. Note that, $\Delta X^{k}$ represents the \emph{increment} from previous recursion. This implies that the accumulated recursive program exhibits \textbf{monotonicity}, which has been well studied in the literature \cite{Hellerstein:2010:DIE:1860702.1860704,calm,Lam:2013:SDE:2510649.2511289,Wang:2015:AFR:2824032.2824052}. Briefly speaking, monotonicity means that we only add information, never negate or take away. However, not all recursive programs are monotonic. We have the following theorem to guide the transformation.
-
-
 \begin{theorem}
 	\label{th:monotone}
 	(\textbf{Monotonizability}) The accumulated recursive program defined in Equation (\ref{eq:accumasync}) will return the same result as the normal recursive program defined in Equation (\ref{eq:recursive2}), as long as the the following conditions are satisfied.
 	\begin{itemize}
-		\item \textbf{monotonic}: $g(X)\subseteq f\circ g(X)$;
-		\item \textbf{accumulative}: $g(X_1\cup X_2)=g(g(X_1)\cup X_2)$;
+		\item \textbf{monotonic}: $G(X)\subseteq F\circ G(X)$
+		\item \textbf{accumulative}: $G(X_1\cup X_2)=G(G(X_1)\cup X_2)$
 		%\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
 	\end{itemize}
+	
 \end{theorem}
 Here we provide the formal proof :
  \begin{proof}
-  It is known that $Y^k=f(X^k)$and $\Delta X^0=X^0\\$. So we have
+  It is known that $\Delta Y^k=f(\Delta X^k)$and $\Delta X^0=X^0\\$.
  \begin{align}
- &G(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0))\notag \\
- =&g(Y^0\cup f\circ g(Y^0)\cup \ldots \cup (f\circ g)^n(Y^0))    \notag\\
- =&g(g(Y^0)\cup f\circ g(Y^0)\cup \ldots \cup (f\circ g)^n(Y^0))  \tag{1}\\
- =&g(f\circ g(Y^0)\cup (f\circ g)^2(Y^0)\cup \ldots \cup (f\circ g)^n(Y^0)) \tag{2}\\
+ &G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big)\notag \\
+ =&G\Big(\Delta Y^0\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^n(\Delta Y^0)\Big)    \notag\\
+ =&G\Big(G(\Delta Y^0)\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^n( \Delta Y^0)\Big)  \tag{1}\\
+ =&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^n(\Delta Y^0)\Big) \tag{2}\\
  =& \ldots \notag \\
- =&g((f\circ g)^n(Y^0))\tag{3}\\
- =&(g \circ f)^n(X^0).\notag
+ =&G\Big((F\circ G)^n(Y^0)\Big)\tag{3}\\
+ =&(G \circ F)^n(X^0).\notag
  \end{align}
-  Line (1) is true because of the accumulative property. and Line (2) is true because of the monotonic property.
-  Repeat applying these two property ,we can reduce all the low order items in turn.
+  Line (1) is true because of the accumulative property. Line (2) is true because of the monotonic property. Repeat applying these two property ,we can reduce all the low order items in turn and line(3) can be obtained. 
  \end{proof}
 
 {\color{red} The previous formula is the standard computing formula,but there must be intersection between different recursion.due to the monotonic property.therefore Here we give an incremental computing formula.
@@ -85,7 +84,7 @@ Here we provide the formal proof :
  	Line(1) is true because of the definition of $F'$,due to the accumulative property, $G(\ldots \cup GFG(Y^0)\cup \ldots)$is equal to $G(\ldots \cup FG(Y^0)\cup \ldots)$, line(2)can be obtain.Then we can easily found that $(F \circ G)^n(Y)=Y \cup (F'\circ G)(Y)\cup \ldots(F' \circ G)^{n-1}$,
  \end{proof}
 }
- The accumulative property is essential for efficiency execution engine design. If the accumulative condition is satisfied, only the aggregation result $x^k=g(\Delta x^{0},\ldots,\Delta x^{k-1})$ needs to be maintained and is updated by accumulating a new $\Delta x^{k+1}$, i.e., $x^{k+1}=g(x^k,\Delta x^{k})$. Otherwise, the large set $\Delta X^{k}$ needs to be maintained for every recursion $k$.which incur a large storage cost. The accumulative property will be used in our system design to save a lot of maintaining cost.
+ The accumulative property is essential for both theorem proof and system design. If the accumulative condition is satisfied, only the aggregation result $X^k=G(\Delta X^{0},\ldots,\Delta X^{k-1})$ needs to be maintained and is updated by accumulating a new $\Delta x^{k}$, i.e.$X^{k+1}=G(X^k \cup \Delta X^k)$. Otherwise, the large set $\Delta X^{k}$ needs to be maintained for every recursion $k$.which incur a large storage cost. The accumulative property will be used in our system design to save a lot of maintaining cost.
 
 For example, the SSSP computation (Example 1) can be executed as an accumulated recursive program. Its non-aggregate operation $f()$ on node $i$ outputs not only the tuples set $\{\langle j,td_j^{k+1}\rangle\}$ for its outgoing neighbors $j$ but also its previous recursion's aggregation result $\langle i,d_i^k\rangle$. That is, $\{\langle i,td_i^{k+1}\rangle\}$ and $\langle i,d_i^k\rangle$ are contained in $X^{k+1}$, while $\langle i,d_i^k\rangle$ is already contained in $X^{k}$. Hence, $X^{k}\subseteq X^{k+1}$ and the monotonic condition is satisfied. In addition, the aggregate operation $g()$ which is MIN has the accumulative and commutative conditions.
 
@@ -100,21 +99,19 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 	(\textbf{Asynchronizability}) With asynchronous aggregation as Definition \ref{def:asyncaggre} proposed, an accumulated recursive program will yield to the same result as with synchronous aggregation, as long as the following order independent condition is satisfied.
 	\begin{itemize}
 		\item \textbf{order independent}: $g\circ f\circ g(X)=g\circ f(X)$;
+		\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
 	\end{itemize}
 \end{theorem}
-
-By asynchronous aggregation, the partial aggregation result is immediately used by the next $f()$ operation. The order independent property implies that no matter the $f()$ operation is first applied or the $g()$ operation is first applied, the effect is the same. As long as the same number of $f()$ operations are applied on all data, the eventual aggregation result will be the same.We details the proof in Appendix\ref{sec:app:proof:correct}
-
+By asynchronous aggregation, the partial aggregation result is immediately used by the next $f()$ operation. The order independent property implies that no matter the $f()$ operation is first applied or the $g()$ operation is first applied, the effect is the same. As long as the same number of $g()$ operations are applied on all data, the eventual aggregation result will be the same.Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition. We details the proof in Appendix\ref{sec:app:proof:correct}
 
 
-
-For the SSSP example, the $f()$ operation expands the BFS searching scope to one-hop-away nodes, and the $g()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $g\circ f(X)$ or making aggregation first $f\circ g(X)$, i.e., $min_j(d_j+w)=min_j(d_j)+w$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
+For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
 
 
 \subsection{Conversion Possibilities}
 \label{sec:async:convert}
 
-Some non-monotonic computations cannot be written as accumulated recursive program and are not originally qualified for asynchronous aggregation. For example, the PageRank computation cannot be executed as an accumulated recursive program since neither the monotonic condition nor the accumulative condition is satisfied. After applying $f\circ g$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. Further, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
+Some non-monotonic computations cannot be written as accumulated recursive program and are not originally qualified for asynchronous aggregation. For example, the PageRank computation cannot be executed as an accumulated recursive program since neither the monotonic condition nor the accumulative condition is satisfied. After applying $F\circ G$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. Further, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
 
 Fortunately, these computations can be converted to be qualified for asynchronous aggregation. We provide the convertibility conditions as follows.
 
@@ -122,16 +119,16 @@ Fortunately, these computations can be converted to be qualified for asynchronou
 	\label{th:convert}
 	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program for asynchronous aggregation, as long as the recursion performs infinite times and an aggregate operation $g'()$ with the \textbf{accumulative} and \textbf{commutative} properties can be found with the following conditions:
 	\begin{itemize}
-		\item \textbf{convertible}: $g(X)=g'(X\cup y)$;
+		\item \textbf{convertible}: $g(X)=g'(X\cup c)$;
 		\item \textbf{eliminable}: $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=\textbf{0}$,
 \item \textbf{order independent}: $g\circ f\circ g(X)=g\circ f(X)$;
 	\end{itemize}
-	where the $g'()$ and $f()$ operations are \textbf{order independent} $g'\circ f\circ g'(X)=g'\circ f(X)$, $y$ is a constant value, and \textbf{0} is the identity element of the $g'()$ operation. The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
+	where the $g'()$ and $f()$ operations are \textbf{order independent} $g'\circ f\circ g'(X)=g'\circ f(X)$, $c$ is a constant value, and \textbf{0} is the identity element of the $g'()$ operation. The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
 \end{theorem}
 
-The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $g'()$ that is with an additional constant input value $y$ but always returns the same result as $g()$, i.e., $g(X)=g'(X\cup y)$. The constant input implies the set containment relation between result and input, which makes it satisfy the %monotonic
+The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $g'()$ that is with an additional constant input value $c$ but always returns the same result as $g()$, i.e., $g(X)=g'(X\cup c)$. The constant input implies the set containment relation between result and input, which makes it satisfy the %monotonic
 accumulative condition that is required for accumulated recursive program. In addition, the eliminable property guarantees the % accumulated recursive program to converge, 
-the accumulated recursive converge to the same result with NRP %such that the result is independent of $X$. 
+the accumulated recursive converge to the same result with recursive aggregation.%such that the result is independent of $X$. 
 Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as $(g'\circ f)^n(x)$ is ``small'' enough.
 
 For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form %\cite{maiter}. 
