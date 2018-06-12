@@ -2,6 +2,52 @@
 \label{sec:expr}
 
 We empirically evaluate A3Log on Amazon EC2. We will show the comparison results with other systems, with different algorithms, and with different datasets. More experimental results can be found in Appendix Sec. \ref{sec:app:expr}, including scaling performance and effectiveness of aggregations.
+\subsection{Result of Checker}
+\begin{table*}[!t]
+	%\vspace{-0.1in}
+	\caption{The Result of a Series of Common Algorithm }
+	\vspace{0.0in}
+	\label{tab:resut}
+	\centering
+	\small
+	\begin{tabular}{c|c|c|c|c|c|c|c}
+		%	\hline
+		%		\multirow{2}{*}{\textbf{Dataset}} & \multirow{2}{*}{\tabincell{c}{\textbf{Nodes}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Edges}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Graph}\\ \textbf{type}}} & \multirow{2}{*}{\tabincell{c}{\textbf{$d$}}}& \multirow{2}{*}{\tabincell{c}{\textbf{$e$}}} & \multicolumn{3}{|c}{\textbf{SSSP}} & \multicolumn{3}{|c}{\textbf{PageRank}} \\
+		%		\cline{7-12}
+		%		&  & & & & & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}} & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}}\\
+		\hline\hline
+		\textbf{Algorithm} & \multirow{2}{*}\textbf{g} & \textbf{f} & \textbf{Monot} &\textbf{Commu} & \textbf{Accumu} & \textbf{OrderInd} &\textbf{Conver}\\
+		\hline
+		\textbf{Pagerank} & $sum(\centerdot)+c$ &Broadcast($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & $\times$&$\surd$\\
+		\hline
+		\textbf{SSSP} & $min(\centerdot)$ & Broadcast($x+w$) &$\surd$ & $\surd$& $\surd$ & $\surd$ & -\\
+		\hline
+		\textbf{CC} & $min(\centerdot)$& Broadcast($x$) & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\hline
+		\textbf{DAG} & $count(\centerdot)$ & Broadcast$(c)$& $\surd$ &$\surd$& $\surd$ & $\surd$ & -\\
+		\hline
+		\textbf{MAX PRO PATH} & $max(\centerdot)$ &  Broadcast$(p_1\& p_2) p=p_1*p_2$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\hline
+		\textbf{COST} & $sum(\centerdot)$&broadcast$(c*n)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\hline
+		\textbf{Viterbi} & $max(\centerdot)$ & $L=L_1*L_2*L_3$ & $\times$ & $\surd$ &  $\surd$ &  $\surd$&$\times$\\
+		\hline
+		\textbf{PARTY} & $count(\centerdot)$&broadcast$(x)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\hline
+		\textbf{Galaxy evolution} & $count(\centerdot)$ &broadcast$(pract(gid1\& gid2))$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\hline
+		\textbf{Belief propagation} & $sum(\centerdot)+c$ &$b'=w*b*h$ & $\times$ & $\surd$ & $\times$ & $\times$& $\surd$\\
+		\hline
+		\textbf{Simrank} & $sum(\centerdot)+c$\footnote{if source.}& broadcast$c/(d_1*d_2)*x$ & $\times$ &  $\surd$ &  $\times$ &  $\times$& $\surd$\\
+		\hline
+		\textbf{Jacobi Method} &$sum(\centerdot)+c$ &$-a_{ij}/a_{ii}*x$& $\times$ & $\surd$  & $\times$ & $\times$ & $\surd$\\
+		\hline
+		\hline
+	\end{tabular}
+	\vspace{-0.1in}
+\end{table*}
+
+In this section,we test more algorithms to check the asynchronous conditions.We list $f$ and $g$ .and then give the result.
 
 
 
@@ -37,17 +83,17 @@ In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 ins
 \end{figure}
 
 In the distributed experiment, we deploy all the systems on an EC2 cluster with 64 c4.2xlarge EC2 instances, each with 8 vCPUs and 15GB memory. The network bandwidth between instance workers is 10Gb/s\footnote{The network specification does not clearly describe the bandwidth but is only classified as \emph{High}, which is estimated as 10Gb/s.}. We configured all these systems with 8 threads for each worker. The normalized runtime results of SSSP and PageRank are shown in Fig. \ref{fig:dist-result}. A3Log outperforms GraphLab and Socialite on PageRank computation. The synchronous version of GraphLab performs much better than asynchronous GraphLab, which is due to its costly distributed locking \cite{Han:2015:GUB:2777598.2777604,Low:2012:DGF:2212351.2212354}. Socialite performs SSSP faster. The distributed Myria runs unexpected long without returning results, say 9 hours for PageRank and did not return. The performance of A3Log and Maiter is comparable on these two applications. The reason why A3Log does not show significant better performance in distributed environment is because of the expensive communication overhead. The communication module relies on a pure Java implementation of MPI, MPJ express \cite{mpich}, which shows about 10 times lower performance than native C implementation of Open MPI \cite{mpjperformance}. We adopt MPJ for its good compatibility but at the expense of performance. We are implementing an alternative distributed runtime based on Open MPI \cite{openmpi}.
-\begin{comment}
+%\begin{comment}
 \subsection{Performance Gain Analysis}
 \label{sec:expr:optimizations}
 
 \begin{figure}[!t]
-\vspace{-0.1in}
+	\vspace{0.1in}
 	\centering
 	\includegraphics[width=2.8in]{fig/single-optimize}
 	\caption{Performance gain analysis}
 	\label{fig:single-optimize}
-	\vspace{-0.0in}
+	\vspace{-0.1in}
 \end{figure}
 
 \begin{table*}[!t]
@@ -106,7 +152,7 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 	\end{tabular}
 	\vspace{-0.1in}
 \end{table*}
-\end{comment}
+%\end{comment}
 In order to analyze the factors for performance improvement and eliminate the interference from system implementation factors, we also implement a synchronous version of A3Log, which uses synchronous semi-naive evaluation (i.e., synchronous accumulated recursive programs). In addition, we turn off the scheduling then it shows the performance ahieved by pure asynchronous aggregation.
 
 \noindent\textbf{Algorithms and Datasets}
@@ -114,6 +160,8 @@ We test more algorithms to see the effect variations on different workloads, inc
 
 
 We run these algorithms on the an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. All these experiments are run with 32 threads. Fig. \ref{fig:single-optimize} shows the results. The runtime by synchronous semi-naive evaluation is considered as the baseline. The speedups from asynchronous execution and prioritized scheduling exhibit variations for different workloads. Generally speaking, the graph based algorithms benefit from asynchronous aggregation and priority scheduling more. For SSSP and PageRank, great performance gains are achieved by priority scheduling. However, for COST, the priority scheduling brings negative effect. This is because that COST aims to compute all parts' cost in a hierarchical structure and the computations on these parts equally contribute to the output. Using priority scheduling will not bring any benefit but only incurs scheduling overhead. However, we still take advantage of asynchronous aggregation to avoid synchronizations and achieve better performance.
+
+
  \subsection{Scaling Performance}
  \label{sec:expr:scale}
  
