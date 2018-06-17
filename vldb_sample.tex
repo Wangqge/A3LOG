@@ -134,7 +134,9 @@ one who did all the really hard work.}\\
 \maketitle
 
 \begin{abstract}
-Asynchronous recursive processing usually show better performance on convergence speed and resource utilization in many field. However The usage of Asynchronous processing usually be restricted to a small field because of the non-guaranteed correctness and unstable performance. The programming complexity also plagued the user. To address these problem ,we propose a series of conditions on correctly asynchronize an algorithm based on accumulate recursive aggregation and A3Log, an automated Asynchronous Graph computing system with a asynchronous condition checker embedded, which can  automatically check the whether  user's sequential program can be correctly executed using asynchronous Model.Besides,System provide a simple and convenient datalog interface.Both shared-memory runtime engine and distributed runtime engine. Our results on Amazon EC2 shows that our system shows at least comparable but most of the time better performance against state-of-art graph computing system.
+%Asynchronous recursive processing usually show better performance on convergence speed and resource utilization in many field. However The usage of Asynchronous processing usually be restricted to a small field because of the non-guaranteed correctness and unstable performance. The programming complexity also plagued the user. To address these problem ,we propose a series of conditions on correctly asynchronize an algorithm based on accumulate recursive aggregation and A3Log, an automated Asynchronous Graph computing system with a asynchronous condition checker embedded, which can  automatically check the whether  user's sequential program can be correctly executed using asynchronous Model.Besides,System provide a simple and convenient datalog interface.Both shared-memory runtime engine and distributed runtime engine. 
+
+aggregation means a data fusion operation which frequently used in Graph computing  machine learning and database query.Many recursive algorithm can be abstracted as a series of aggregation and non-aggregation operations(recursive aggregation).Asynchronous aggregation was proposed to accelerate the aggregation the and avoid the coordination.But the non-guaranteed correctness limit the usage. moreover it is hard to write asynchronous program or check whether an algorithm can be correctly asynchronized.To address there problem we propose 1) a series of correctness conditions based on \textbf{accumulate recursive aggregation}.2)a Datalog System with asynchronous condition checker embedded.User's sequentials program will be checked and convert to accumulate recursive aggregation and async-executed,if the correctness condition satisfied.System provide both shared-memory and distributed runtime engine,experiment shows that our algorithm shows comparable and most time even better performance.
 \end{abstract}
 \keywords{Asynchronous aggregation, parallel aggregation, recursive program, Datalog}
 
@@ -161,7 +163,7 @@ Asynchronous recursive processing usually show better performance on convergence
 %APPENDIX is optional.
 % ****************** APPENDIX **************************************
 % Example of an appendix; typically would start on a new page
-%pagebreak
+%pagebreak--
 
 \input{appendix}
 

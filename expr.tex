@@ -2,7 +2,7 @@
 \label{sec:expr}
 
 We empirically evaluate A3Log on Amazon EC2. We will show the comparison results with other systems, with different algorithms, and with different datasets. More experimental results can be found in Appendix Sec. \ref{sec:app:expr}, including scaling performance and effectiveness of aggregations.
-\subsection{Result of Checker}
+\subsection{Result of Condition Checker}
 \begin{table*}[!t]
 	%\vspace{-0.1in}
 	\caption{The Result of a Series of Common Algorithm }
@@ -36,7 +36,7 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 		\hline
 		\textbf{Galaxy evolution} & $count(\centerdot)$ &broadcast$(pract(gid1\& gid2))$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{Belief propagation} & $sum(\centerdot)+c$ &$b'=w*b*h$ & $\times$ & $\surd$ & $\times$ & $\times$& $\surd$\\
+		\textbf{Belief propagation} & $sum(\centerdot)$ &$b'=w*b*h$ & $\times$ & $\surd$ & $\times$ & $\times$& -\\
 		\hline
 		\textbf{Simrank} & $sum(\centerdot)+c$\footnote{if source.}& broadcast$c/(d_1*d_2)*x$ & $\times$ &  $\surd$ &  $\times$ &  $\times$& $\surd$\\
 		\hline
@@ -47,7 +47,7 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 	\vspace{-0.1in}
 \end{table*}
 
-In this section,we test more algorithms to check the asynchronous conditions.We list $f$ and $g$ operations and each property of each algorithm .As shown in table \ref{tab:resut},\textbf{SSSP},\textbf{CC},\textbf{DAG},\textbf{PATH},\text{COST},\text{PARTY} and \textbf{Galaxy evolution} can be correctly asynchonized.\textbf{Belief Propagation},\textbf{Simrank},\textbf{Pagerank}and \textbf{Jacobi Method}can be covert to accumulative recursive aggregation model and asynchronous executed correctly. Note that 
+In this section,we test more algorithms to check the asynchronous conditions.We list $f$ and $g$ operations and each property of each algorithm .As shown in table \ref{tab:resut},\textbf{SSSP}, \textbf{CC}, \textbf{DAG},\textbf{PATH}, \textbf{COST}, \textbf{PARTY} and \textbf{Galaxy evolution} can be correctly asynchonized.\textbf{Belief Propagation},  \textbf{Simrank}, \textbf{Pagerank} and \textbf{Jacobi Method} can be covert to accumulative recursive aggregation model and asynchronous executed correctly. Note that \textbf{Belief Propagation} is 
 
 
 \subsection{Comparison to Other Systems}
