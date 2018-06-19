@@ -1,7 +1,8 @@
 \section{Performance Evaluation}
 \label{sec:expr}
 
-We empirically evaluate A3Log on Amazon EC2. We will show the comparison results with other systems, with different algorithms, and with different datasets. More experimental results can be found in Appendix Sec. \ref{sec:app:expr}, including scaling performance and effectiveness of aggregations.
+We empirically evaluate A3Log on Amazon EC2. We will show the comparison results with other systems, with different algorithms, and with different datasets.Further we exhibit conditions satisfiability of some common algorithm.
+ 
 \subsection{Result of Condition Checker}
 \begin{table*}[!t]
 	%\vspace{-0.1in}
@@ -18,27 +19,27 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 		\hline\hline
 		\textbf{Algorithm} & \multirow{2}{*}\textbf{g} & \textbf{f} & \textbf{Monot} &\textbf{Commu} & \textbf{Accumu} & \textbf{OrderInd} &\textbf{Conver}\\
 		\hline
-		\textbf{Pagerank} & $sum(\centerdot)+c$ &Broadcast($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & $\times$&$\surd$\\
+		\textbf{Pagerank} & $sum(\centerdot)+c$ &($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & $\times$&$\surd$\\
 		\hline
-		\textbf{SSSP} & $min(\centerdot)$ & Broadcast($x+w$) &$\surd$ & $\surd$& $\surd$ & $\surd$ & -\\
+		\textbf{SSSP} & $min(\centerdot)$ & ($x+w$) &$\surd$ & $\surd$& $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{CC} & $min(\centerdot)$& Broadcast($x$) & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{CC} & $min(\centerdot)$& ($x$) & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{DAG} & $count(\centerdot)$ & Broadcast$(c)$& $\surd$ &$\surd$& $\surd$ & $\surd$ & -\\
+		\textbf{DAG} & $count(\centerdot)$ &$(c)$& $\surd$ &$\surd$& $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{MAX PRO PATH} & $max(\centerdot)$ &  Broadcast$(p_1\& p_2) p=p_1*p_2$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{MAX PRO PATH} & $max(\centerdot)$ &  send$(p_1\& p_2) p=p_1*p_2$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{COST} & $sum(\centerdot)$&broadcast$(c*n)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{COST} & $sum(\centerdot)$&$(c*n)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
 		\textbf{Viterbi} & $max(\centerdot)$ & $L=L_1*L_2*L_3$ & $\times$ & $\surd$ &  $\surd$ &  $\surd$&$\times$\\
 		\hline
-		\textbf{PARTY} & $count(\centerdot)$&broadcast$(x)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{PARTY} & $count(\centerdot)$&$(x)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
 		\textbf{Galaxy evolution} & $count(\centerdot)$ &broadcast$(pract(gid1\& gid2))$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
 		\textbf{Belief propagation} & $sum(\centerdot)$ &$b'=w*b*h$ & $\times$ & $\surd$ & $\times$ & $\times$& -\\
 		\hline
-		\textbf{Simrank} & $sum(\centerdot)+c$\footnote{if source.}& broadcast$c/(d_1*d_2)*x$ & $\times$ &  $\surd$ &  $\times$ &  $\times$& $\surd$\\
+		\textbf{Simrank\footnote{if src=dest $c=1-b$ else $c=0$}} & $sum(\centerdot)+b$& $c/(d_1*d_2)*x$ & $\times$ &  $\surd$ &  $\times$ &  $\times$& $\surd$\\
 		\hline
 		\textbf{Jacobi Method} &$sum(\centerdot)+c$ &$-a_{ij}/a_{ii}*x$& $\times$ & $\surd$  & $\times$ & $\times$ & $\surd$\\
 		\hline
@@ -47,26 +48,25 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 	\vspace{-0.1in}
 \end{table*}
 
-In this section,we test more algorithms to check the asynchronous conditions.We list $f$ and $g$ operations and each property of each algorithm .As shown in table \ref{tab:resut},\textbf{SSSP}, \textbf{CC}, \textbf{DAG},\textbf{PATH}, \textbf{COST}, \textbf{PARTY} and \textbf{Galaxy evolution} can be correctly asynchonized.\textbf{Belief Propagation},  \textbf{Simrank}, \textbf{Pagerank} and \textbf{Jacobi Method} can be covert to accumulative recursive aggregation model and asynchronous executed correctly. Note that \textbf{Belief Propagation} neither satisfy  
-
+In this section,we test more algorithms to check the asynchronous conditions.We list $f$ and $g$ operations and each property of each algorithm .As shown in table \ref{tab:resut},\textbf{SSSP}, \textbf{CC}, \textbf{DAG},\textbf{PATH}, \textbf{COST}, \textbf{PARTY} and \textbf{Galaxy evolution} can be correctly asynchonized.\textbf{Belief Propagation},  \textbf{Simrank}, \textbf{Pagerank} and \textbf{Jacobi Method} can be covert to accumulative recursive aggregation model and asynchronous executed correctly. Note that \textbf{Viterbi Algorithm} satisfied neither correctness condition nor conversion condition.
 
 \subsection{Comparison to Other Systems}
 \label{sec:expr:othersystems}
 
 \noindent\textbf{Competitors}
-A3Log is compared with four state-of-the-art parallel/distributed frameworks. \textbf{SociaLite} \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572} is a Datalog implementation for social network analysis. \textbf{Myria} \cite{Halperin:2014:DMB:2588555.2594530,Wang:2015:AFR:2824032.2824052} supports Datalog asynchronous evaluation. Both SociaLite and Myria support monotonic aggregation inside recursion. \textbf{GraphLab} \cite{Low:2012:DGF:2212351.2212354} is a graph-based parallel/distributed engine supporting asynchronous iteration. \textbf{Maiter} \cite{maiter} supports delta-based accumulative iterative computation (similar to monotonic aggregation) which can be executed asynchronously. All these systems are configured with their default parameters. Myria, GraphLab, and Maiter are configured to run with asynchronous model unless particularly mentioned. The runtime results are the execution time excluding data loading time, and each is a mean of two runs.
+A3Log is compared with four state-of-the-art parallel/distributed frameworks. \textbf{SociaLite} \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572} is a Datalog implementation for social network analysis. \textbf{Myria} \cite{Halperin:2014:DMB:2588555.2594530,Wang:2015:AFR:2824032.2824052} supports Datalog asynchronous evaluation. Both SociaLite and Myria support monotonic aggregation inside recursion. \textbf{GraphLab} \cite{Low:2012:DGF:2212351.2212354} is a graph-based parallel/distributed engine supporting asynchronous iteration. \textbf{Maiter} \cite{maiter} supports delta-based accumulative iterative computation which can be executed asynchronously. All these systems are configured with their default parameters. Myria, GraphLab, and Maiter are configured to run with asynchronous model unless particularly mentioned. The runtime results are the execution time excluding data loading time, and each is a mean of two runs.
 
 \noindent\textbf{Algorithms and Datasets}
 We compare A3Log with other systems in the context of three algorithms, including SSSP (Program 1), PageRank (Program 2), and Connected Components (CC, Program 3). These three algorithms are all supported by these systems. For SSSP and CC, the computations terminate as soon as no new update is found. For PageRank in A3Log and Maiter, which has no notion of iterations, the computation terminates when the sum of difference to the theoretical convergence point \cite{Zhang:2011:PDF:2038916.2038929} is less than $10^{-4}$ (see Appendix Sec. \ref{sec:expr:aggregations}), based on which we know the number of iterations that is required to reach the same point (42 iterations) \cite{Zhang:2011:PDF:2038916.2038929}. Socialite and Myria (Myria does not support asynchronous PageRank) are set to run 42 iterations. GraphLab terminates after the PageRank value of every vertex changes by less than a user-specified threshold $\epsilon$ between two consecutive executions of that vertex. These algorithms are performed on a large graph dataset ClueWeb09 \cite{clueweb}. In order to finish the experiments in a reasonable time, we truncate the original dataset into a smaller ClueWeb20M dataset with 20,000,000 nodes, 243,063,334 edges, and 3.8GB size. Since ClueWeb is an unweighted graph, we assign a random weight to each edge for SSSP computation.
 
 \begin{figure}[!t]
-	\vspace{-0.1in}
+	\vspace{0.08in}
 	\centering
 	\includegraphics[width=3in]{fig/single-result}
 	\vspace{-0.1in}
 	\caption{Performance comparison with other systems (many-core environment)}
 	\label{fig:single-result}
-	\vspace{0.0in}
+	\vspace{-0.2in}
 \end{figure}
 
 In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. We configured all these systems with 32 threads. The normalized runtime results. In general, A3Log outperforms all the competitors. For the PageRank computation, A3Log achieves 22.8X speedup over GraphLab, 22X speedup over Socialite, 6X speedup over Maiter, and much more speedup over Myria\footnote{The runtime results of Myria may be wrong because they are all unexpected long, say 135 times longer for PageRank and 321 times longer for SSSP than A3Log. We are contacting with Myria authors to fix it but cannot find the problem before the submission.} are shown in Fig. \ref{fig:single-result}. There is an exception for SSSP computation. Socialite is 1.6X faster than A3Log. This may be due to their \emph{prioritization} optimization, which is similar to our scheduling technique that leads to Dijkstra algorithm.
@@ -74,14 +74,14 @@ In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 ins
 \begin{figure}[!t]
 	\vspace{0.0in}
 	\centering
-	\includegraphics[width=2.4in]{fig/dist-result}
+	\includegraphics[width=2.6in]{fig/dist-result}
 	\vspace{-0.1in}
 	\caption{Performance comparison with other systems (distributed environment)}
 	\label{fig:dist-result}
 	\vspace{-0.2in}
 \end{figure}
 
-In the distributed experiment, we deploy all the systems on an EC2 cluster with 64 c4.2xlarge EC2 instances, each with 8 vCPUs and 15GB memory. The network bandwidth between instance workers is 10Gb/s\footnote{The network specification does not clearly describe the bandwidth but is only classified as \emph{High}, which is estimated as 10Gb/s.}. We configured all these systems with 8 threads for each worker. The normalized runtime results of SSSP and PageRank are shown in Fig. \ref{fig:dist-result}. A3Log outperforms GraphLab and Socialite on PageRank computation. The synchronous version of GraphLab performs much better than asynchronous GraphLab, which is due to its costly distributed locking \cite{Han:2015:GUB:2777598.2777604,Low:2012:DGF:2212351.2212354}. Socialite performs SSSP faster. The distributed Myria runs unexpected long without returning results, say 9 hours for PageRank and did not return. The performance of A3Log and Maiter is comparable on these two applications. The reason why A3Log does not show significant better performance in distributed environment is because of the expensive communication overhead. The communication module relies on a pure Java implementation of MPI, MPJ express \cite{mpich}, which shows about 10 times lower performance than native C implementation of Open MPI \cite{mpjperformance}. We adopt MPJ for its good compatibility but at the expense of performance. We are implementing an alternative distributed runtime based on Open MPI \cite{openmpi}.
+In the distributed experiment, we deploy all the systems on an EC2 cluster with 32 c4.2xlarge EC2 instances, each with 8 vCPUs and 15GB memory. The network bandwidth between instance workers is 10Gb/s\footnote{The network specification does not clearly describe the bandwidth but is only classified as \emph{High}, which is estimated as 10Gb/s.}. We configured all these systems with 8 threads for each worker. The normalized runtime results of SSSP and PageRank are shown in Fig. \ref{fig:dist-result}. A3Log outperforms GraphLab and Socialite on PageRank computation. The synchronous version of GraphLab performs much better than asynchronous GraphLab, which is due to its costly distributed locking \cite{Han:2015:GUB:2777598.2777604,Low:2012:DGF:2212351.2212354}. Socialite performs SSSP only a little faster almost negligible.The distributed Myria runs unexpected long without returning results, say 9 hours for PageRank and did not return. The performance of A3Log and Maiter is comparable on these two applications,and Maiter performs pagerank even faster.The reason why A3Log does not show significant better performance in distributed environment is because of the expensive communication and serialization overhead.The performance of communicate and serialize components implemented in java unmatched that of C/C++ implementation. 
 %\begin{comment}
 \subsection{Performance Gain Analysis}
 \label{sec:expr:optimizations}
@@ -97,8 +97,8 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 
 \begin{table*}[!t]
 	%\vspace{-0.1in}
-	\caption{Performance when varying workloads (shared-memory runtime, $d$ is diameter, $e$ is powerlaw exponent)}
-	\vspace{-0.1in}
+	\caption{Performance when varying workloads ($d$ is diameter, $e$ is powerlaw exponent)}
+	\vspace{0.0in}
 	\label{tab:wrokload}
 	\centering
 	\small
@@ -158,7 +158,7 @@ In order to analyze the factors for performance improvement and eliminate the in
 We test more algorithms to see the effect variations on different workloads, including Least Common Ancestor (LCA, Program 6), ``What is the cost of each part?'' (COST, Program 7), ``Who will come to the party?'' (PARTY, Program 9), and ``Computing Paths in a DAG'' (PATH, Program 4). More details of these algorithms can be found in Appendix Sec. \ref{sec:app:example}. For LCA, we use a citation network Patent-US \cite{konect}. For COST, we synthetically generate a hierarchical (tree-like) dataset with 30,000,000 tree nodes. PARTY is a graph based algorithm, so we use the same ClueWeb20M dataset. For PATH, we synthetically generate a directed acyclic graph (DAG) dataset with 500 nodes and 35,952 edges. PATH is a computation intensive workload since it evaluates the paths between all pairs.
 
 
-We run these algorithms on the an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. All these experiments are run with 32 threads. Fig. \ref{fig:single-optimize} shows the results. The runtime by synchronous semi-naive evaluation is considered as the baseline. The speedups from asynchronous execution and prioritized scheduling exhibit variations for different workloads. Generally speaking, the graph based algorithms benefit from asynchronous aggregation and priority scheduling more. For SSSP and PageRank, great performance gains are achieved by priority scheduling. However, for COST, the priority scheduling brings negative effect. This is because that COST aims to compute all parts' cost in a hierarchical structure and the computations on these parts equally contribute to the output. Using priority scheduling will not bring any benefit but only incurs scheduling overhead. However, we still take advantage of asynchronous aggregation to avoid synchronizations and achieve better performance.
+We run these algorithms on the an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. All these experiments are run with 32 threads. Fig. \ref{fig:single-optimize} shows the results. The runtime by synchronous semi-naive evaluation is considered as the baseline. The speedups from asynchronous execution and prioritized scheduling exhibit variations for different workloads. Generally speaking, the graph based algorithms benefit from asynchronous aggregation and priority scheduling more. For SSSP and PageRank, great performance gains are achieved by priority scheduling. However, for COST, the priority scheduling brings negative effect. This is because that COST aims to compute all parts' cost in a hierarchical structure and the computations on these parts equally contribute to the output. Using priority scheduling will not bring any benefit but only incurs scheduling overhead. However, we still take advantage of asynchronous aggregation to achieve better performance.
 
 
  \subsection{Scaling Performance}
@@ -188,7 +188,6 @@ asynchronous aggregation is expected to achieve better scaling performance. We e
 
 \subsection{Comparison with Different Workloads}
 \label{sec:expr:workloads}
-{\color{red}Here I wanna add something about Partition sensitive}
 To see the performance when varying datasets, we choose 20 various graph datasets with various graph structures and various graph properties. All the datasets are downloaded from \cite{konect}. We use two typical graph algorithms SSSP and PageRank for evaluation. We run the shared-memory version of A3Log on a c4-2xlarge EC2 instance with 8 vCPU and 60GB memory. A3Log is configured with 8 threads. We compare the algorithm runtime of synchronous execution and asynchronous execution on these graphs.
 
 Table \ref{tab:wrokload} shows the graph datasets and the runtime results. The asynchronous execution exhibits 4.19X-222.82X speedup over synchronous execution on SSSP computation, and 2.25X-55.59X speedup over synchronous execution on PageRank computation. Generally speaking, asynchronous SSSP achieves higher speedup on large diameter graphs, and asynchronous PageRank computation achieves higher speedup on the graphs with larger powerlaw exponent. Of course, the performance speedup also relates to the graph structures and graph types. Note that, in asynchronous execution, the termination check is performed periodically (every 1 second in this experiment). If the runtime results of asynchronous executions shows 1.x second, they may converge less than 1 second. Thus, the performance of asynchronous execution is expected to be even higher.
@@ -207,9 +206,9 @@ Table \ref{tab:wrokload} shows the graph datasets and the runtime results. The a
 GRAPE \cite{Fan:2017:PSG:3035918.3035942} differs from prior systems in its ability to automatically parallelize existing sequential graph algorithms as a whole. Sequential graph algorithms can be "plugged into" GRAPE with minor changes, and get parallelized. As long as the sequential algorithms are correct, the GRAPE parallelization guarantees to terminate with correct answers under a monotonic condition. However, GRAPE cannot automatically asynchronize a sequential graph algorithm.
 
 %compare with Maiter \cite{maiter}, extended to relational algebral, generalize to aggregation, support to automatically asyncronization, datalog system.
-
+\begin{comment}
 \noindent\textbf{Asynchronous Computation in Machine Learning} In machine learning, some algorithms with non-serializable lock-free implementations offer significant speedups. Gonzalez et al. \cite{DBLP:journals/corr/GonzalezBJFHGS15} examine the growing gap between efficient machine learning algorithms exploiting asynchrony and fine-grained communication, and commodity distributed dataflow systems (Hadoop and Spark) that are optimized for coarse-grained models. Google DeepMind group recently proposes asynchronous methods for deep reinforcement learning \cite{Mnih:2016:AMD:3045390.3045594}, which surpasses the current state-of-the-art on the Atari domain while training for half the time on a single multi-core CPU instead of a GPU. DimmWitted \cite{Zhang:2014:DSM:2732977.2733001} exposes a range of options for asynchronous data sharing, which outperforms general cluster compute frameworks by orders of magnitude in the context of popular models, including SVMs, logistic regression, Gibbs sampling, and neural networks. HOGWILD! \cite{Niu:2011:HLA:2986459.2986537} is a implementation of stochastic gradient descent (SGD), which places a single copy of the model in the memory of a multi-core server and runs multiple worker processes that simultaneously run gradient steps in parallel. An asynchronous parallel stochastic coordinate descent algorithm is proposed in \cite{Liu:2015:APS:2789272.2789282}, which shows significant speedup in multi-core environment. A burgeoning cottage industry of machine learning researchers has begun to extend asynchronous execution strategies to an increasing number of optimization tasks.
-
+\end{comment}
 \noindent\textbf{Datalog Systems}
 Besides SociaLite \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572} and Myria \cite{Halperin:2014:DMB:2588555.2594530,Wang:2015:AFR:2824032.2824052}, there exist other Datalog systems. DeALS \cite{Shkapsky:2013:GQN:2536274.2536290,7113340} is a deductive database systems relying on Datalog language, supporting optimized execution over diverse platforms including sequential implementations, multi-core machines, and clusters. BigDatalog \cite{Shkapsky:2016:BDA:2882903.2915229} is built on top of Spark \cite{Zaharia:2010:SCC:1863103.1863113} and provides declarative semantics of monotonic aggregate programs. Datalography \cite{7840589} incorporates optimization techniques for efficient distributed evaluation of Datalog queries on Giraph \cite{giraph}. LogicBlox \cite{Aref:2015:DIL:2723372.2742796} is a commercial database system based on LogiQL.
 
