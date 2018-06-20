@@ -96,7 +96,7 @@ For the SSSP example, the $F()$ operation expands the BFS searching scope to one
 Some non-monotonic computations cannot be written as accumulated recursive program and are not originally qualified for asynchronous aggregation. For example, the PageRank computation cannot be executed as an accumulated recursive program since neither the monotonic condition nor the accumulative condition is satisfied. After applying $F\circ G$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. Further, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
 
 Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the convertion is incrementally computing the origin problem and the incremental value $\Delta X^k$ of each recursion can be iteratively computed i.e.$X^{k+1}=G'(X^{k}\cup \Delta X^{k})$in which $\Delta X^{k} =G' \circ F(\Delta X^{k-1})$.
-if aggregate function $G'$ satisfied the \textbf{accumulative} condition,
+if aggregate function $g'$ satisfied the \textbf{accumulative} condition,
 and let delta $\Delta X^0=X^1$ we have $X^{k+1}=G'(\Delta X^0 \cup G'\circ F'(\Delta X^0)\cup \ldots G' \circ F^n(\Delta X^0))$. Further the algorithm can be correctly asynchronized if the \textbf{order-independent} conditions satisfied. Note that $X^1$ is the first recursion of the normal recursive aggregation(because $X^{-1}$ doesn't exist and hard to define, so the incremental value $\Delta X$ of accumulative recursive aggregation should be initialized as $X^1$ where $X^0$ is the initial value of normal recursive recursion). 
 
 For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form. %\cite{maiter}. 
@@ -107,9 +107,8 @@ In original PageRank,$X^k=AX^{k-1}+b$,$F$ operation is the multiplication by sub
 \end{aligned}
 \end{equation}
 So $X^k=\Delta X^0+A\Delta X^0+\ldots+A^{k-1}\Delta X^0$
-where $Delta X^0$ is initialized as $X^0$. The $G'\circ F$ operation on $X$ is premultiplication of $A$.The $F$ operation is multiplication by subscript,and $G$ operation is the 'SUM' of the intermediate result. 
-Furthermore, $G'$ operation is accumulative,the $F()$ operation and $G'()$ operation in PageRank is order independent, which makes it suitable for asynchronous aggregation. There exist other convertable algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.
-We formally provide the convertibility conditions as follows.
+where $\Delta X^0$ is initialized as $X^1$($X^1=AX^0+b$). The $G'\circ F$ operation on $X$ is premultiplication of $A$.The $F$ operation is multiplication by subscript,and $G$ operation is the 'SUM' of the intermediate result. 
+Furthermore, $G'$ operation is accumulative,the $F()$ operation and $G'()$ operation in PageRank is order independent, which makes it suitable for asynchronous aggregation. There exist other convertable algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.Next,we formally provide the convertibility conditions as follows.
 
 \begin{theorem}
 	\label{th:convert}
@@ -125,7 +124,7 @@ We formally provide the convertibility conditions as follows.
 The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $G'()$ that can be used to iterative computing the increment between consecutive recursion. which makes it satisfy the monotonic and accumulative condition that is required for accumulated recursive program and order-independent condition for asynchronous execution.
 Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as the incremental value $(G'\circ F)^n(x)$ is ``small'' enough.
 
-To obtain the new aggregate operation $G'$ in our system.We generalize the method that descripted in the Pagerank example.The key of the problem is to find the relation between$\Delta X^k$ and $\Delta X^{k-1}$. The origin aggregate and non-aggregate operation on single value is $g()$ and $f()$.By $g\circ f(X)-g\circ f(Y)$, if There is a new aggregate function $g'$ satisfy that $g\circ f(X)-g\circ f(Y) =g'\circ f(X-Y)$ exists,and $g'$ satisfy the accumulative condition, The algorithm can be convert into accumulative recursive aggregation.Note that the algorithm can be asynchronized only if the order-independent condition satisfied.
+To obtain the new aggregate operation $g'()$ in our system.We generalize the method that descripted in the Pagerank example.The key of the problem is to find the relation between$\Delta X^k$ and $\Delta X^{k-1}$. The origin aggregate and non-aggregate operation on single value is $g()$ and $f()$.By $g\circ f(X)-g\circ f(Y)$, if There is a new aggregate function $g'()$ satisfy that $g\circ f(X)-g\circ f(Y) =g'\circ f(X-Y)$ exists(this conditions implies that $\Delta X^{k+1}=g'\circ f(\Delta X^{k})$and the origin problem can be incrementally computed),and $g'()$ satisfy the accumulative condition, The algorithm can be convert into accumulative recursive aggregation.Note that the algorithm can be asynchronized only if the order-independent condition satisfied at the same time.
 
 
 

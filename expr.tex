@@ -19,7 +19,7 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 		\hline\hline
 		\textbf{Algorithm} & \multirow{2}{*}\textbf{g} & \textbf{f} & \textbf{Monot} &\textbf{Commu} & \textbf{Accumu} & \textbf{OrderInd} &\textbf{Conver}\\
 		\hline
-		\textbf{Pagerank} & $sum(\centerdot)+c$ &($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & $\times$&$\surd$\\
+		\textbf{Pagerank} & $sum(\centerdot)+c$ &($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & - &$\surd$\\
 		\hline
 		\textbf{SSSP} & $min(\centerdot)$ & ($x+w$) &$\surd$ & $\surd$& $\surd$ & $\surd$ & -\\
 		\hline
@@ -31,24 +31,24 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 		\hline
 		\textbf{COST} & $sum(\centerdot)$&$(c*n)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{Viterbi} & $max(\centerdot)$ & $L=L_1*L_2*L_3$ & $\times$ & $\surd$ &  $\surd$ &  $\surd$&$\times$\\
+		\textbf{Viterbi} & $max(\centerdot)$ & $L=L_1*L_2*L_3$ & $\times$ & $\surd$ &  $\surd$ &  - &$\surd$\\
 		\hline
 		\textbf{PARTY} & $count(\centerdot)$&$(x)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
 		\textbf{Galaxy evolution} & $count(\centerdot)$ &broadcast$(pract(gid1\& gid2))$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{Belief propagation} & $sum(\centerdot)$ &$b'=w*b*h$ & $\times$ & $\surd$ & $\times$ & $\times$& -\\
+		\textbf{Belief propagation} & $sum(\centerdot)$ &$b'=w*b*h$ & $\times$ & $\surd$ & $\surd$ & - & $\surd$\\
 		\hline
-		\textbf{Simrank\footnote{if src=dest $c=1-b$ else $c=0$}} & $sum(\centerdot)+b$& $c/(d_1*d_2)*x$ & $\times$ &  $\surd$ &  $\times$ &  $\times$& $\surd$\\
+		\textbf{Simrank} & $sum(\centerdot)$& $c/(d_1*d_2)*x$ & $\times$ &  $\surd$ &  $\surd$ & - & $\surd$\\
 		\hline
-		\textbf{Jacobi Method} &$sum(\centerdot)+c$ &$-a_{ij}/a_{ii}*x$& $\times$ & $\surd$  & $\times$ & $\times$ & $\surd$\\
+		\textbf{Jacobi Method} &$sum(\centerdot)+c$ &$-a_{ij}/a_{ii}*x$& $\times$ & $\surd$  & $\times$ & - & $\surd$\\
 		\hline
 		\hline
 	\end{tabular}
 	\vspace{-0.1in}
 \end{table*}
 
-In this section,we test more algorithms to check the asynchronous conditions.We list $f$ and $g$ operations and each property of each algorithm .As shown in table \ref{tab:resut},\textbf{SSSP}, \textbf{CC}, \textbf{DAG},\textbf{PATH}, \textbf{COST}, \textbf{PARTY} and \textbf{Galaxy evolution} can be correctly asynchonized.\textbf{Belief Propagation},  \textbf{Simrank}, \textbf{Pagerank} and \textbf{Jacobi Method} can be covert to accumulative recursive aggregation model and asynchronous executed correctly. Note that \textbf{Viterbi Algorithm} satisfied neither correctness condition nor conversion condition.
+In this section,we test more algorithms to check the asynchronous conditions.We list $f$ and $g$ operations and each property of each algorithm .As shown in table \ref{tab:resut},SSSP,CC,DAG,PATH,COST,PART and Galaxy evolution algorithm satisfied all the correctness conditions which can be correctly asynchonized directly.Belief Propagation, Viterbi and Simrank,doesn't satisfy the monotonic condition.Pagerank and \textbf{Jacobi Method} satisfied neither the monotonic condition nor the accumulative condition. While all these five algorithm can be converted to accumulative recursive aggregation model and executed asynchronously. 
 
 \subsection{Comparison to Other Systems}
 \label{sec:expr:othersystems}
