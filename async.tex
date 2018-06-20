@@ -95,26 +95,39 @@ For the SSSP example, the $F()$ operation expands the BFS searching scope to one
 
 Some non-monotonic computations cannot be written as accumulated recursive program and are not originally qualified for asynchronous aggregation. For example, the PageRank computation cannot be executed as an accumulated recursive program since neither the monotonic condition nor the accumulative condition is satisfied. After applying $F\circ G$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. Further, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
 
-Fortunately, these computations can be converted to be qualified for asynchronous aggregation. We provide the convertibility conditions as follows.
+Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the convertion is incrementally computing the origin problem and the incremental value $\Delta X^k$ of each recursion can be iteratively computed i.e.$X^{k+1}=G'(X^{k}\cup \Delta X^{k})$in which $\Delta X^{k} =G' \circ F(\Delta X^{k-1})$.
+if aggregate function $G'$ satisfied the \textbf{accumulative} condition,
+and let delta $\Delta X^0=X^0$ we have $X^{k+1}=G'(\Delta X^0 \cup G'\circ F'(\Delta x^0)\cup \ldots G' \circ F^n(X^k))$. Further the algorithm can be correctlly asynchronized if the \textbf{order-independent} conditions satisfied. 
+
+For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form. %\cite{maiter}. 
+In original PageRank,$X^k=AX^{k-1}+b$,$F$ operation is the multiplication by subscript $G$ operation is the gather of intermediate result with constant vector $b$ added .From the original fomular we have
+\begin{equation}
+\begin{aligned}
+\Delta X^k&=X^k-X^{k-1} \notag\\&=AX^{K-1}-AX^{k-2}+b-b\notag\\&=A\Delta X^{k-1}\notag
+\end{aligned}
+\end{equation}
+So $X^k=\Delta X^0+A\Delta X^0+\ldots+A^{k-1}\Delta X^0$
+where $Delta X^0$ is initialized as $X^0$. The $G'\circ F$ operation on $X$ is premultiplication of $A$.The $F$ operation is multiplication by subscript,and $G$ operation is the gather of the intermediate result. 
+Furthermore, $G'$ operation is accumulative,the $F()$ operation and $G'()$ operation in PageRank is order independent, which makes it suitable for asynchronous aggregation. There exist other convertable algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.
+We formally provide the convertibility conditions as follows.
 
 \begin{theorem}
 	\label{th:convert}
-	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program for asynchronous aggregation, as long as the recursion performs infinite times and an aggregate operation $g'()$ with the \textbf{accumulative} and \textbf{commutative} properties can be found with the following conditions:
+	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program for asynchronous aggregation, as long as an aggregate operation $g'()$ with the \textbf{accumulative} and \textbf{commutative} properties can be found with the following conditions:\\
+	Define $\Delta X^k=X^{k+1}-X^k$
 	\begin{itemize}
-		\item \textbf{convertible}: $g(X)=g'(X\cup c)$;
-		\item \textbf{eliminable}: $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=\textbf{0}$,
-\item \textbf{order independent}: $g'\circ f\circ g'(X)=g\circ f(X)$;
+		\item \textbf{convertible}: $\Delta X^k=g\circ f(X^k)-g\circ f(X^{k-1})$\\						
+						$         =g'\circ f(\Delta X^{k-1})$;
+		%\item \textbf{eliminable}: $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=\textbf{0}$,
+\item \textbf{order independent}: $g'\circ f\circ g'(X)=g'\circ f(X)$;
 	\end{itemize}
-	where the $g'()$ and $f()$ operations are \textbf{order independent} $g'\circ f\circ g'(X)=g'\circ f(X)$, $c$ is a constant value, and \textbf{0} is the identity element of the $g'()$ operation. The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
+	 The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
 \end{theorem}
 
-The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $g'()$ that is with an additional constant input value $c$ but always returns the same result as $g()$, i.e., $g(X)=g'(X\cup c)$. The constant input implies the set containment relation between result and input, which makes it satisfy the %monotonic
-accumulative condition that is required for accumulated recursive program. In addition, the eliminable property guarantees the % accumulated recursive program to converge, 
-the accumulated recursive converge to the same result with recursive aggregation when executed infinite times.%such that the result is independent of $X$. 
-Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as $(g'\circ f)^n(x)$ is ``small'' enough.
+The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $g'()$ that can be used to iterative computing the increment between consecutive recursion. which makes it satisfy the monotonic and accumulative condition that is required for accumulated recursive program and order-independent condition for asynchronous execution.
+Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as the incremental value $(g'\circ f)^n(x)$ is ``small'' enough.
 
-For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form %\cite{maiter}. 
-In original PageRank, $g(\{x_j\})=\sum_j{x_j}+0.15$. The $g()$ function can be rewritten as $g(X)=g'(X\cup y)$ where the $g'()$ function can be ``SUM'', $X=\{x_j\}$ is the input values set, and the constant value $y$ can be 0.15. Apparently, $g'()$ (i.e., ``SUM'') has the accumulative and commutative property. In addition, the $f()$ operation in PageRank contains a constant damping factor 0.85, which leads to $(g'\circ f)(x)<x$ and $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=0$. Furthermore, the $f()$ operation and $g'()$ operation in PageRank is order independent, which makes it suitable for asynchronous aggregation. The resulted ranking scores are the same no matter making decay first $g\circ f(X)$ or making summation first $f\circ g(X)$, i.e., $\sum_j(0.85*\frac{r_j}{d})=0.85*\frac{\sum_j(r_j)}{d}$. There exist other convertable algorithms, such as Program 13 Jacobi Method in Appendix Sec. \ref{sec:app:example}.
+
 
 
 \subsection{Automatic Asynchronization}
@@ -146,4 +159,4 @@ For the accumulative and commutative conditions in Theorem \ref{th:monotone} and
 Note that, SMT cannot judge ``whether a formula $H$ is always true?'' but only answers ``whether a formula $H$ is satisfiable?''. A formula $H$ is \emph{satisfiable} if there is some assignment of appropriate values to its uninterpreted function and constant symbols under which $H$ evaluates to true. Thus, to verify a condition (that should be always true), we convert the ``$H$ is always true'' problem to the ``not $H$ is not satisfiable'' problem. If $H$ is always true, then ``not $H$'' is always false, and then ``not $H$'' will not have any satisfying assignment
 
 
-Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g'()$ in Theorem \ref{th:convert}. We declare a constant $c$ and declare a function $g'()$ without defining the specific computation. Following Corollary \ref{coro:auto:1}, we use Z3 to check the satisfiability. If the formula is satisfiable, it will return the possible $g'()$ and $c$, otherwise it will return unknown or unsatisfiable. We can then convert the returned $g'()$ to a program to achieve automatic conversion.
+Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g'()$ in Theorem \ref{th:convert}.Following Corollary \ref{coro:auto:1}, we use Z3 to check the satisfiability. If the formula is satisfiable, it will return the possible $g'()$ and $c$, otherwise it will return unknown or unsatisfiable. We can then check the convert condition and find a $g'()$ for the program to achieve automatic conversion.
