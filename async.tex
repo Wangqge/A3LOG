@@ -97,7 +97,7 @@ Some non-monotonic computations cannot be written as accumulated recursive progr
 
 Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the convertion is incrementally computing the origin problem and the incremental value $\Delta X^k$ of each recursion can be iteratively computed i.e.$X^{k+1}=G'(X^{k}\cup \Delta X^{k})$in which $\Delta X^{k} =G' \circ F(\Delta X^{k-1})$.
 if aggregate function $G'$ satisfied the \textbf{accumulative} condition,
-and let delta $\Delta X^0=X^0$ we have $X^{k+1}=G'(\Delta X^0 \cup G'\circ F'(\Delta x^0)\cup \ldots G' \circ F^n(X^k))$. Further the algorithm can be correctlly asynchronized if the \textbf{order-independent} conditions satisfied. 
+and let delta $\Delta X^0=X^1$ we have $X^{k+1}=G'(\Delta X^0 \cup G'\circ F'(\Delta X^0)\cup \ldots G' \circ F^n(\Delta X^0))$. Further the algorithm can be correctly asynchronized if the \textbf{order-independent} conditions satisfied. Note that $X^1$ is the first recursion of the normal recursive aggregation(because $X^{-1}$ doesn't exist and hard to define, so the incremental value $\Delta X$ of accumulative recursive aggregation should be initialized as $X^1$ where $X^0$ is the initial value of normal recursive recursion). 
 
 For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form. %\cite{maiter}. 
 In original PageRank,$X^k=AX^{k-1}+b$,$F$ operation is the multiplication by subscript $G$ operation is the gather of intermediate result with constant vector $b$ added .From the original fomular we have
@@ -116,16 +116,14 @@ We formally provide the convertibility conditions as follows.
 	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program for asynchronous aggregation, as long as an aggregate operation $g'()$ with the \textbf{accumulative} and \textbf{commutative} properties can be found with the following conditions:\\
 	Define $\Delta X^k=X^{k+1}-X^k$
 	\begin{itemize}
-		\item \textbf{convertible}: $\Delta X^k=g\circ f(X^k)-g\circ f(X^{k-1})$\\						
-						$         =g'\circ f(\Delta X^{k-1})$;
-		%\item \textbf{eliminable}: $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=\textbf{0}$,
+		\item \textbf{convertible}: $g\circ f(X)=g'(X\cup g'\circ f(\Delta X))$
 \item \textbf{order independent}: $g'\circ f\circ g'(X)=g'\circ f(X)$;
 	\end{itemize}
 	 The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
 \end{theorem}
 
 The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $g'()$ that can be used to iterative computing the increment between consecutive recursion. which makes it satisfy the monotonic and accumulative condition that is required for accumulated recursive program and order-independent condition for asynchronous execution.
-Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as the incremental value $(g'\circ f)^n(x)$ is ``small'' enough.
+Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as the incremental value $(G'\circ F)^n(x)$ is ``small'' enough.
 
 
 
@@ -159,4 +157,5 @@ For the accumulative and commutative conditions in Theorem \ref{th:monotone} and
 Note that, SMT cannot judge ``whether a formula $H$ is always true?'' but only answers ``whether a formula $H$ is satisfiable?''. A formula $H$ is \emph{satisfiable} if there is some assignment of appropriate values to its uninterpreted function and constant symbols under which $H$ evaluates to true. Thus, to verify a condition (that should be always true), we convert the ``$H$ is always true'' problem to the ``not $H$ is not satisfiable'' problem. If $H$ is always true, then ``not $H$'' is always false, and then ``not $H$'' will not have any satisfying assignment
 
 
-Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g'()$ in Theorem \ref{th:convert}.Following Corollary \ref{coro:auto:1}, we use Z3 to check the satisfiability. If the formula is satisfiable, it will return the possible $g'()$ and $c$, otherwise it will return unknown or unsatisfiable. We can then check the convert condition and find a $g'()$ for the program to achieve automatic conversion.
+Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g'()$ in Theorem \ref{th:convert}.
+Following Corollary \ref{coro:auto:1}, we use Z3 to check the satisfiability. If the formula is satisfiable, it will return the possible $g'()$ and $c$, otherwise it will return unknown or unsatisfiable. We can then check the convert condition and find a $g'()$ for the program to achieve automatic conversion.

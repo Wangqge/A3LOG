@@ -23,32 +23,21 @@ The formula as line(8) shown has the same result with the synchronous one.And it
  \subsection{Proof of Theorem Convertibility}
  \begin{proof}
  	\ref{sec:app:proof:convert}
- 	Since $g$ and $f$ satisfied the previous properties,the convertible condition of $G$ can be express as$G(X)=G'(X \cup C)$ where C is the constant vector which has the same size with the result of $G$. each item should be aggregate by the corresponding $g$ operations.and the result of $${\lim_{n \to +\infty}(F \circ G')(Y^0)}$$ is a zero vector size of the result of $G$ operations.
+ 	Since $g$ and $f$ satisfied the previous properties,the convertible condition of $G$ can be express as $G\circ F(X)=G'(X\cup G'\circ F(\Delta X))$ and we have $\Delta X^0=X^1=G\circ F(X^0)$\\
+ 	So:
  \begin{align}
-&(G \circ F)^n(X^0)=(G \circ F)^{n-1}G \circ F(X^{0})\notag\\
-=&(G \circ F)^{n-1}G'\circ (F(X^{0}) \cup C)\tag{1}\\
-=&G(F \circ G)^{n-2}F \circ G'\circ (G'\circ F(X^{0}) \cup G'(C))\tag{2}\\
-=&G(F \circ G)^{n-2}F \circ (G'\circ F(X^{0}) \cup G'(C))\tag{3}\\
-=&G(F \circ G)^{n-2}F \circ (G'(Y^{0}) \cup G'(C))\notag\\
-=&G(F \circ G)^{n-2}(F \circ G'(Y^{0}) \cup F\circ G'(C))\tag{4}\\
+&G'(\Delta X^0 \cup G'\circ F(\Delta X^0)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
+=&G'(X^1 \cup G'\circ F(X^1 )\cup \ldots (G' \circ F)^{k-1}(X^1 )) \notag\\
+=&G'(G'(X^1\cup G'\circ F(X^1 ))\cup \ldots (G' \circ F)^{k-1}(X^1 )) \tag{3}\\
+=&G'(G\circ F(X^1)\cup \ldots (G' \circ F)^{k-1}(X^1)) \tag{4}\\
 =&\ldots \notag\\
-=&G(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C))\tag{5} \\
-=&G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \cup  C)\tag{6}
+=&G'((G\circ F)^{k-2}(X^1)\cup(G' \circ F)^{k-1}(X^1)) \notag\\
+=&G\circ F(X^{k-1})=X^k\notag
  \end{align}
-line (1) is obtained from the convertible condition and  line (2) is true because \textbf{accumulative} property.Line (3) is true because the \textbf{order-indenpendent} property.Line(4) is true because of the \textbf{distributive} property.
-line(5,6) is the final result by Repeat applying these three property on line(4).
-Due to the \textbf{elimited} Condition $${\lim_{n \to +\infty}(F \circ G')(Y^0)=\textbf{0}}$$
-we have:
-\begin{align}
-&{\lim_{n\to +\infty}}G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \notag\\
-&\cup C)\notag\\
-=&G'((F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C)\cup C)\notag
-\end{align}
-As previous description, this is the Asynchronous Recursive Program Formula which has the same result with normal recursive formula.
+Line 3 is true because of the accumulative property.Line 4 is true because the convertibility.As previous description, this is the Asynchronous Recursive Program Formula which has the same result with normal recursive formula.
 
  \end{proof}
- 
- 
+
  \section{Datalog Examples}
  \label{sec:app:example}
  
@@ -268,7 +257,34 @@ As previous description, this is the Asynchronous Recursive Program Formula whic
  
  The effectiveness of aggregate operations in asynchronous aggregation is an important advantage but tends to be underestimated. Synchronous aggregation requires to aggregate the information from previous iteration, while asynchronous aggregation accumulates the most up-to-date information. Thus, the aggregate operation is expected to be more effective. In this experiment, we evaluate the effectiveness of aggregations on accelerating the computation progress.
  
- We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous execution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.
+ We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous ex \begin{comment}
+ \begin{proof}
+ \ref{sec:app:proof:convert}
+ Since $g$ and $f$ satisfied the previous properties,the convertible condition of $G$ can be express as$G(X)=G'(X \cup C)$ where C is the constant vector which has the same size with the result of $G$. each item should be aggregate by the corresponding $g$ operations.and the result of $${\lim_{n \to +\infty}(F \circ G')(Y^0)}$$ is a zero vector size of the result of $G$ operations.
+ \begin{align}
+ &(G \circ F)^n(X^0)=(G \circ F)^{n-1}G \circ F(X^{0})\notag\\
+ =&(G \circ F)^{n-1}G'\circ (F(X^{0}) \cup C)\tag{1}\\
+ =&G(F \circ G)^{n-2}F \circ G'\circ (G'\circ F(X^{0}) \cup G'(C))\tag{2}\\
+ =&G(F \circ G)^{n-2}F \circ (G'\circ F(X^{0}) \cup G'(C))\tag{3}\\
+ =&G(F \circ G)^{n-2}F \circ (G'(Y^{0}) \cup G'(C))\notag\\
+ =&G(F \circ G)^{n-2}(F \circ G'(Y^{0}) \cup F\circ G'(C))\tag{4}\\
+ =&\ldots \notag\\
+ =&G(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C))\tag{5} \\
+ =&G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \cup  C)\tag{6}
+ \end{align}
+ line (1) is obtained from the convertible condition and  line (2) is true because \textbf{accumulative} property.Line (3) is true because the \textbf{order-indenpendent} property.Line(4) is true because of the \textbf{distributive} property.
+ line(5,6) is the final result by Repeat applying these three property on line(4).
+ Due to the \textbf{elimited} Condition $${\lim_{n \to +\infty}(F \circ G')(Y^0)=\textbf{0}}$$
+ we have:
+ \begin{align}
+ &{\lim_{n\to +\infty}}G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \notag\\
+ &\cup C)\notag\\
+ =&G'((F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C)\cup C)\notag
+ \end{align}
+ As previous description, this is the Asynchronous Recursive Program Formula which has the same result with normal recursive formula.
+ 
+ \end{proof} 
+ \end{comment}ecution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.
 \end{comment}
 
 \end{appendix}
