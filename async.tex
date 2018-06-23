@@ -1,19 +1,20 @@
 \section{Automatic Asynchronous Aggregation}
 \label{sec:async}
-In this section, we first formally define asynchronous aggregation and introduce accumulated recursive program. We then present how to address the problem 
+In this section, we first formally define asynchronous aggregation and introduce accumulated recursive program. We then propose the correctness conditions and detail the technology.
 
 \subsection{Asynchronous Aggregation}
 \label{sec:async:async}
 
-The recursive program in Equation (\ref{eq:recursive2}) is defined with synchronous aggregation. In parallel or distributed computing, the \emph{synchronous} aggregation means $F()$ operations have to be completed on each subset before the next $G()$ operation starts. %The $g()$ operation has to be applied on the whole set $X^k$.
+The recursive program in Equation (\ref{eq:recursive2}) is defined with synchronous aggregation. In parallel or distributed computing, the \emph{synchronous} aggregation means $F_k()$ operations have to be completed on each subset before the next $G_k()$ operation starts. %The $g()$ operation has to be applied on the whole set $X^k$.
 Correspondingly, we define asynchronous aggregation as follows.
 
 \begin{definition}
 	%wqg
 	\label{def:asyncaggre}
-	(\textbf{Asynchronous Aggregation}) In a recursive program, we assume that the set $X$  is partitioned into $m$ disjoint subsets,and denote $X_i^k$ i.e., $X=\{X_1^k,X_2^k,\ldots,X_m^k\}$, and $\forall i,j, X_i^k\cap X_j^k=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions, i.e., $G(X_1^k \ldots X_i^k\cup X_j^{l}...X_m^k)$ where $k\neq l$.
+	(\textbf{Asynchronous Aggregation}) In a recursive program, for an aggregation g() we assume that the input  $X$  is partitioned into $m$ disjoint subsets,and denote $X_i^k$ i.e., $X=\{X_1^k,X_2^k,\ldots,X_m^k\}$, and $\forall i,j, X_i^k\cap X_j^k=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions, i.e., $g(X_1^k \ldots X_i^k\cup X_j^{l}...X_m^k)$ where $k\neq l$.
 \end{definition}
 
+For an ongoing group-by aggregate operation , the input set can be partition by key i.e.$X=\{X_{k_0},X_{k_1}....,X_{k_n}\}$,or by the iterations i.e.$X=\{X_{r_0},X_{r_1}.....,X_{r_n}\}$ in which $X_{r_i}$ denote all the subset in $i$th recursion that belongs to every key.i.e. $\{X_{k_0}^i\cup X_{k_1}^i\cup ....\cup X{k_n}\}$.Supposed the inputs can be The group-by asynchronous aggregation is defined as 
 From the definition of recursive aggregation as shown in Equation (\ref{eq:recursive2}), $X^{k+1}$ is resulted from $Y^k$, and $Y^k$ is resulted from $X^k$. $X^{k+1}$ does not exist before applying $g()$ on the complete set of $X^k$. Thus, the asynchronous aggregation $g(\ldots X_i^k\cup X_j^{k+1} \ldots)$ is only possible after the $j$th subset of $X^{k+1}$ is obtained. In other words, $X^{k+1}$ is a \emph{replacement} of $X^k$ and is closer to the final result. The asynchronous aggregation of $X^{k+1}$ and $X^k$ may result in a wrong result since $X^k$ is a replaced result which is not supposed to be aggregated.
 
 \subsection{Accumulated Recursive Aggregation}
@@ -53,14 +54,14 @@ Here we provide the formal proof :
   It is known that $\Delta Y^k=f(\Delta X^k)$and $\Delta X^0=X^0\\$.
  \begin{align}
  &G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big)\notag \\
- =&G\Big(\Delta Y^0\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^n(\Delta Y^0)\Big)    \notag\\
- =&G\Big(G(\Delta Y^0)\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^n( \Delta Y^0)\Big)  \tag{1}\\
- =&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^n(\Delta Y^0)\Big) \tag{2}\\
+ =&G\Big(\Delta Y^0\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big)    \notag\\
+ =&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)  \tag{1}\\
+ =&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{2}\\
  =& \ldots \notag \\
- =&G\Big((F\circ G)^n(Y^0)\Big)\tag{3}\\
- =&(G \circ F)^n(X^0).\notag
+ =&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{3}\\
+ =&(G \circ F)^{k+1}(X^0).\notag
  \end{align}
-  Line (1) is true because of the accumulative property. Line (2) is true because of the monotonic property. Repeat applying these two property ,we can reduce all the low order items in turn and line(3) can be obtained. 
+  Line (1) is true because of the accumulative property. Due to the monotonic property Line (2) is true because  Repeat applying these two property ,we can reduce all the low order items in turn and line(3) can be obtained. 
  \end{proof}
 
 
