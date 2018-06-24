@@ -6,7 +6,8 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 \subsection{Result of Condition Checker}
 \begin{table*}[!t]
 	%\vspace{-0.1in}
-	\caption{The Result of a Series of Common Algorithm }
+	\caption{The Result of some Common Algorithms }
+	\hspace{-0.15in}
 	\vspace{0.0in}
 	\label{tab:resut}
 	\centering
@@ -17,7 +18,14 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 		%		\cline{7-12}
 		%		&  & & & & & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}} & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}}\\
 		\hline\hline
-		\textbf{Algorithm} & \multirow{2}{*}\textbf{g} & \textbf{f} & \textbf{Monot} &\textbf{Commu} & \textbf{Accumu} & \textbf{OrderInd} &\textbf{Conver}\\
+	\multirow{2}{*}{\textbf{Algorithm}} &
+		 \multirow{2}{*}{\textbf{$g$}} &
+		 \multirow{2}{*}{ \textbf{$f$}} & 
+		 \multirow{2}{*}{\textbf{Monot}} &
+		 \multirow{2}{*}{\textbf{Commu}} & 
+		 \multirow{2}{*}{\textbf{Accumu}} & 
+		 \multirow{2}{*}{\textbf{OrderInd}} &
+		 \multirow{2}{*}{\textbf{AsyncConver}}\\
 		\hline
 		\textbf{Pagerank} & $sum(\centerdot)+c$ &($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & - &$\surd$\\
 		\hline
@@ -99,8 +107,9 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 	%\vspace{-0.1in}
 	\caption{Performance when varying workloads ($d$ is diameter, $e$ is powerlaw exponent)}
 	\vspace{0.0in}
+	\hspace{-0.4in}
 	\label{tab:wrokload}
-	\centering
+	%\centering
 	\small
 	\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c}
 		\hline

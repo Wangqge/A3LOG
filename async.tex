@@ -1,6 +1,7 @@
 \section{Automatic Asynchronous Aggregation}
 \label{sec:async}
-In this section, we first formally define asynchronous aggregation and introduce accumulated recursive program. We then propose the correctness conditions and detail the technology.
+Obviously, the waiting cost of synchronous aggregation is sometime harmful, So we proposed using asynchronous aggregation to reduce the coordination.
+In this section, we first formally define asynchronous aggregation and introduce accumulated recursive aggregation program. We then propose the correctness conditions by analyzing the aggregate/non-aggregate operations.And then we propose a conversion technology for some unsatisfied algorithm.
 
 \subsection{Asynchronous Aggregation}
 \label{sec:async:async}
@@ -118,7 +119,7 @@ In original PageRank,$R^k=(1-b)AR^{k-1}+B$,$f$ operation is sending rank value $
 \end{equation}
 So we can obtain that $X^k=X^0+\Delta X^0+(1-b)A\Delta X^0+\ldots+((1-b)A)^{k-1}\Delta X^0$
 where $\Delta X^0$ is initialized as $X^1-X^0$. The $f$ operation is matrix multiplication without summing up,and $g$ operation is the 'SUM-BY-KEY' of the intermediate result. 
-Furthermore, $g'$ operation is accumulative,the $f()$ operation and $g'()$ operation in PageRank is order independent,i.e. which makes it suitable for asynchronous aggregation. There also exist other convertible algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.Next,we formally provide the convertibility conditions as follows.
+Furthermore, $g'$ operation is accumulative,the $f()$ operation and $g'()$ operation in PageRank is order independent,i.e.$\sum_{n}{0.8*x_i/d}=0.8/d*\sum_{n}{x_i}$ which makes it suitable for asynchronous aggregation. There also exist other convertible algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.Next,we formally provide the convertibility conditions as follows.
 
 \begin{theorem}
 	\label{th:convert}
