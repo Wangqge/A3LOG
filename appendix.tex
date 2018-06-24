@@ -6,35 +6,34 @@ You can use an appendix for optional proofs or details of your evaluation which 
  \label{sec:app:proof:correct}
  In this section .Since $X$ has been divided into two disjoint set. we exchange the subset belongs to any two adjacent recursion,and the prove that they have the same formula.It
  \begin{align}
- &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^i_0 \cup \Delta X^{i+1}_1)\cup\ F\circ G(\Delta X^{i+1}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots\cup \Delta X^n)\tag{1} \\
- =&G( \ldots \cup G \circ F\circ G(\Delta X^i_0 \cup \Delta X^{i+1}_1)\cup\ G \circ F\circ G(\Delta X^{i+1}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots)\tag{2} \\
- =&G( \ldots \cup G \circ F(\Delta X^i_0 \cup \Delta X^{i+1}_1)\cup\ G \circ F(\Delta X^{i+1}_0 \cup \Delta X^{i}_1) \ldots)\tag{3} \\
-  =&G( \ldots \cup (G\circ F(\Delta X^i_0) \cup G\circ F(\Delta X^{i+1}_1))\cup\ (G \circ F(\Delta X^{i+1}_0) \cup \notag\\ &G \circ F(\Delta X^{i}_1)) \ldots )\tag{4} \\
-  =&G( \ldots \cup (G\circ F(\Delta X^i_0) \cup G\circ F(\Delta X^{i}_1))\cup\ (G \circ F(\Delta X^{i+1}_0) \cup \notag\\ &G \circ F(\Delta X^{i+1}_1)) \ldots )\tag{5} \\
-  =&G( \ldots \cup G \circ F(\Delta X^i_0 \cup \Delta X^{i+1}_1)\cup\ G \circ F(\Delta X^{i+1}_0 \cup \Delta X^{i}_1) \ldots)\tag{6} \\
-  =&G( \ldots \cup F \circ G(\Delta X^i_0 \cup \Delta X^{i+1}_1)\cup\ F \circ G(\Delta X^{i+1}_0 \cup \Delta X^{i}_1) \ldots)\tag{7} \\
+ &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^{r_i}_0 \cup \Delta X^{r_{i+1}}_1)\cup\ F\circ G(\Delta X^{r_{i+1}}_0 \cup \notag\\ &\Delta X^{r_i}_1) \ldots\cup \Delta X^n)\tag{1} \\
+ =&G( \ldots \cup G \circ F\circ G(\Delta X^{r_i}_0 \cup \Delta X^{r_{i+1}}_1)\cup\ G \circ F\circ G(\Delta X^{r_{i+1}}_0 \cup \notag\\ &\Delta X^{r_i}_1) \ldots)\tag{2} \\
+ =&G( \ldots \cup G \circ F(\Delta X^{r_i}_0 \cup \Delta X^{r_{i+1}}_1)\cup\ G \circ F(\Delta X^{r_{i+1}}_0 \cup \Delta X^{r_{i}}_1) \ldots)\tag{3} \\
+  =&G( \ldots \cup (G\circ F(\Delta X^{r_i}_0) \cup G\circ F(\Delta X^{r_{i+1}}_1))\cup\ (G \circ F(\Delta X^{r_{i+1}}_0) \cup \notag\\ &G \circ F(\Delta X^{r_i}_1)) \ldots )\tag{4} \\
+  =&G( \ldots \cup (G\circ F(\Delta X^{r_i}_0) \cup G\circ F(\Delta X^{r_i}_1))\cup\ (G \circ F(\Delta X^{r_{i+1}}_0) \cup \notag\\ &G \circ F(\Delta X^{r_{i+1}}_1)) \ldots )\tag{5} \\
+  =&G( \ldots \cup G \circ F(\Delta X^{r_i}_0 \cup \Delta X^{r_{i}}_1)\cup\ G \circ F(\Delta X^{r_{i+1}}_0 \cup \Delta X^{r_{i+1}}_1) \ldots)\tag{6} \\
+  =&G( \ldots \cup F \circ G(\Delta X^{r_i}_0 \cup \Delta X^{r_{i}}_1)\cup\ F \circ G(\Delta X^{r_{i+1}}_0 \cup \Delta X^{r_{i+1}}_1) \ldots)\tag{7} \\
 =&G(\ldots \cup F \circ G(\Delta X^i)\cup\ F \circ G(\Delta X^{i+1}) \ldots\cup \Delta X^n).\tag{8}
  \end{align}
 
 By applying the \textbf{accumulative} property and \textbf{order indenpendent} property,we can have line(2,3),and line (4)is true because of \textbf{accumulative}property
 and \textbf{distributive} property, line (5,6) is because of the \textbf{community} property.The Line (7)can be obtained by applying \textbf{order indenpende} property again.
-The formula as line(8) shown has the same result with the synchronous one.And it is obvious that the result can be extended to general situation.
+The formula as line(8) shown has the same result with the synchronous one.And it is obvious that the result can be extended to general situation if the recursion continuous infinity times.
  \end{proof}
  \subsection{Proof of Theorem Convertibility}
  \begin{proof}
- 	\ref{sec:app:proof:convert}
- 	Since $g$ and $f$ satisfied the previous properties,the convertible condition of $G$ can be express as $G\circ F(X)=G'(X\cup G'\circ F(\Delta X))$ and we have $\Delta X^0=X^1=G\circ F(X^0)$\\
- 	So:
+ 	\label{sec:app:proof:convert}
+ 	Since $g$ and $f$ satisfied the previous properties,Due to the definition of group-by aggregation, the convertible condition of $G$ can be express as $G\circ F(X)=G'(X\cup G'\circ F(\Delta X))$ and we have $\Delta X^0=X^1-X^0$.
  \begin{align}
-&G'(\Delta X^0 \cup G'\circ F(\Delta X^0)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
-=&G'(X^1 \cup G'\circ F(X^1 )\cup \ldots (G' \circ F)^{k-1}(X^1 )) \notag\\
-=&G'(G'(X^1\cup G'\circ F(X^1 ))\cup \ldots (G' \circ F)^{k-1}(X^1 )) \tag{3}\\
-=&G'(G\circ F(X^1)\cup \ldots (G' \circ F)^{k-1}(X^1)) \tag{4}\\
+&G'(X^0\cup \Delta X^0 \cup G'\circ F(\Delta X^0)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
+=&G'(X^1 \cup G'\circ F(\Delta X^0  )\cup \ldots (G' \circ F)^{k-1}(\Delta X^0  )) \notag\\
+=&G'(G'(X^1\cup G'\circ F(\Delta X^0  ))\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \tag{3}\\
+=&G'(G\circ F(X^1)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \tag{4}\\
 =&\ldots \notag\\
-=&G'((G\circ F)^{k-2}(X^1)\cup(G' \circ F)^{k-1}(X^1)) \notag\\
-=&G\circ F(X^{k-1})=X^k\notag
+=&G'((G\circ F)^{k-2}(X^1)\cup(G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
+=&G\circ F(X^{k-1})=X^k\tag{6}
  \end{align}
-Line 3 is true because of the accumulative property.Line 4 is true because the convertibility.As previous description, this is the Asynchronous Recursive Program Formula which has the same result with normal recursive formula.
+Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the convertibility.As previous description, Line 6 is the Asynchronous Recursive Program Formula.if the \textbf{eliminable} condition satisfied and recursion executed infinity times,we have $lim_{n\rightarrow\infty}G'((G\circ F)^{n-1}(X^1)\cup (G' \circ F)^{n}(X^1))=(G\circ F)^{n}(X^1)=G'((G\circ F)^{n-1}(X^1))$,So the eliminable condition implies the same terminate conditions with Normal recursive aggregation.
 
  \end{proof}
 

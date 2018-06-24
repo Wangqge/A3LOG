@@ -11,10 +11,11 @@ Correspondingly, we define asynchronous aggregation as follows.
 \begin{definition}
 	%wqg
 	\label{def:asyncaggre}
-	(\textbf{Asynchronous Aggregation}) In a recursive program, for an aggregation g() we assume that the input  $X$  is partitioned into $m$ disjoint subsets,and denote $X_i^k$ i.e., $X=\{X_1^k,X_2^k,\ldots,X_m^k\}$, and $\forall i,j, X_i^k\cap X_j^k=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions, i.e., $g(X_1^k \ldots X_i^k\cup X_j^{l}...X_m^k)$ where $k\neq l$.
+	(\textbf{Asynchronous Aggregation}) In a recursive program, for an aggregation g() we assume that the input  $X$  is partitioned into $m$ disjoint subsets,and denote $X_i^k$ i.e., $x=\{x_1^k,x_2^k,\ldots,x_m^k\}$, and $\forall i,j, x_i^k\cap x_j^k=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions, i.e., $g(x_1^k \ldots x_i^k\cup x_j^{l}...x_m^k)$ where $k\neq l$.
 \end{definition}
 
-For an ongoing group-by aggregate operation , the input set can be partition by key i.e.$X=\{X_{k_0},X_{k_1}....,X_{k_n}\}$,or by the iterations i.e.$X=\{X_{r_0},X_{r_1}.....,X_{r_n}\}$ in which $X_{r_i}$ denote all the subset in $i$th recursion that belongs to every key.i.e. $\{X_{k_0}^i\cup X_{k_1}^i\cup ....\cup X{k_n}\}$.Supposed the inputs can be The group-by asynchronous aggregation is defined as 
+When a group-by aggregate operation is executing on its $k$th recursion, the input set can be partition by their keys i.e.$X=\{X_{k_0},X_{k_1}\ldots,X_{k_n}\}$, or by the iterations i.e.$X=\{X^{r_0},X^{r_1}\ldots,X^{r_n}\}$ in which $X^{r_i}$ denote the subset in $i$th recursion from all the keys, i.e.$X^{r_i}=\{X_{k_0}^i\cup X_{k_1}^i\cup ....\cup X_{k_n}\}$.Supposed the inputs $X$ come from $m$ different recursion, The asynchronous group-by  aggregation is defined as $G(X)=G(X^{r_0},X^{r_1}\ldots X^{r_m})$
+
 From the definition of recursive aggregation as shown in Equation (\ref{eq:recursive2}), $X^{k+1}$ is resulted from $Y^k$, and $Y^k$ is resulted from $X^k$. $X^{k+1}$ does not exist before applying $g()$ on the complete set of $X^k$. Thus, the asynchronous aggregation $g(\ldots X_i^k\cup X_j^{k+1} \ldots)$ is only possible after the $j$th subset of $X^{k+1}$ is obtained. In other words, $X^{k+1}$ is a \emph{replacement} of $X^k$ and is closer to the final result. The asynchronous aggregation of $X^{k+1}$ and $X^k$ may result in a wrong result since $X^k$ is a replaced result which is not supposed to be aggregated.
 
 \subsection{Accumulated Recursive Aggregation}
@@ -85,7 +86,8 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 		\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
 	\end{itemize}
 \end{theorem}
-By asynchronous aggregation, the partial aggregation result is immediately used by the next $f()$ operation. The order independent property implies that no matter the $f()$ operation is first applied or the $g()$ operation is first applied, the effect is the same. As long as the same number of $g()$ operations are applied on all data, the eventual aggregation result will be the same.Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition. We details the proof in Appendix\ref{sec:app:proof:correct}
+
+By asynchronous aggregation, the partial aggregation result is immediately used by the next $f()$ operation. The order independent property implies that no matter the $f()$ operation is first applied or the $g()$ operation is first applied, the effect is the same. As long as the same number of $g()$ operations are applied on all data, the eventual aggregation result will be the same.Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition. We details the proof in Appendix \ref{sec:app:proof:correct}
 
 
 For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
@@ -96,28 +98,34 @@ For the SSSP example, the $F()$ operation expands the BFS searching scope to one
 
 Some non-monotonic computations cannot be written as accumulated recursive program and are not originally qualified for asynchronous aggregation. For example, the PageRank computation cannot be executed as an accumulated recursive program since neither the monotonic condition nor the accumulative condition is satisfied. After applying $F\circ G$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. Further, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
 
-Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the convertion is incrementally computing the origin problem and the incremental value $\Delta X^k$ of each recursion can be iteratively computed i.e.$X^{k+1}=G'(X^{k}\cup \Delta X^{k})$in which $\Delta X^{k} =G' \circ F(\Delta X^{k-1})$.
-if aggregate function $g'$ satisfied the \textbf{accumulative} condition,
-and let delta $\Delta X^0=X^1$ we have $X^{k+1}=G'(\Delta X^0 \cup G'\circ F'(\Delta X^0)\cup \ldots G' \circ F^n(\Delta X^0))$. Further the algorithm can be correctly asynchronized if the \textbf{order-independent} conditions satisfied. Note that $X^1$ is the first recursion of the normal recursive aggregation(because $X^{-1}$ doesn't exist and hard to define, so the incremental value $\Delta X$ of accumulative recursive aggregation should be initialized as $X^1$ where $X^0$ is the initial value of normal recursive recursion). 
-
-For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive form. %\cite{maiter}. 
-In original PageRank,$X^k=AX^{k-1}+b$,$F$ operation is the multiplication by subscript $G$ operation is the 'SUM' of intermediate result with constant vector $b$ added .From the original fomular we have
+Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the conversion is to incrementally computing the origin problem and the difference value $\Delta X^k$ of each recursion can be iteratively computed i.e.
 \begin{equation}
 \begin{aligned}
-\Delta X^k&=X^k-X^{k-1} \notag\\&=AX^{K-1}-AX^{k-2}+b-b\notag\\&=A\Delta X^{k-1}\notag
+X^{k+1}=&G'(X^{k}\cup \Delta X^{k})\\
+\Delta X^{k}=&G' \circ F(\Delta X^{k-1}).
 \end{aligned}
 \end{equation}
-So $X^k=\Delta X^0+A\Delta X^0+\ldots+A^{k-1}\Delta X^0$
-where $\Delta X^0$ is initialized as $X^1$($X^1=AX^0+b$). The $G'\circ F$ operation on $X$ is premultiplication of $A$.The $F$ operation is multiplication by subscript,and $G$ operation is the 'SUM' of the intermediate result. 
-Furthermore, $G'$ operation is accumulative,the $F()$ operation and $G'()$ operation in PageRank is order independent, which makes it suitable for asynchronous aggregation. There exist other convertable algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.Next,we formally provide the convertibility conditions as follows.
+if aggregate function $G'$ satisfied the \textbf{accumulative} condition, the first line of equation (3) can be rewrite as $X^{k+1}=G'(X^0\cup \Delta X^0\cup \Delta X^1 \ldots \Delta X^k)$.Note that $G'$ is not necessarily the origin $G$,usually it depends on specific questions.This is the basic formula of accumulative recursive aggregation,and the algorithm can be correctly asynchronized if the \textbf{order-independent} conditions satisfied.However the basic idea is proposed,there are two key problems to be solve when applying the conversion.First,how to determine the new aggregation function $G'$ .Second,how to initialize the incremental value $\Delta X^0$.  
+
+Since we define $\Delta X^k=X^{k+1}-X^{k}$,and we have $X^{k+1}=G'(X^0\cup \Delta X^0 \cup G'\circ F'(\Delta X^0)\cup \ldots G' \circ F^n(\Delta X^0))$.So We can perform normal recursive aggregation for one time and obtain $X^1$.Then the initial value $X^0$ is still $X^0$ and $\Delta X^0$ is initialized as $X^1-X^0$.
+
+The new aggregation $G'$ express the relationship between $\Delta X^k$ and $\Delta X^{k-1}$.So the relation can be obtained by evaluate the difference between two adjacent recursion,By the subtraction of $G\circ F(X^k+1s)$ and$G\circ F(X^{k})$,we can obtain the $\Delta X^{k}=G\circ F(X^{k+1})-G\circ F(X^{k})=G'\circ F(X^{k+1}-X^{k+1})$ if $F()$contains linear item.And further, The origin algorithm is convertible if $G'$ satisfied the community condition.
+
+For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive aggregation. %\cite{maiter}. 
+In original PageRank,$R^k=(1-b)AR^{k-1}+B$,$f$ operation is sending rank value $R_i$ to their outgoing neighbor, corresponding to the multiplication by subscript of transform matrix $A$,$g$ operation is the 'SUM' of intermediate result by their keys with constant vector $b$ added .From the original formula we have
+\begin{equation}
+\Delta R^k=(1-b)A\Delta R^{k-1}\notag
+\end{equation}
+So we can obtain that $X^k=X^0+\Delta X^0+(1-b)A\Delta X^0+\ldots+((1-b)A)^{k-1}\Delta X^0$
+where $\Delta X^0$ is initialized as $X^1-X^0$. The $f$ operation is matrix multiplication without summing up,and $g$ operation is the 'SUM-BY-KEY' of the intermediate result. 
+Furthermore, $g'$ operation is accumulative,the $f()$ operation and $g'()$ operation in PageRank is order independent,i.e. which makes it suitable for asynchronous aggregation. There also exist other convertible algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.Next,we formally provide the convertibility conditions as follows.
 
 \begin{theorem}
 	\label{th:convert}
 	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program for asynchronous aggregation, as long as an aggregate operation $g'()$ with the \textbf{accumulative} and \textbf{commutative} properties can be found with the following conditions:\\
-	Define $\Delta X^k=X^{k+1}-X^k$
 	\begin{itemize}
 		\item \textbf{convertible}: $g\circ f(X)=g'(X\cup g'\circ f(\Delta X))$
-\item \textbf{order independent}: $g'\circ f\circ g'(X)=g'\circ f(X)$;
+\item \textbf{eliminable}: $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=\textbf{0}$,
 	\end{itemize}
 	 The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
 \end{theorem}
@@ -125,7 +133,6 @@ Furthermore, $G'$ operation is accumulative,the $F()$ operation and $G'()$ opera
 The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. We present the intuition as follows. We aim to find a new aggregate operation $G'()$ that can be used to iterative computing the increment between consecutive recursion. which makes it satisfy the monotonic and accumulative condition that is required for accumulated recursive program and order-independent condition for asynchronous execution.
 Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as the incremental value $(G'\circ F)^n(x)$ is ``small'' enough.
 
-To obtain the new aggregate operation $g'()$ in our system.We generalize the method that descripted in the Pagerank example.The key of the problem is to find the relation between$\Delta X^k$ and $\Delta X^{k-1}$. The origin aggregate and non-aggregate operation on single value is $g()$ and $f()$.By $g\circ f(X)-g\circ f(Y)$, if There is a new aggregate function $g'()$ satisfy that $g\circ f(X)-g\circ f(Y) =g'\circ f(X-Y)$ exists(this conditions implies that $\Delta X^{k+1}=g'\circ f(\Delta X^{k})$and the origin problem can be incrementally computed),and $g'()$ satisfy the accumulative condition, The algorithm can be convert into accumulative recursive aggregation.Note that the algorithm can be asynchronized only if the order-independent condition satisfied at the same time.
 
 
 
