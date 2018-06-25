@@ -1,6 +1,23 @@
 \begin{appendix}
 You can use an appendix for optional proofs or details of your evaluation which are not absolutely necessary to the core understanding of your paper.
 \section{proofs}
+\subsection{Proof of Theorem Monotonic}
+
+\begin{proof}
+	\label{sec:app:proof:monotonic}
+	It is known that $\Delta Y^k=f(\Delta X^k)$and $\Delta X^0=X^0\\$.
+	\begin{align}
+	&G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big)\notag \\
+	=&G\Big(\Delta Y^0\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big)    \notag\\
+	=&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)  \tag{1}\\
+	=&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{2}\\
+	=& \ldots \notag \\
+	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{3}\\
+	=&(G \circ F)^{k+1}(X^0).\notag
+	\end{align}
+	Line (1) is true because of the accumulative property. Due to the monotonic property Line (2) is true because  Repeat applying these two property ,we can reduce all the low order items in turn and line(3) can be obtained. 
+\end{proof}
+
 \subsection{Proof of Theorem Asynchronous}
  \begin{proof}
  \label{sec:app:proof:correct}

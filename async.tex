@@ -51,21 +51,7 @@ Intuitively, the accumulated recursive program performs the same computation as 
 	\end{itemize}
 	
 \end{theorem}
-Here we provide the formal proof :
- \begin{proof}
-  It is known that $\Delta Y^k=f(\Delta X^k)$and $\Delta X^0=X^0\\$.
- \begin{align}
- &G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big)\notag \\
- =&G\Big(\Delta Y^0\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big)    \notag\\
- =&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)  \tag{1}\\
- =&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{2}\\
- =& \ldots \notag \\
- =&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{3}\\
- =&(G \circ F)^{k+1}(X^0).\notag
- \end{align}
-  Line (1) is true because of the accumulative property. Due to the monotonic property Line (2) is true because  Repeat applying these two property ,we can reduce all the low order items in turn and line(3) can be obtained. 
- \end{proof}
-
+we provide the formal proof in Appendex \ref{sec:app:proof:monotonic}.
 
  The accumulative property is essential for both theorem proof and system design. If the accumulative condition is satisfied, only the aggregation result $X^k=G(\Delta X^{0},\ldots,\Delta X^{k-1})$ needs to be maintained and is updated by accumulating a new $\Delta x^{k}$, i.e.$X^{k+1}=G(X^k \cup \Delta X^k)$. Otherwise, the large set $\Delta X^{k}$ needs to be maintained for every recursion $k$.which incur a large storage cost. The accumulative property will be used in our system design to save a lot of maintaining cost.
 
