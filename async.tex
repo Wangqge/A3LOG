@@ -13,10 +13,11 @@ Correspondingly, we define asynchronous aggregation as follows.
 \begin{definition}
 	%wqg
 	\label{def:asyncaggre}
-	(\textbf{Asynchronous Aggregation}) In a recursive program, for an aggregation g() we assume that the input  $X$  is partitioned into $m$ disjoint subsets,and denote $X_i^k$ i.e., $x=\{x_1^k,x_2^k,\ldots,x_m^k\}$, and $\forall i,j, x_i^k\cap x_j^k=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions, i.e., $g(x_1^k \ldots x_i^k\cup x_j^{l}...x_m^k)$ where $k\neq l$.
-\end{definition}
+	(\textbf{Asynchronous Aggregation}) In a recursive program, for an aggregation g() we assume that the input  $x$  is partitioned into $m$ disjoint subsets by the recursion,and denote as $x^{r_i}$ i.e., $x=\{x^{r_1},x^{r_2},\ldots,x^{r_m}\}$, and $\forall i,j, x^{r_i}\cap x^{r_j}=\emptyset$. Asynchronous aggregation is to aggregate multiple subsets from different recursions,i.e.$g(x)=g(x^{r_1},x^{r_2},\ldots,x^{r_m})$.
 
-When a group-by aggregate operation is executing on its $k$th recursion, the input set can be partition by their keys i.e.$X=\{X_{k_0},X_{k_1}\ldots,X_{k_n}\}$, or by the iterations i.e.$X=\{X^{r_0},X^{r_1}\ldots,X^{r_n}\}$ in which $X^{r_i}$ denote the subset in $i$th recursion from all the keys, i.e.$X^{r_i}=\{X_{k_0}^i\cup X_{k_1}^i\cup ....\cup X_{k_n}\}$.Supposed the inputs $X$ come from $m$ different recursion, The asynchronous group-by  aggregation is defined as $G(X)=G(X^{r_0},X^{r_1}\ldots X^{r_m})$
+
+For a group-by aggregate operation. the inputs can be partition by their keys i.e.$X=\{X_{k_0},X_{k_1}\ldots,X_{k_n}\}$, or by the iterations i.e.$X=\{X^{r_0},X^{r_1}\ldots,X^{r_m}\}$ in which $X^{r_i}$ denote the subset in its $i$th recursion from all the keys, i.e.$X^{r_i}=\{X_{k_0}^i\cup X_{k_1}^i\cup ....\cup X_{k_n}\}$.Supposed the inputs $X$ come from $m$ different recursion, The asynchronous group-by  aggregation is defined as $G(X)=G(X^{r_0},X^{r_1}\ldots X^{r_m})$
+\end{definition}
 
 From the definition of recursive aggregation as shown in Equation (\ref{eq:recursive2}), $X^{k+1}$ is resulted from $Y^k$, and $Y^k$ is resulted from $X^k$. $X^{k+1}$ does not exist before applying $g()$ on the complete set of $X^k$. Thus, the asynchronous aggregation $g(\ldots X_i^k\cup X_j^{k+1} \ldots)$ is only possible after the $j$th subset of $X^{k+1}$ is obtained. In other words, $X^{k+1}$ is a \emph{replacement} of $X^k$ and is closer to the final result. The asynchronous aggregation of $X^{k+1}$ and $X^k$ may result in a wrong result since $X^k$ is a replaced result which is not supposed to be aggregated.
 
