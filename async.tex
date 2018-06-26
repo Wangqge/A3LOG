@@ -1,12 +1,13 @@
 \section{Automatic Asynchronous Aggregation}
 \label{sec:async}
-Obviously, the waiting cost of synchronous aggregation is sometime harmful, So we proposed using asynchronous aggregation to reduce the coordination.
-In this section, we first formally define asynchronous aggregation and introduce accumulated recursive aggregation program. We then propose the correctness conditions by analyzing the aggregate/non-aggregate operations.And then we propose a conversion technology for some unsatisfied algorithm.
+%Obviously, the waiting cost of synchronous aggregation is sometime harmful, So we proposed using asynchronous aggregation to reduce the coordination.
+%In this section, we first formally define asynchronous aggregation and introduce accumulated recursive aggregation program. We then propose the sufficient conditions for returning correct results by analyzing the aggregate/non-aggregate operations.And then we propose a conversion technology for some unsatisfied algorithm.
+In this section, we propose the foundations of automatic asynchronous aggregation.
 
 \subsection{Asynchronous Aggregation}
 \label{sec:async:async}
 
-The recursive program in Equation (\ref{eq:recursive2}) is defined with synchronous aggregation. In parallel or distributed computing, the \emph{synchronous} aggregation means $F_k()$ operations have to be completed on each subset before the next $G_k()$ operation starts. %The $g()$ operation has to be applied on the whole set $X^k$.
+The recursive program in Equation (\ref{eq:recursive2}) is defined with synchronous aggregation. In parallel computation, the \emph{synchronous} aggregation means that the parallel $F()$ operations on all subsets have to be completed before the next $G()$ operation starts. %The $g()$ operation has to be applied on the whole set $X^k$.
 Correspondingly, we define asynchronous aggregation as follows.
 
 \begin{definition}
