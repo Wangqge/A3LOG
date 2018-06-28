@@ -58,22 +58,25 @@ In order to make asynchronous aggregation feasible, we introduce a particular ty
 	\end{equation}
 \end{definition}
 
-Intuitively, the accumulated recursive program performs the same computation as normal recursive program, but the final result is the aggregation of all the intermediate results as shown in Equation (\ref{eq:accumasyncres}). The asynchronous aggregation becomes meaningful in accumulated recursive programs, since the final result is the \emph{aggregation} of all recursions' results but not the last recursion's result. $\Delta X^{k}$ represents the \emph{increment} from previous recursion but not a replacement of previous recursion. This implies that the accumulated recursive program exhibits \textbf{monotonicity}, which has been well studied in the literature \cite{Hellerstein:2010:DIE:1860702.1860704,calm,Lam:2013:SDE:2510649.2511289,Wang:2015:AFR:2824032.2824052}. Briefly speaking, monotonicity means that we only add information, never negate or take away. However, not all recursive programs are monotonic. We have the following theorem to guide the transformation.
+Intuitively, the accumulated recursive program performs the same computation as normal recursive program, but the final result is the aggregation of all the intermediate results as shown in Equation (\ref{eq:accumasyncres}). The asynchronous aggregation becomes meaningful in accumulated recursive programs, since the final result is the \emph{aggregation} of all recursions' results but not the last recursion's result. $\Delta X^{k}$ represents the \emph{increment} from previous recursion but not a replacement of previous recursion. This implies that the accumulated recursive aggregation exhibits \textbf{monotonicity}, which has been well studied in the literature \cite{Hellerstein:2010:DIE:1860702.1860704,calm,Lam:2013:SDE:2510649.2511289,Wang:2015:AFR:2824032.2824052}. Briefly speaking, monotonicity means that we only add information, never negate or take away. However, not all recursive programs are monotonic. We have the following theorem to guide the transformation.
 \begin{theorem}
 	\label{th:monotone}
-	(\textbf{Monotonizability}) The accumulated recursive program defined in Equation (\ref{eq:accumasync}) will return the same result as the normal recursive program defined in Equation (\ref{eq:recursive2}), as long as the the following conditions are satisfied.
+	(\textbf{Monotonizability}) The accumulated recursive aggregation defined in Equation (\ref{eq:accumasync}) will return the same result as the normal recursive aggregation defined in Equation (\ref{eq:recursive2}), as long as the the following conditions are satisfied.
 	\begin{itemize}
-		\item \textbf{monotonic}: $X\subseteq F(X)$
+		\item \textbf{monotonic}: $X\subseteq G(X)$
 		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$
 		%\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
 	\end{itemize}
 	
 \end{theorem}
-we provide the formal proof in Appendex \ref{sec:app:proof:monotonic}.
+Since $G$ and $F$ are group-by operations of $g$ and $f$,the group-by operations satisfy the conditions only if $g$ and $f$ satisfied the same condition for each key.In order to facilitate expression and proof,we use the group-by operation to formalize the theorem and proof.We provide the formal proof in Appendex \ref{sec:app:proof:monotonic}.
 
 The accumulative property is not only essential for theorem proof but also helpful for efficient system design. If the accumulative condition is satisfied, only the aggregation result $X^k=G(\Delta Y^{0},\ldots,\Delta Y^{k-1})$ needs to be maintained (i.e., the maintained result set size is equal to the number of unique keys) and is updated by accumulating a new $\Delta Y^{k}$, i.e.$X^{k+1}=G(Y^k \cup \Delta Y^k)$. Otherwise, the large set $\Delta Y^{k}$ needs to be maintained for every recursion $k$, which incur considerable storage cost. The accumulative property will be exploited in our system design to save a lot of maintaining cost.
 
-\textcolor{red}{this description seems to be wrong in many parts, including some lables. I can't fix them one by one. Please make them consistent with the previous description of Example 1} For example, the paths in DAG computation (Example 1) can be executed as an accumulated recursive program. Its non-aggregate operation $f()$ on vertex pair $\langle s,d\rangle$ outputs not only the tuples set $\{path^k_d\langle s,d'_j\rangle\}$ to $d$'s outgoing neighbors $d'_j$ but also its previous recursion's aggregation result $path^k\langle s,d\rangle$. That is, $\{path^k_d\langle s,d'_j\rangle\}$ and $path^k\langle s,d\rangle$ are all contained in $F(X^{k})$. Hence, $X^{k}\subseteq F(X^{k})$ and the monotonic condition is satisfied. In addition, the aggregate operation $g()$ which is SUM has the accumulative condition.
+%\Paragraph{Example 1: Compuiting Paths in a DAG} This algorithm (denoted as \textbf{PATHS}) counts the paths between all pairs of vertices in an acyclic graph. The number of paths between vertex $s$ and vertex $d$, $path(s,d)$, is initialized as $1$ for each edge $(s,d)$ and $0$ for others. The $f$ operation of the $k$th recursion for vertex pair $(s,d)$ takes $path^k(s,d)$ as input and outputs $path_{tmp}^k(s,d')$ if edge $(d,d')$ exists. The aggregation operation $g()$ with respect to each pair $(s,d')$ takes all $path_{tmp}^k(s,d')$ as inputs and computes $path^{k+1}(s,d')=\sum_{d'} path_{tmp}^k(s,d')+path^k(s,d')$ as the result. The computation terminates when the path numbers for all vertex pairs are not changed from previous recursion.
+
+%\textcolor{red}{this description seems to be wrong in many parts, including some lables. I can't fix them one by one. Please make them consistent with the previous description of Example 1} 
+For example, the paths in DAG computation (Example 1) can be executed as an accumulated recursive program. Its non-aggregate operation $f()$ on vertex pair $(s,d)$ outputs not only the tuples set $\{path_{tmp}^k(s,d')\}$ to $d$'s outgoing neighbors $d'$ but also its previous recursion's aggregation result $path^k(s,d)$. That is, $\{path_{tmp}^k(s,d')\}$ and $path^k(s,d)$ are all contained in $f(path^k(s,d))$. Hence, $X^{k}\subseteq f(X^{k})$ and the monotonic condition is satisfied. In addition, the aggregate operation $g()$ which is SUM has the accumulative condition.
 
 %The SSSP computation (Example 2) can also be executed as an accumulated recursive program. Its non-aggregate operation $f()$ on node $i$ outputs not only the tuples set $\{\langle j,td_j^{k+1}\rangle\}$ for its outgoing neighbors $j$ but also its previous recursion's aggregation result $\langle i,d_i^k\rangle$. That is, $\{\langle i,td_i^{k+1}\rangle\}$ and $\langle i,d_i^k\rangle$ are contained in $X^{k+1}$, while $\langle i,d_i^k\rangle$ is already contained in $X^{k}$. Hence, $X^{k}\subseteq X^{k+1}$ and the monotonic condition is satisfied. In addition, the aggregate operation $g()$ which is MIN has the accumulative and commutative conditions.
 
@@ -87,15 +90,16 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 	\label{th:async}
 	(\textbf{Asynchronizability}) With asynchronous aggregation as Definition \ref{def:asyncaggre} proposed, an accumulated recursive program will yield to the same result as with synchronous aggregation, as long as the following order independent condition is satisfied.
 	\begin{itemize}
-		\item \textbf{order independent}: $g\circ f\circ g(X)=g\circ f(X)$;
-		\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
+		\item \textbf{order independent}: $G\circ F\circ G(X)=G\circ F(X)$;
+		\item \textbf{commutative}: $G(X_1\cup X_2)=G(X_2\cup X_1)$;
 	\end{itemize}
 \end{theorem}
 
-By asynchronous aggregation, the partial aggregation result is immediately used by the next $f()$ operation. The order independent property implies that no matter the $f()$ operation is first applied or the $g()$ operation is first applied, the effect is the same. As long as the same number of $g()$ operations are applied on all data, the eventual aggregation result will be the same.Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition. We details the proof in Appendix \ref{sec:app:proof:correct}
+By asynchronous aggregation, the partial aggregation result is immediately used by the next $F()$ operation. The order independent property implies that no matter the $F()$ operation is first applied or the $G()$ operation is first applied, the effect is the same. As long as the same number of $G()$ operations are applied on all data, the eventual aggregation result will be the same.%Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition.
+ We details the proof in Appendix \ref{sec:app:proof:correct}
 
 
-For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
+For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e.for each node $j$, $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
 
 
 \subsection{Conversion Possibilities}
@@ -117,20 +121,21 @@ Since we define $\Delta X^k=X^{k+1}-X^{k}$,and we have $X^{k+1}=G'(X^0\cup \Delt
 The new aggregation $G'$ express the relationship between $\Delta X^k$ and $\Delta X^{k-1}$.So the relation can be obtained by evaluate the difference between two adjacent recursion,By the subtraction of $G\circ F(X^k+1s)$ and$G\circ F(X^{k})$,we can obtain the $\Delta X^{k}=G\circ F(X^{k+1})-G\circ F(X^{k})=G'\circ F(X^{k+1}-X^{k+1})$ if $F()$contains linear item.And further, The origin algorithm is convertible if $G'$ satisfied the community condition.
 
 For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive aggregation. %\cite{maiter}.
-In original PageRank,$R^k=(1-b)AR^{k-1}+B$,$f$ operation is sending rank value $R_i$ to their outgoing neighbor, corresponding to the multiplication by subscript of transform matrix $A$,$g$ operation is the 'SUM' of intermediate result by their keys with constant vector $b$ added .From the original formula we have
+In original PageRank,$R^k=(1-b)AR^{k-1}+B$,$F$ operation is sending rank value $R_i$ to their outgoing neighbor, corresponding to the multiplication by subscript of transform matrix $A$,$G$ operation is the 'SUM' of intermediate result by their keys with constant vector $b$ added .From the original formula we have
 \begin{equation}
 \Delta R^k=(1-b)A\Delta R^{k-1}\notag
 \end{equation}
 So we can obtain that $X^k=X^0+\Delta X^0+(1-b)A\Delta X^0+\ldots+((1-b)A)^{k-1}\Delta X^0$
-where $\Delta X^0$ is initialized as $X^1-X^0$. The $f$ operation is matrix multiplication without summing up,and $g$ operation is the 'SUM-BY-KEY' of the intermediate result.
-Furthermore, $g'$ operation is accumulative,the $f()$ operation and $g'()$ operation in PageRank is order independent,i.e.$\sum_{n}{0.8*x_i/d}=0.8/d*\sum_{n}{x_i}$ which makes it suitable for asynchronous aggregation. There also exist other convertible algorithms, such as Program (8,11,12,13) in Appendix Sec. \ref{sec:app:example}.Next,we formally provide the convertibility conditions as follows.
+where $\Delta X^0$ is initialized as $X^1-X^0$. The $F$ operation is matrix multiplication without summing up,and $G$ operation is the 'SUM-BY-KEY' of the intermediate result.
+Furthermore, $g'$ operation is accumulative,the $f()$ operation and $g'()$ operation in PageRank is order independent($G$,$F$,$G'$ is the same),i.e.$\sum_{n}{0.8*x_i/d}=0.8/d*\sum_{n}{x_i}$ which makes it suitable for asynchronous aggregation. There also exist other convertible algorithms, such as Program(8,11,12,
+13) in Appendix Sec. \ref{sec:app:example}.Next,we formally provide the convertibility conditions as follows.
 
 \begin{theorem}
 	\label{th:convert}
-	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program for asynchronous aggregation, as long as an aggregate operation $g'()$ with the \textbf{accumulative} and \textbf{commutative} properties can be found with the following conditions:\\
+	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program for asynchronous aggregation, as long as an aggregate operation $G'()$ with the \textbf{accumulative} and \textbf{commutative} properties can be found with the following conditions:\\
 	\begin{itemize}
-		\item \textbf{convertible}: $g\circ f(X)=g'(X\cup g'\circ f(\Delta X))$
-\item \textbf{eliminable}: $lim_{n\rightarrow\infty}(g'\circ f)^n(x)=\textbf{0}$,
+		\item \textbf{convertible}: $G\circ F(X)=G'(X\cup G'\circ F(\Delta X))$
+\item \textbf{eliminable}: $\vert\vert lim_{n\rightarrow\infty}(G'\circ F)^n(x)\vert\vert=\textbf{0}$,
 	\end{itemize}
 	 The $g'()$ operation is the aggregate operation in the new accumulated recursive program.
 \end{theorem}
@@ -145,7 +150,7 @@ Note that, it is not realistic to perform recursion infinite times. In practice,
 
 \subsection{Automatic Asynchronization}
 \label{sec:async:autoasync}
-
+Since group-by operation carry on the same aggregate/non-aggregate operations on different key,in this subsection, we use the non-group-by  operations $g$ and $f$ to describe the  automation process.
 Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these conditions manually. It is also hard to find an aggregate function $g'()$ for converting a normal recursive program into an accumulated recursive program.
  To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this subsection, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations\footnote{The $g$ and $f$ operations in Datalog programs can be identified as will be shown in next section.}.
 
