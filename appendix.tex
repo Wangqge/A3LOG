@@ -15,13 +15,13 @@
 	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{5}\\
 	=&(G \circ F)^{k+1}(X^0).\notag
 	\end{align}
-	Line (3) is true because of the accumulative property. Due to the monotonic property line (4) is true because  Repeat applying these two property ,we can reduce all the low order items in turn and line(5) can be obtained. 
+	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties ,we can reduce all the low order items in turn and line 5 can be obtained. 
 \end{proof}
 
 \subsection{Proof of Theorem Asynchronous}
  \begin{proof}
  \label{sec:app:proof:correct}
- In this section .We assumed that $X$ can be divided into two disjoint subset $X_0$ and $X_1$. we exchange the subset belongs to any two adjacent recursion,and then prove that they have the same formula.This is the basic formula which can generalize all the other situations.
+ In this section. We assumed that $X$ can be divided into two disjoint subset $X_0$ and $X_1$. we exchange the subset belongs to any two adjacent recursion, and then prove that they have the same formula. This is the basic form which can generalize all the other situations.
  \begin{align}
  &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^{i}_0 \cup \Delta X^{i+1}_1)\cup\ F\circ G(\Delta X^{i+1}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots\cup \Delta X^n)\tag{1} \\
  =&G( \ldots \cup G \circ F\circ G(\Delta X^{i}_0 \cup \Delta X^{{i+1}}_1)\cup\ G \circ F\circ G(\Delta X^{{i+1}}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots)\tag{2} \\
@@ -33,9 +33,9 @@
 =&G(\ldots \cup F \circ G(\Delta X^i)\cup\ F \circ G(\Delta X^{i+1}) \ldots\cup \Delta X^n).\tag{8}
  \end{align}
 
-By applying the \textbf{accumulative} property and \textbf{order indenpendent} property,we can have line(2,3),and line (4)is true because of \textbf{accumulative}property
-and \textbf{distributive} property, line (5,6) is because of the \textbf{community} property.The Line (7)can be obtained by applying \textbf{order indenpende} property again.
-The formula as line(8) shown has the same result with the synchronous one.And it is obvious that the result can be extended to general situation if the recursion continuous infinity times.
+By applying the \textbf{accumulative} property and \textbf{order indenpendent} property, we can have line 2, 3. Line 4 is true because of \textbf{accumulative}property
+and \textbf{distributive} property, line (5,6) is because of the \textbf{community} property.ine (7)can be obtained by applying \textbf{order independent} property again.
+The formula as line 8 shows has the same result with the synchronous one.And it is obvious that the result can be extended to general situation if the recursion continuous infinity times.
  \end{proof}
  \subsection{Proof of Theorem Convertibility}
  \begin{proof}
@@ -49,10 +49,9 @@ The formula as line(8) shown has the same result with the synchronous one.And it
 =&G'((G\circ F)^{k-2}(X^1)\cup(G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
 =&G\circ F(X^{k-1})=X^k\tag{6}
  \end{align}
-Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the convertibility.As previous description, Line 6 is the Asynchronous Recursive Program Formula.if the \textbf{eliminable} condition satisfied and recursion executed infinity times,we have $lim_{n\rightarrow\infty}G'((G\circ F)^{n-1}(X^1)\cup (G' \circ F)^{n}(X^1))=(G\circ F)^{n}(X^1)=G'((G\circ F)^{n-1}(X^1))$,So the eliminable condition implies the same terminate conditions with Normal recursive aggregation.
+Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the convertibility.As previous description, Line 6 is the Asynchronous Recursive Program Formula.if the \textbf{eliminable} condition satisfied and executed infinity times,we have $lim_{n\rightarrow\infty}G'((G\circ F)^{n-1}(X^1)\cup (G' \circ F)^{n}(X^1))=(G\circ F)^{n}(X^1)=G'((G\circ F)^{n-1}(X^1))$,So the eliminable condition implies the same terminate conditions with Normal recursive aggregation.
 
  \end{proof}
-
  \section{Datalog Examples}
  \label{sec:app:example}
  
@@ -219,8 +218,7 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \normalsize
  
  In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
- 
- 
+
  \section{More Experiments}
  \label{sec:app:expr}
 
