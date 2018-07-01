@@ -1,9 +1,5 @@
 \section{Performance Evaluation}
 \label{sec:expr}
-
-First, we exhibit conditions satisfiability of some common algorithms.
-We empirically evaluate A3Log on Amazon EC2. We will show the comparison results with other systems, with different algorithms, and with different datasets.
-\subsection{Result of Condition Checker}
 \begin{table*}[!t]
 	%\vspace{-0.1in}
 	\caption{The Result of some Common Algorithms }
@@ -18,14 +14,14 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 		%		\cline{7-12}
 		%		&  & & & & & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}} & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}}\\
 		\hline\hline
-		 {\textbf{Algorithm}} &
-		 {\textbf{$g$}} &
-		 {\textbf{$f$}} & 
-		 {\textbf{Monot}} &
-		 {\textbf{Commu}} & 
-		 {\textbf{Accumu}} & 
-		 {\textbf{OrderInd}} &
-		 {\textbf{Conver}}\\
+		{\textbf{Algorithm}} &
+		{\textbf{$g$}} &
+		{\textbf{$f$}} & 
+		{\textbf{Monot}} &
+		{\textbf{Commu}} & 
+		{\textbf{Accumu}} & 
+		{\textbf{OrderInd}} &
+		{\textbf{Conver}}\\
 		\hline
 		\textbf{Pagerank} & $sum(\centerdot)+c$ &($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & - &$\surd$\\
 		\hline
@@ -55,6 +51,10 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 	\end{tabular}
 	\vspace{-0.1in}
 \end{table*}
+First, we exhibit conditions satisfiability of some common algorithms.
+We empirically evaluate A3Log on Amazon EC2. We will show the comparison results with other systems, with different algorithms, and with different datasets.
+\subsection{Result of Condition Checker}
+
 
 In this section, we test more algorithms to check the asynchronous conditions. We list $f$ and $g$ operations and each property of each algorithm. As shown in table \ref{tab:resut}, SSSP, CC, DAG, PATH, COST, PART and Galaxy evolution algorithm satisfied all the correctness conditions which can be correctly asynchonized directly. Belief Propagation, Viterbi and Simrank, doesn't satisfy the monotonic condition. Pagerank and \textbf{Jacobi Method} satisfied neither the monotonic condition nor the accumulative condition. While all these five algorithm can be converted to accumulative recursive aggregation model and executed asynchronously. 
 
@@ -82,7 +82,7 @@ In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 ins
 \begin{figure}[!t]
 	\vspace{0.0in}
 	\centering
-	\includegraphics[width=2.6in]{fig/dist-result}
+	\includegraphics[width=3in]{fig/dist-result}
 	\vspace{-0.1in}
 	\caption{Performance comparison with other systems (distributed environment)}
 	\label{fig:dist-result}
