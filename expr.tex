@@ -76,9 +76,6 @@ We compare A3Log with other systems in the context of three algorithms, includin
 	\label{fig:single-result}
 	\vspace{-0.2in}
 \end{figure}
-
-In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. We configured all these systems with 32 threads. The normalized runtime results. In general, A3Log outperforms all the competitors. For the PageRank computation, A3Log achieves 22.8X speedup over GraphLab, 22X speedup over Socialite, 6X speedup over Maiter, and much more speedup over Myria\footnote{The runtime results of Myria may be wrong because they are all unexpected long, say 135 times longer for PageRank and 321 times longer for SSSP than A3Log. We are contacting with Myria authors to fix it but cannot find the problem before the submission.} are shown in Fig. \ref{fig:single-result}. There is an exception for SSSP computation. Socialite is 1.6X faster than A3Log. This may be due to their \emph{prioritization} optimization, which is similar to our scheduling technique that leads to Dijkstra algorithm.
-
 \begin{figure}[!t]
 	\vspace{0.0in}
 	\centering
@@ -88,6 +85,9 @@ In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 ins
 	\label{fig:dist-result}
 	\vspace{-0.2in}
 \end{figure}
+In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. We configured all these systems with 32 threads. The normalized runtime results. In general, A3Log outperforms all the competitors. For the PageRank computation, A3Log achieves 22.8X speedup over GraphLab, 22X speedup over Socialite, 6X speedup over Maiter, and much more speedup over Myria\footnote{The runtime results of Myria may be wrong because they are all unexpected long, say 135 times longer for PageRank and 321 times longer for SSSP than A3Log. We are contacting with Myria authors to fix it but cannot find the problem before the submission.} are shown in Fig. \ref{fig:single-result}. There is an exception for SSSP computation. Socialite is 1.6X faster than A3Log. This may be due to their \emph{prioritization} optimization, which is similar to our scheduling technique that leads to Dijkstra algorithm.
+
+
 
 In the distributed experiment, we deploy all the systems on an EC2 cluster with 32 c4.2xlarge EC2 instances, each with 8 vCPUs and 15GB memory. The network bandwidth between instance workers is 10Gb/s\footnote{The network specification does not clearly describe the bandwidth but is only classified as \emph{High}, which is estimated as 10Gb/s.}. We configured all these systems with 8 threads for each worker. The normalized runtime results of SSSP and PageRank are shown in Fig. \ref{fig:dist-result}. A3Log outperforms GraphLab and Socialite on PageRank computation. The synchronous version of GraphLab performs much better than asynchronous Graph-Lab, which is due to its costly distributed locking \cite{Han:2015:GUB:2777598.2777604,Low:2012:DGF:2212351.2212354}. Socialite performs SSSP only a little faster almost negligible.The distributed Myria runs unexpected long without returning results, say 9 hours for PageRank and did not return. The performance of A3Log and Maiter is comparable on these two applications,and Maiter performs pagerank even faster.The reason why A3Log does not show significant better performance in distributed environment is because of the expensive communication and serialization overhead.The performance of communicate and serialize components implemented in java unmatched that of C/C++ implementation. 
 %\begin{comment}
@@ -95,9 +95,10 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 \label{sec:expr:optimizations}
 
 \begin{figure}[!t]
-	\vspace{0.1in}
+	\vspace{0.0in}
 	\centering
 	\includegraphics[width=2.8in]{fig/single-optimize}
+	\vspace{-0.1in}
 	\caption{Performance gain analysis}
 	\label{fig:single-optimize}
 	\vspace{-0.1in}
@@ -106,11 +107,11 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 \begin{table*}[!t]
 	%\vspace{-0.1in}
 	\caption{Performance when varying workloads ($d$ is diameter, $e$ is powerlaw exponent)}
-	\vspace{0.0in}
-	\hspace{-0.4in}
+	\vspace{-0.0in}
+	\hspace{-0.3in}
 	\label{tab:wrokload}
 	%\centering
-	\small
+	\scriptsize
 	\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c}
 		\hline
 		\multirow{2}{*}{\textbf{Dataset}} & \multirow{2}{*}{\tabincell{c}{\textbf{Nodes}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Edges}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Graph}\\ \textbf{type}}} & \multirow{2}{*}{\tabincell{c}{\textbf{$d$}}}& \multirow{2}{*}{\tabincell{c}{\textbf{$e$}}} & \multicolumn{3}{|c}{\textbf{SSSP}} & \multicolumn{3}{|c}{\textbf{PageRank}} \\
