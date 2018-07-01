@@ -26,10 +26,8 @@
 \newcommand{\Paragraph} [1] {\smallskip\noindent{\bf #1. }}
 % Include information below and uncomment for camera ready
 
-
-
-\vldbTitle{A Sample Proceedings of the VLDB Endowment Paper in LaTeX Format}
-\vldbAuthors{Ben Trovato, G. K. M. Tobin, Lars Th{\sf{\o}}rv{$\ddot{\mbox{a}}$}ld, Lawrence P. Leipuner, Sean Fogarty, Charles Palmer, John Smith, Julius P.~Kumquat, and Ahmet Sacan}
+\vldbTitle{A3Log: Automated Asynchronous Evaluation for Recursive Datalog Programs}
+\vldbAuthors{Qiange Wang, Yanfeng Zhang, Liang Geng, Xiaodong Zhang, Yu Ge}
 \vldbDOI{https://doi.org/TBD}
 \vldbVolume{12}
 \vldbNumber{xxx}
@@ -72,7 +70,7 @@
 % without further effort on your part as the last section in
 % the body of your article BEFORE References or any Appendices.
 
-\numberofauthors{6} %  in this sample file, there are a *total*
+\numberofauthors{1} %  in this sample file, there are a *total*
 % of EIGHT authors. SIX appear on the 'first-page' (for formatting
 % reasons) and the remaining two appear in the \additionalauthors section.
 
@@ -89,58 +87,32 @@
 %
 % 1st. author
 \alignauthor
-Ben Trovato\titlenote{Dr.~Trovato insisted his name be first.}\\
-       \affaddr{Institute for Clarity in Documentation}\\
-       \affaddr{1932 Wallamaloo Lane}\\
-       \affaddr{Wallamaloo, New Zealand}\\
-       \email{trovato@corporation.com}
+Qiange Wang$^1$, Yanfeng Zhang$^1$, Liang Geng$^1$, Xiaodong Zhang$^2$, Ge Yu$^1$\\
+       \affaddr{$^1$Northeastern University}
+       %\affaddr{1932 Wallamaloo Lane}\\
+       \affaddr{Shenyang, China}\\
+       \affaddr{$^2$Ohio State University}
+       \affaddr{Columbus, Ohio }\\
+       \email{\{wangqiange, gengliang\}@stumail.neu.edu.cn, \{zhangyf, yuge\}@mail.neu.edu.cn}
+       \email{zhang@cse.ohio-state.edu}
 % 2nd. author
-\alignauthor
-G.K.M. Tobin\titlenote{The secretary disavows
-any knowledge of this author's actions.}\\
-       \affaddr{Institute for Clarity in Documentation}\\
-       \affaddr{P.O. Box 1212}\\
-       \affaddr{Dublin, Ohio 43017-6221}\\
-       \email{webmaster@marysville-ohio.com}
+%\alignauthor
+%Xiaodong Zhang%\titlenote{The secretary disavowsany knowledge of this author's actions.}\\
+ %     \affaddr{Ohio State University}\\
+      % \affaddr{P.O. Box 1212}\\
+  %     \affaddr{Columbus, Ohio }\\
+   %    \email{zhang@cse.ohio-state.edu}
+   %    \email{}
 % 3rd. author
-\alignauthor Lars Th{\Large{\sf{\o}}}rv{$\ddot{\mbox{a}}$}ld\titlenote{This author is the
-one who did all the really hard work.}\\
-       \affaddr{The Th{\large{\sf{\o}}}rv{$\ddot{\mbox{a}}$}ld Group}\\
-       \affaddr{1 Th{\large{\sf{\o}}}rv{$\ddot{\mbox{a}}$}ld Circle}\\
-       \affaddr{Hekla, Iceland}\\
-       \email{larst@affiliation.org}
-\and  % use '\and' if you need 'another row' of author names
-% 4th. author
-\alignauthor Lawrence P. Leipuner\\
-       \affaddr{Brookhaven Laboratories}\\
-       \affaddr{Brookhaven National Lab}\\
-       \affaddr{P.O. Box 5000}\\
-       \email{lleipuner@researchlabs.org}
-% 5th. author
-\alignauthor Sean Fogarty\\
-       \affaddr{NASA Ames Research Center}\\
-       \affaddr{Moffett Field}\\
-       \affaddr{California 94035}\\
-       \email{fogartys@amesres.org}
-% 6th. author
-\alignauthor Charles Palmer\\
-       \affaddr{Palmer Research Laboratories}\\
-       \affaddr{8600 Datapoint Drive}\\
-       \affaddr{San Antonio, Texas 78229}\\
-       \email{cpalmer@prl.com}
 }
-
-
-
 \maketitle
 
 \begin{abstract}
 %Asynchronous recursive processing usually show better performance on convergence speed and resource utilization in many field. However The usage of Asynchronous processing usually be restricted to a small field because of the non-guaranteed correctness and unstable performance. The programming complexity also plagued the user. To address these problem ,we propose a series of conditions on correctly asynchronize an algorithm based on accumulate recursive aggregation and A3Log, an automated Asynchronous Graph computing system with a asynchronous condition checker embedded, which can  automatically check the whether  user's sequential program can be correctly executed using asynchronous Model.Besides,System provide a simple and convenient datalog interface.Both shared-memory runtime engine and distributed runtime engine. 
 
-Aggregation means a data fusion operation which frequently used in Graph computing  machine learning and database query. Many recursive algorithm can be abstracted as a series of aggregation and non-aggregation operations(recursive aggregation). Asynchronous aggregation was proposed to accelerate the aggregation the and avoid the coordination. But the non-guaranteed correctness limit the usage. Moreover it is hard to write asynchronous program or check whether an algorithm can be correctly asynchronized. To address there problem we propose 1) a series of correctness conditions based on \textbf{accumulate recursive aggregation}. 2)a Datalog System with asynchronous condition checker embedded. User's sequentials program will be checked and convert to accumulate recursive aggregation and async-executed, if the correctness condition satisfied. System provide both shared-memory and distributed runtime engine,experiment shows that our System shows comparable and most time even better performance.
+Aggregation means a data fusion operation which frequently used in Graph computing, machine learning and database query. Many recursive algorithm can be abstracted as a series of aggregate and non-aggregate operations(recursive aggregation). Asynchronous aggregation was proposed to accelerate the aggregation the and avoid the coordination. But the non-guaranteed correctness limit the usage. Moreover it is hard to write asynchronous program or check whether an algorithm can be correctly asynchronized. To address there problem 1)we propose a series of correctness conditions based on \textbf{accumulate recursive aggregation}. 2)We further proposed a convert method for some unsatisfied algorithm. 3)We implement a Datalog System with asynchronous condition checker embedded. User's sequential program will be checked and convert to asynchronous aggregation automatically. System provide both shared-memory and distributed runtime engine. Experiment shows that our System shows comparable and most time even better performance with other system, and asynchronous execution can achieve 2.25X-222.82X speedup over the synchronous version for various datasets.
 \end{abstract}
 \keywords{Asynchronous aggregation, parallel aggregation, recursive program, Datalog}
-
 
 \input{introduction}
 \input{aggr}
