@@ -41,17 +41,18 @@ Line 8 is the formula of synchronous accumulative recursive aggregation. Since t
  \begin{proof}
  Since we have $\Delta X^0=X^1-X^0$.
  \begin{align}
-&G^+(X^0\cup \Delta X^0 \cup G^+\circ F(\Delta X^0)\cup \ldots (G^+ \circ F)^{k-1}(\Delta X^0 )) \notag\\
-=&G^+(X^1 \cup G^+\circ F(\Delta X^0  )\cup \ldots (G' \circ F)^{k-1}(\Delta X^0  )) \notag\\
-=&G'(G'(X^1\cup G'\circ F(\Delta X^0  ))\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \tag{3}\\
-=&G'(G\circ F(X^1)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \tag{4}\\
+&G^+(X^0\cup \Delta X^0 \cup G^+\circ F'(\Delta X^0)\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \notag\\
+=&G^+(X^1 \cup G^+\circ F'(\Delta X^0  )\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0  )) \notag\\
+=&G^+(G^+(X^1\cup G^+\circ F'(\Delta X^0  ))\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \tag{3}\\
+=&G^+(G\circ F(X^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \tag{4}\\
 =&\ldots \notag\\
-=&G'((G\circ F)^{k-2}(X^1)\cup(G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
-=&G\circ F(X^{k-1})=X^k\tag{6}
+=&G^+((G\circ F)^{k-2}(X^1)\cup(G^+ \circ F')^{k-1}(\Delta X^0 )) \notag\\
+=&G\circ F(X^{k-1})\tag{6}
  \end{align}
-Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the convertibility.As previous description, Line 6 is the Asynchronous Recursive Program Formula. 
-
+Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula. 
  \end{proof}
+ 
+ \begin{comment}
  \section{Datalog Examples}
  \label{sec:app:example}
  
@@ -219,6 +220,8 @@ In Program 4, rule \texttt{r1} initializes the predicate \texttt{sssp} by specif
  \normalsize
  
  In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
+ \end{comment}
+
 \begin{comment}
  \section{More Experiments}
  \label{sec:app:expr}

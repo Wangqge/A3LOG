@@ -17,7 +17,7 @@ A3Log is implemented using Java and contains several components as shown in Fig.
 \subsection{Datalog and Extension}
 \label{sec:system:datalog}
 
-A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n$, where $h$ is the \emph{head} and $b_1,\ldots,b_n$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND). $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for SSSP computation can be written as follows.
+A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n$, where $h$ is the \emph{head} and $b_1,\ldots,b_n$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND). $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for PATH computation can be written as follows.
 %The data associated with abstract predicate is referred to as \emph{fact}.
 \begin{comment}
 \begin{verbatim}
@@ -39,7 +39,7 @@ In Program 1, rule \texttt{r1} initializes the predicate \texttt{sssp} by specif
  \end{verbatim}\vspace{-0.1in}\small
  \begin{lstlisting}
  r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
- r2. cpaths(X,Y,count[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
+ r2. cpaths(X,Y,[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
                           edges(Z,Y),
                           cpaths(X,Y,$c$).
  \end{lstlisting}
@@ -66,7 +66,7 @@ r3. rank(Y,sum[$r$]+0.15) $\leftarrow$ rank(X,$r1$),edge(X,Y),
 
 In Program 2, we show the Datalog program for PageRank. \texttt{r1} computes the node degrees based on the edge data. \texttt{r2} initializes the predicate \texttt{rank} by specifying all the nodes' ranking scores as a constant 1. \texttt{r3} is a recursive rule that updates the predicate \texttt{rank}. We allow users to specify the terminate conditions in $[\ldots]$ by using different aggregate operations. In this program, the PageRank computation will terminate when the sum of ranking score differences of two continuous recursion results is less than or equal to 0.001.
 
-Besides SSSP and PageRank, we list 11 more example Datalog programs that can be executed asynchronously in the Appendix Sec. \ref{sec:app:example}. These examples cover a wide range of applications, including graph analytics (Program 3, 4, 5, 12), data mining (Program 6, 7, 9, 10), machine learning (Program 8, 11), and HPC (Program 13).
+Besides PATH and PageRank, we list 11 more example Datalog programs that can be executed asynchronously in the technical report \cite{fullversion}. These examples cover a wide range of applications, including graph analytics, data mining, machine learning, and HPC.
 
 \subsection{Condition Checker}
 \label{sec:system:condition}
@@ -102,12 +102,12 @@ Before launching the recursive computation, the key table structure, AsyncTable,
 
 
 \noindent\textbf{AsyncTable Design}
-As shown in Fig. \ref{fig:asynctable}, the AsyncTable contains several columns. The main key column and accumulation column store the result key-value pairs. The main key entries index the table. The accumulation column entry monotonically aggregates the intermediate results and maintains $g(\Delta x^0,\Delta x^1,\ldots)$. The accumulative property of $g$ operation makes it possible to use a single column to maintain all the intermediate results,i.e. The intermediate column entry stores the temporary aggregation results $g(\Delta X^k)$ which will be used to generate future intermediate results by applying $f$ operation. The auxiliary columns store the data which might be used by the $f$ or $g$ operation, e.g., outgoing neighbors set in SSSP and the node degree value in PageRank. The accumulation column entries and intermediate column entries are volatile, which maintain the computation states and keep being updated during the computation, while the other column entries are fixed after initialization. The AsyncTable is sharded for parallel processing. Each shard contains a number of rows and is assigned to a compute thread or placed on a distributed worker machine.
+As shown in Fig. \ref{fig:asynctable}, the AsyncTable contains several columns. The main key column and accumulation column store the result key-value pairs. The main key entries index the table. The accumulation column entry monotonically aggregates the intermediate results and maintains $g(\Delta x^0,\Delta x^1,\ldots)$. The accumulative property of $g$ operation makes it possible to use a single column to maintain all the intermediate results,i.e. The intermediate column entry stores the temporary aggregation results $g(\Delta X^k)$ which will be used to generate future intermediate results by applying $f$ operation. The auxiliary columns store the data which might be used by the $f$ or $g$ operation, e.g., outgoing neighbors set in PATH and the node degree value in PageRank. The accumulation column entries and intermediate column entries are volatile, which maintain the computation states and keep being updated during the computation, while the other column entries are fixed after initialization. The AsyncTable is sharded for parallel processing. Each shard contains a number of rows and is assigned to a compute thread or placed on a distributed worker machine.
 
 \noindent\textbf{AsyncTable Initialization}
-The AsyncTable is initialized according to user's program. The recursive rule head contains the main key and accumulation column's information. For example in SSSP, the main key column entries are initialized with the node ids. The accumulation column is initialized with the identity element \textbf{0} w.r.t $g$, e.g., MAX in SSSP. The intermediate column is initialized in terms of the non-recursive rule \texttt{r1}, i.e., 0 for the source node and MAX for other nodes. The auxiliary data dependency column is identified as the rule body predicate that describes the relationship between main keys, e.g., \texttt{edge(X,Y,d2)}. The auxiliary variable column entries can be identified as the joined results between rule body predicates, e.g., the degree information \texttt{d} in PageRank.
+The AsyncTable is initialized according to user's program. The recursive rule head contains the main key and accumulation column's information. For example in PATH, the main key column entries are initialized with the node pairs ids. The accumulation column is initialized with the identity element \textbf{0} w.r.t $g$, e.g., SUM in PATH. The intermediate column is initialized in terms of the non-recursive rule \texttt{r1}, i.e., 1 if there is an edge between the node pair and 0 for other nodes. The auxiliary data dependency column is identified as the rule body predicate that describes the relationship between main keys, e.g., \texttt{edge(Z,Y)}. The auxiliary variable column entries can be identified as the joined results between rule body predicates, e.g., the degree information \texttt{d} in PageRank.
 
-A few additional facts should be noticed: 1) It is possible that two or more items are identified as the main key (see Program 4, 5, and 12 in Appendix Sec. \ref{sec:app:example}); 2) The AsyncTable size can be dynamic rather than fixed due to the continuously inserted new rows (see Program 4, 5, 7, and 9); 3) The recursive program can be composed of more than one interdependent rules, which can be reduced to one rule (see Program 9 and 10).
+A few additional facts should be noticed: 1) It is possible that two or more items are identified as the main key  2) The AsyncTable size can be dynamic rather than fixed due to the continuously inserted new rows 3) The recursive program can be composed of more than one interdependent rules, which can be reduced to one rule.
 
 \subsection{Execution Runtime Engine}
 \label{sec:system:runtime}
@@ -122,7 +122,7 @@ A few additional facts should be noticed: 1) It is possible that two or more ite
 \end{figure}
 
 \noindent\textbf{Overall Architecure}
-A3Log provides both shared-memory runtime engine and distributed runtime engine. Fig.\\ref{fig:runtime} shows the overall structure. The shared-memory runtime has a simple design. A number of compute threads are created to update the AsyncTable in parallel, and a termination check thread is running separately to check the stop condition. The distributed runtime contains a number of workers and a master worker. Each worker creates a number of compute threads to update the local AsyncTable shard. A communicate thread tackles the remote update. We adopt a send buffer design to control the overhead of frequent communications. The master worker creates a termination check thread to globally check stop condition periodically.
+A3Log provides both shared-memory runtime engine and distributed runtime engine. Fig.\ref{fig:runtime} shows the overall structure. The shared-memory runtime has a simple design. A number of compute threads are created to update the AsyncTable in parallel, and a termination check thread is running separately to check the stop condition. The distributed runtime contains a number of workers and a master worker. Each worker creates a number of compute threads to update the local AsyncTable shard. A communicate thread tackles the remote update. We adopt a send buffer design to control the overhead of frequent communications. The master worker creates a termination check thread to globally check stop condition periodically.
 
 
 \noindent\textbf{Concurrency Control}
