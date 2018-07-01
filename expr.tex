@@ -199,7 +199,30 @@ asynchronous aggregation is expected to achieve better scaling performance. We e
 \label{sec:expr:workloads}
 To see the performance when varying datasets, we choose 20 various graph datasets with various graph structures and various graph properties. All the datasets are downloaded from \cite{konect}. We use two typical graph algorithms SSSP and PageRank for evaluation. We run the shared-memory version of A3Log on a c4-2xlarge EC2 instance with 8 vCPU and 60GB memory. A3Log is configured with 8 threads. We compare the algorithm runtime of synchronous execution and asynchronous execution on these graphs.
 
-Table \ref{tab:wrokload} shows the graph datasets and the runtime results. The asynchronous execution exhibits 4.19X-222.82X speedup over synchronous execution on SSSP computation, and 2.25X-55.59X speedup over synchronous execution on PageRank computation. Generally speaking, asynchronous SSSP achieves higher speedup on large diameter graphs, and asynchronous PageRank computation achieves higher speedup on the graphs with larger powerlaw exponent. Of course, the performance speedup also relates to the graph structures and graph types. Note that, in asynchronous execution, the termination check is performed periodically (every 1 second in this experiment). If the runtime results of asynchronous executions shows 1.x second, they may converge less than 1 second. Thus, the performance of asynchronous execution is expected to be even higher.
+Table \ref{tab:wrokload} shows the graph datasets and the runtime results. The asynchronous execution exhibits 4.19X-222.82X speedup over synchronous execution on SSSP computation, and 2.25X-55.59X speedup over synchronous execution on PageRank computation. Generally speaking, asynchronous SSSP achieves higher speedup on large diameter graphs, and asynchronous PageRank computation achieves higher speedup on the graphs with larger powerlaw exponent. Of course, the performance speedup also relates to the graph structures and graph types. %Note that, in asynchronous execution, the termination check is performed periodically (every 1 second in this experiment). If the runtime results of asynchronous executions shows 1.x second, they may converge less than 1 second. Thus, the performance of asynchronous execution is expected to be even higher.
+
+ \subsection{Effectiveness of Aggregate Operations}
+ \label{sec:expr:aggregations}
+ 
+ \begin{figure}[!t]
+ 	\vspace{-0.1in}
+ 	\centerline{
+ 		\subfloat[RoadCA]{\includegraphics[width=1.3in, angle=-90]{fig/roadca_aggregate_progress}
+ 			\label{fig:single-numagg:roadca}
+ 			\vspace{-0.05in}}
+ 		\hspace{-5mm}
+ 		\subfloat[Livejournal]{\includegraphics[width=1.3in, angle=-90]{fig/livejournal_aggregate_progress}
+ 			\label{fig:single-numagg:livejournal}
+ 			\vspace{-0.05in}}
+ 	}
+ 	\vspace{-0.1in}
+ 	\caption{Effectiveness of aggregate operations to converging progress}
+ 	\label{fig:single-numagg}
+ 	\vspace{-0.1in}
+ \end{figure}
+ In this experiment, we evaluate the effectiveness of asynchronous aggregations on accelerating the computation prog-ress.
+ 
+ We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous execution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.
 
 \section{Related Works}
 \label{sec:related}
