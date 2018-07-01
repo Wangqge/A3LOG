@@ -47,8 +47,8 @@ In order to make asynchronous aggregation feasible, we introduce a particular ty
 	(\textbf{Accumulated Recursive Aggregation}) Accumulated recursive aggregation is represented as follows.
 	\begin{equation}\label{eq:accumasync}
 	\begin{aligned}
-	\Delta Y^{k}= F(\Delta X^k)\notag\\
-	\Delta X^{k+1}= G(\Delta Y^{k})\notag
+	\Delta Y^{k}= F(\Delta X^k)\\
+	\Delta X^{k+1}= G(\Delta Y^{k})
 	\end{aligned}
 	\end{equation}
 	It starts from $\Delta X^0=X^0$ and terminates when th norm of $\Delta X^k$ is 0 or small enough. The final result is the aggregation of all intermediate results, i.e., $X^{k+1}=G(\Delta Y^{0} \cup \Delta Y^{1} \cup \ldots \cup \Delta Y^{k})$. Alternatively, the result can be represented as follows.
@@ -63,7 +63,7 @@ Intuitively, the accumulated recursive program performs the same computation as 
 	\label{th:monotone}
 	(\textbf{Monotonizability}) The accumulated recursive aggregation defined in Equation (\ref{eq:accumasync}) will return the same result as the normal recursive aggregation defined in Equation (\ref{eq:recursive2}), as long as the the following conditions are satisfied.
 	\begin{itemize}
-		\item \textbf{monotonic}: $X\subseteq G(X)$
+		\item \textbf{monotonic}: $X\subseteq F(X)$
 		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$
 		%\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
 	\end{itemize}
@@ -119,19 +119,49 @@ Fortunately, Some of these computations can be converted to accumulative recursi
 \end{comment}
 As discussed above, the primary requirement for asynchronous aggregation is that the recursive program is an accumulated recursive program. However, a large number of recursive algorithms do not satisfy this requirement. For example, the PageRank algorithm is not an accumulated recursive program.
 
-\textbf{Example 2: PageRank} The PageRank computation is another typical recursive program for ranking the nodes in a graph. The ranking score is initialized as $r_i^0=1/|V|$ for each node $i$ where $|V|$ is the total number of nodes. The $f()$ operation for node $i$ takes a tuple $\langle i,r_i^k\rangle$ as input where $r_i^k$ is the ranking score in the $k$th recursion, computes $f(r_i^k)=0.85*r_i^k/d_i=tr_j^{k+1}$ for any outgoing neighbors $j$ (where 0.85 is the constant damping factor and $d_i$ is the out-degree of node $i$), and outputs the tuples set $\{\langle j,tr_j^{k+1}\rangle\}$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,tr_j^{k+1}\rangle\}$, performs aggregation $g(\{tr_j^{k+1}\})=\sum_j{tr_j^{k+1}}+0.15=r_j^{k+1}$ and outputs $\langle j,r_j^{k+1}\rangle$. It terminates when the difference between two continuous recursions' ranking scores is small enough.
+\textbf{Example 2: PageRank} The PageRank computation is another typical recursive program for ranking the nodes in a graph. The ranking score is initialized as $r_i^0=1/|V|$ for each node $i$ where $|V|$ is the total number of nodes. The $f()$ operation for node $i$ takes a tuple $\langle i,r_i^k\rangle$ as input where $r_i^k$ is the ranking score in the $k$th recursion, computes $f(r_i^k)=0.85*r_i^k/d_i+0.15=tr_j^{k+1}$ for any outgoing neighbors $j$ (where 0.85 is the constant damping factor and $d_i$ is the out-degree of node $i$), and outputs the tuples set $\{\langle j,tr_j^{k+1}\rangle\}$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,tr_j^{k+1}\rangle\}$, performs the SUM aggregation $g(\{tr_j^{k+1}\})=\sum_j{tr_j^{k+1}}=r_j^{k+1}$ and outputs $\langle j,r_j^{k+1}\rangle$. It terminates when the difference between two continuous recursions' ranking scores is small enough.
 
-With regard to PageRank algorithm, neither the monotonic condition nor the accumulative condition is satisfied. After applying $F\circ G$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. Furthermore, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
+With regard to PageRank algorithm, the monotonic condition (i.e., $X\in F(X)$) is not satisfied. After applying the $F(X^k)$ operation, it produces a new set of kv-pairs representing the outgoing messages to neighbors but without preserving the old kv-pairs that represent the ranking scores of vertices (new ranking scores will be calculated based on the incoming messages). In other words, the aggregation result $X^{k}$ is replaced by $F(X^{k})$ but not contained in $F(X^{k})$.
 
-Fortunately, a number of recursive algorithms that are not originally with monotonic property can be equivalently converted into accumulated recursive programs. We discuss this conversion possibility in this subsection.
+Fortunately, a number of recursive algorithms that are not originally with monotonic property can be equivalently converted into accumulated recursive programs as long as three conditions are satisfied.
 
+The first requirement is that the aggregation is SUM. Then the increment of aggregation results can be computed as $\Delta X^k=X^{k+1}-X^k$. Note that, since $X$ is a kv-pairs set with unique keys, the `$+$'/`$-$' operation over two kv-pairs set denotes pair-wise value summation/subtraction indexed by key. As defined in Equation (\ref{eq:accumasync}), the increment $\Delta X^{k+1}$ should be computed based on $\Delta X^k$, i.e., $\Delta X^{k+1}=G^{+}\circ F'(\Delta X^k)$ where $G^{+}$ represents the group-by SUM aggregation referring to our first SUM operation requirement, and $F'$ is a new non-aggregate function. To find a feasible $F'$, since $\Delta X^{k+1}=G^{+}\circ F'(\Delta X^k)$, we have $X^{k+2}-X^{k+1}=G^{+}\circ F'(X^{k+1}-X^k)$. Further, we have
+\begin{equation}
+\label{eq:findf}
+\begin{aligned}
+&G^{+}\circ F(X^{k+1})-G^{+}\circ F(X^{k})=G^{+}\circ F'(X^{k+1}-X^k).
+\end{aligned}
+\end{equation}
+This is the second requirement that helps us find a feasible non-aggregate operation $F'$ according to the current $F$ function. There is one more question we should answer before proposing the new accumulated recursive program. How to initialize $\Delta X^0$? To initialize $\Delta X^0$,  We can perform the normal recursive program for one iteration to obtain $X^1$, and set $\Delta X^0=X^1-X^0$ where $X^0$ is the initial value in original recursive program. 
+
+Given the new accumulated recursive program with $G^+$ and $F'$, we aim to find the conditions that guarantee the convergence and correctness. With an initial $X^0$, the final result of original recursive program is $(G^{+}\circ F)^n(X^0)$, while the final result of the new accumulated recursive program is $X^0+\Delta X^0+G^+\circ F'(\Delta X^0)+\ldots+(G^+\circ F')^n(\Delta X^0)$. By applying Equation (\ref{eq:findf}) to $(G^{+}\circ F)^n(X^0)$, we have $X^0+\Delta X^0+\ldots+(G^+\circ F')^n(\Delta X^0)+(G^+\circ F')^{n+1}(\Delta X^0)$. When $(G^+\circ F')^{n+1}(\Delta X^0)$ is approaching to \textbf{0} (i.e., the values of all kv-pairs are approaching to 0), the result of the new accumulated recursive program is approaching to that of the original program.
+
+Therefore, we have the following theorem to guide convertion.
+\begin{theorem}
+	\label{th:convert}
+	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program and return the same results after $n$ iterations, as long as the following conditions are satisfied:\\
+	\begin{itemize}
+		\item The aggregation operation is SUM;
+		\item There is a function $F'$ such that $G^{+}\circ F(X^{k+1})-G^{+}\circ F(X^{k})=G^{+}\circ F'(X^{k+1}-X^k)$, where $F$ is the original non-aggregate function;
+		\item With the initialization $\Delta X^0=X^1-X^0$, we have $(G^+\circ F')^{n+1}(\Delta X^0)=\textbf{0}$.
+	\end{itemize}
+\end{theorem}
+
+Note that, the last condition can be relaxed with condition $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ to obtain an approximate result.
+
+PageRank is such an recursive program that can be converted to the accumulated recursive program. The $G$ operation is SUM. The new $F'$ operation is $f(r_i^k)=0.85*r_i^k/d_i$ without adding the constant 0.15. Further, after an infinite number of iterations we have $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ due to the contraction property. There also exist some other convertible algorithms, such as Program 8,11,12, 13 in Appendix Sec. \ref{sec:app:example}. 
+
+
+
+
+\begin{comment}
 The key of the conversion is to incrementally compute the origin problem and the difference value $\Delta X^k$ of each recursion can be iteratively computed i.e.
 %>>>>>>> cc27860cdb8b8c649dcef6d4748c1bb51a40b379
 \begin{equation}
 \label{eq:con}
 \begin{aligned}
-X^{k+1}=&G'(X^{k}\cup \Delta X^{k})\\
-\Delta X^{k}=&G' \circ F(\Delta X^{k-1}).
+X^{k+1}=&X^k+\Delta X^k\\
+\Delta X^{k}=&G' \circ F' (\Delta X^{k-1}).
 \end{aligned}
 \end{equation}
 if aggregate function $G'$ satisfied the \textbf{accumulative} condition, the first line of equation \ref{eq:con} can be rewrite as $X^{k+1}=G'(X^0\cup \Delta X^0\cup \Delta X^1 \ldots \Delta X^k)$.%Note that $G'$ is not necessarily the origin $G$,usually it depends on specific questions.
@@ -145,15 +175,18 @@ Usually it is hard to find suitable $G'()$ for an arbitrary algorithm, because i
 
 Since we define $\Delta X^k=diff(X^{k+1},X^{k})$,and we have $X^{k+1}=G'(X^0\cup \Delta X^0 \cup G'\circ F'(\Delta X^0)\cup \ldots G' \circ F^n(\Delta X^0))$. To determine $\Delta X^0$,  We can perform normal recursive aggregation for one time and obtain $X^1$. Then $\Delta X^0$ is initialized as $diff(X^1,X^0)$ and $X^0$ is still $X^0$. Then the algorithm can be accumulatively executed.
 
-For example, PageRank is such an iterative algorithm that can be converted to the accumulated recursive aggregation. %\cite{maiter}.
-In original PageRank, $R^k=(1-b)AR^{k-1}+b$,$F$ operation is sending rank value $R_i$ to their outgoing neighbor, corresponding to the multiplication by subscript of transform matrix $A$,$G$ operation is the 'SUM' of intermediate result by the row number of $A$ with constant vector $b$ added. following the define of $diff(\cdot,\cdot)$,
+%\cite{maiter}.
+In original PageRank, $R^k=(1-b)AR^{k-1}+b$, where $A$ is a matrix that represents the graph structure. $F$ operation is sending rank value $R_i$ to their outgoing neighbor, corresponding to the multiplication by subscript of transform matrix $A$,$G$ operation is the 'SUM' of intermediate result by the row number of $A$ with constant vector $b$ added. following the define of $diff(\cdot,\cdot)$,
 \begin{equation}
 \Delta R^k=(1-b)A\Delta R^{k-1}\notag
 \end{equation}
 So we can obtain that $X^k=X^0+\Delta X^0+(1-b)A\Delta X^0+\ldots+((1-b)A)^{k-1}\Delta X^0$
 where $\Delta X^0$ is initialized as $X^1-X^0$. The $F$ operation is matrix multiplication without summing up,and $G$ operation is the 'SUM' of the intermediate result.
 Furthermore, $g'$ operation is accumulative,the $f()$ operation and $g'()$ operation in PageRank is order independent($F$,$G'$ is the same), e.q., $\sum_{n}{0.8*x_i/d}=0.8/d*\sum_{n}{x_i}$ which makes it suitable for asynchronous aggregation. There also exist other convertible algorithms, such as Program(8,11,12,
-13) in Appendix Sec. \ref{sec:app:example}. Next, we formally provide the convertibility conditions as follows.
+13) in Appendix Sec. \ref{sec:app:example}. 
+
+
+Next, we formally provide the convertibility conditions as follows.
 
 \begin{theorem}
 	\label{th:convert}
@@ -168,22 +201,19 @@ Furthermore, $g'$ operation is accumulative,the $f()$ operation and $g'()$ opera
 The formal proof can be found in Appendix Sec. \ref{sec:app:proof:convert}. 
 Note that, it is not realistic to perform recursion infinite times. In practice, we will stop the recursion as long as the incremental value $(G'\circ F)^n(x)$ is ``small'' enough.
 
-
+\end{comment}
 
 
 
 
 \subsection{Automatic Asynchronization}
 \label{sec:async:autoasync}
-Since group-by operation carry on the same aggregate/non-aggregate operations on different key. In this subsection, we use the non-group-by  operations $g$ and $f$ to describe the automation process.
-
-Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these conditions manually. It is also hard to find an aggregate function $g'()$ for converting a normal recursive program into an accumulated recursive program.
- To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this subsection, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations\footnote{The $g$ and $f$ operations in Datalog programs can be identified as will be shown in next section.}.
 
 
- The monotonic conditions can be easily checked by the struct of datalog program which detailed in Section 4.1
+Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these conditions manually. It is also hard to find a new function $F'()$ for converting a normal recursive program into an accumulated recursive program.
+ To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this subsection, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations\footnote{The $g$ and $f$ operations in Datalog programs can be identified as will be shown in next section.}. To simplify the analysis, we use key-specific operations $g$ and $f$ to describe the automation process instead of using the set oriented operations $G$ and $F$.
 
-The other condition verification problem can be thought of as a form of the constraint satisfaction problem, which can be analyzed with the help of \emph{satisfiability modulo theories} (SMT) \cite{53e486195688442995f82bfe28c55731}. The satisfiability of these conditions can then be checked by an SMT solver, such as Z3 \cite{DeMoura:2008:ZES:1792734.1792766}. Next, we show how to reduce these condition verification problems into SMT satisfiability solving problems.
+The monotonic conditions can be easily checked by the struct of Datalog program which will be detailed in Section 4.1 The other condition verification problems can be thought of as a form of the constraint satisfaction problem, which can be analyzed with the help of \emph{satisfiability modulo theories} (SMT) \cite{53e486195688442995f82bfe28c55731}. The satisfiability of these conditions can then be checked by an SMT solver, such as Z3 \cite{DeMoura:2008:ZES:1792734.1792766}. Next, we show how to reduce these condition verification problems into SMT satisfiability solving problems.
 
 First, the $f()$ and $g()$ functions and the conditions have to be translated into a formula for being verified by an SMT solver. Given a function $H=\{f(x_1),\ldots,f(x_m)\}$ or $H=\{g(x_1),...g(x_n)\}$, we are interested in a formula for $H$ of the form $\phi_H^{o_1,\ldots,o_m}$, where $o_1,\ldots,o_m$ are output variables \cite{Liu:2014:ADP:2670979.2670980}. Intuitively, the formula $\phi$ is ``correct'' if an assignment to $\{x_1,\ldots,x_n,o_1,\ldots,o_m\}$ makes $\phi$ be true if and only evaluating $H(x_1,\ldots,x_n)$ returns $o_1,\ldots,o_m$. Then the satisfiability of $\phi$ exactly implies that the function will compute the same output. Based on this formula, we present the formulas for different conditions in the following.
 
@@ -203,6 +233,5 @@ For the accumulative and commutative conditions in Theorem \ref{th:monotone} and
 Note that, SMT cannot judge ``whether a formula $H$ is always true?'' but only answers ``whether a formula $H$ is satisfiable?''. A formula $H$ is \emph{satisfiable} if there is some assignment of appropriate values to its uninterpreted function and constant symbols under which $H$ evaluates to true. Thus, to verify a condition (that should be always true), we convert the ``$H$ is always true'' problem to the ``not $H$ is not satisfiable'' problem. If $H$ is always true, then ``not $H$'' is always false, and then ``not $H$'' will not have any satisfying assignment
 
 
-Furthermore, SMT solver Z3 can be used to find a qualified aggregate function $g'()$.
-Following Corollary \ref{coro:auto:1}, we first use Z3 to check the satisfiability.
-If the formula is not satisfiable, System will try to find a new $g'$ by the method proposed in sec 3.4.  If there is an $g'$ exist and satisfied the accumulative and order-independent condition,SMT solver will return $g'$.  Otherwise it will return unknown or unsatisfiable. 
+Furthermore, SMT solver Z3 can be used to find a qualified $f'$ function. Following Corollary \ref{coro:auto:1}, we first use Z3 to check the satisfiability.
+If the formula is not satisfiable, system will try to find a new $f'$ by the method proposed in sec 3.4. Suppose a new $f'$ is found. If it returns monotonic decreasing values with applying $f'$ more and more times on a real value (i.e., contraction), it can be converted to an accumulated recursive program. Futher, by checking whether $f'$ and $g$ satisfy the order-independent condition, we can determine whether it can be executed asynchronously.
