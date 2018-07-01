@@ -35,7 +35,7 @@ r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
 In Program 1, rule \texttt{r1} initializes the predicate \texttt{sssp} by specifying the source node $X=1$ and the shortest distance from source as $d=0$. \texttt{r2} is a recursive rule since it has the \texttt{sssp} predicate in both its head and body. \texttt{r2} will recursively produce \texttt{sssp} fact by joining the old \texttt{sssp} and \texttt{edge}. If there is a path from source to $X$ of length $d_1$ and an edge from $X$ to $Y$ of length $d_2$, there is a path from source to $Y$ with length $d=d_1+d_2$. If there is already a path to $Y$ found before, it should be also considered. Hence, the shortest distance from source to $Y$ is updated by the minimum of these possible distances, i.e., min$[d]$. The recursion will terminate as soon as no shortest distance is updated.
 \end{comment}
  \begin{verbatim}
- Program 4. Computing Paths in a DAG
+ Program 1. Computing Paths in a DAG
  \end{verbatim}\vspace{-0.1in}\small
  \begin{lstlisting}
  r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
