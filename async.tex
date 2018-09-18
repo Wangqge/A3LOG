@@ -173,7 +173,7 @@ Therefore, we have the following theorem to guide convertion.
 	\label{th:convert}
 	(\textbf{Convertibility}) A recursive program can be converted to an accumulated recursive program and return the same results after $n$ iterations, as long as the following conditions are satisfied:\\
 	\begin{itemize}
-		\item The aggregation operation is SUM;
+		\item The aggregation operation is SUM or {\color{red}PRODUCT};
 		\item There is a function $F'$ such that $G^{+}\circ F(X^{k+1})-G^{+}\circ F(X^{k})=G^{+}\circ F'(X^{k+1}-X^k)$, where $F$ is the original non-aggregate function;
 		\item With the initialization $\Delta X^0=X^1-X^0$, we have $(G^+\circ F')^{n+1}(\Delta X^0)=\textbf{0}$.
 	\end{itemize}
@@ -202,7 +202,7 @@ PageRank is such an recursive program that can be converted to the accumulated r
 
 \begin{comment}
 The key of the conversion is to incrementally compute the origin problem and the difference value $\Delta X^k$ of each recursion can be iteratively computed i.e.
-%>>>>>>> cc27860cdb8b8c649dcef6d4748c1bb51a40b379
+`%>>>>>>> cc27860cdb8b8c649dcef6d4748c1bb51a40b379
 \begin{equation}
 \label{eq:con}
 \begin{aligned}

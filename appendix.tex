@@ -52,7 +52,7 @@ Line 8 is the formula of synchronous accumulative recursive aggregation. Since t
 Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula. 
  \end{proof}
  
- \begin{comment}
+
  \section{Datalog Examples}
  \label{sec:app:example}
  
@@ -67,7 +67,7 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \normalsize
  
  Program 3 computes the connected components in a graph. Each vertex starts as its own connected component with its identifier. For all combinations of facts that satisfy the recursive bodies, the aggregate function \texttt{min} keeps and propagates only the current minimal component ID $v$ for each vertex \texttt{Y}.
- 
+  \begin{comment}
 \begin{verbatim}
 Program 4. Single Source Shortest Path
 \end{verbatim}
