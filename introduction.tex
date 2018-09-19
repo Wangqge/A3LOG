@@ -35,7 +35,7 @@ To address the first problem, we seek to find the root reason that causes wrong 
 To address the second problem, we propose an asynchronization strategy that can automatically translate a user-specified Datalog recursive program to a asynchronous parallel Java program running on multi-core machine or cluster. We choose Dalalog as the high level language because of its high-level declarative semantics and support for parallel recursion \cite{Shkapsky:2016:BDA:2882903.2915229}. The aggregate operation and non-aggregate operation can be extracted from user's Datalog program. These abstract operations are automatically checked for verifying whether this recursive program satisfies asynchronous execution conditions. The automatic verification is achieved with the help of a Satisfactory Module Theory (SMT) solver Z3 \cite{DeMoura:2008:ZES:1792734.1792766}. 
 
 {\color{red}
-To address the third problem, we proposed a novel dynamic sending buffer strategy to improving asynchronous processing performance. The previous works\cite{Fan2018Adaptive,Xie2015SYNC} show that the neither synchronous model nor asynchronous model consistently outperforms the other. So these work proposed an adaptive strategy to switch the best model during algorithm execution. In our work We experimentaly evaluate with different kind of workload and find that 
+To address the third problem, we proposed a novel adaptive message buffer strategy to improving asynchronous processing performance. The previous works\cite{Fan2018Adaptive,Xie2015SYNC} show that the neither synchronous model nor asynchronous model consistently outperforms the other. So these work proposed an adaptive strategy to switch the best model during algorithm execution. In our work We experimentaly evaluate with different kind of workload and find that  
 
 NOT FINISHED
 }
@@ -58,11 +58,21 @@ The contributions of this paper are summarized as follows.
 \begin{itemize}
 	%{\color{red}\item To guarantee the correctness of recursive Datalog program, we proposed a series of conditions of converting  recursive aggregation into a self-defined \textbf{Accumulative Recursive AgGregation}. Moreover new sufficient conditions that guarantee asynchronous processing to return the same result as synchronous processing. which has proposed based on the analysis  of aggregate and non-aggregate operators in ARAG.Even for some recursive programs that do not satisfy these conditions, we propose an approach to conditionally convert them to be qualified for asynchronous aggregation.}
 	\item We define the accumulated recursive aggregation (ARA) that has the possibility of returning correct results when executing asynchronously. We also propose the convert conditions from normal recursive aggregation (NRA) to ARA. Furthermore, based on the analysis of aggregate and non-aggregate operations' properties, we provide the conditions for correctly converging to the result when asynchronously executing ARA.  
+	
 	\item To alleviate the burden of programmers, we propose an automated condition verification technique by leveraging satisfiability modulo theories (SMT). User's accumulated recursive program (ARP) can be automatically checked for asynchronous execution possibilities and can even be automatically translated to an asynchronous parallel program.
-	\item We propose a Datalog implementation, A3Log, to support automated asynchronous aggregation. A3Log is built by modifying distributed Socialite \cite{Seo:2013:DSD:2556549.2556572}. The condition verification techniques are embedded in a Condition Checker component, so that it can asynchronize user's program automatically. A3Log provides both shared-memory runtime engine and distributed runtime engine. The evaluation of a Datalog program are executed updating a distributed hash table structure. A3Log also offers numerous optimizations and functionalities to support high performance iterative computations, such as concurrency control, priority scheduling, and termination control.
+	
+		 
+	{\color{red}
+	\item We experimentally evaluate Asynchronous processing with different workload and find out that unreasonable buffer settings may cause serious performance degradation, So we propose an adaptive message buffer strategy to auto tune the Message sending frequency. Which effectively solved this problem.
+	\item We propose a Datalog implementation A3Log, to support automated asynchronous aggregation. A3Log is built by modifying distributed Socialite \cite{Seo:2013:DSD:2556549.2556572}. The condition verification techniques are embedded in a Condition Checker component, so that it can asynchronize user's program automatically. %Morever A3log
+	%A3Log provides both shared-memory runtime engine and distributed runtime engine. The evaluation of a Datalog program are executed updating a distributed hash table structure.
+	 A3Log also offers numerous optimizations and functionalities to support high performance iterative computations, such as concurrency control, priority scheduling, and termination control.
 	
 	\item We experimentally evaluate A3Log by comparing with Socialite\cite{Lam:2013:SDE:2510649.2511289} , %GraphLab\cite{Low:2012:DGF:2212351.2212354}, 
-	 Myria\cite{Wang:2015:AFR:2824032.2824052} and Bigdatalog\cite{Shkapsky:2016:BDA:2882903.2915229}. The experiments are performed on a 16-core instance for many-core experiments and on a cluster with 16 instances for distributed experiments. Our results show that A3Log outperforms other systems in many-core experiments and shows comparable performance with Maiter in distributed experiments. Our results also show that the asynchronous execution of A3Log can achieve 2.25X-222.82X speedup over the synchronous version for various datasets.
+	 Myria\cite{Wang:2015:AFR:2824032.2824052} and Bigdatalog\cite{Shkapsky:2016:BDA:2882903.2915229}. 
+	 %The experiments are performed on a cluster with 16 instances for distributed experiments. 
+	 Our results show that A3Log outperforms other systems in Distribute environment. And, the  optimized asynchronous processing consistently outperform synchronous processing achieve 1.3X~6.5X speedup over the synchronous version for various datasets and algorithm.
+	}
 \end{itemize}
 
 The rest of the paper are organized as follow: In Sec.2 we describe the details of  automatic asynchronous technology. In Sec.3 we propose a datalog system based on automatic asynchronous the technology. In Section.4  we give the performance evaluation. And then we review the related works in Sec 5 and then conclude the paper in Sec.7.
