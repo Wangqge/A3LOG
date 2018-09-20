@@ -35,9 +35,8 @@ To address the first problem, we seek to find the root reason that causes wrong 
 To address the second problem, we propose an asynchronization strategy that can automatically translate a user-specified Datalog recursive program to a asynchronous parallel Java program running on multi-core machine or cluster. We choose Dalalog as the high level language because of its high-level declarative semantics and support for parallel recursion \cite{Shkapsky:2016:BDA:2882903.2915229}. The aggregate operation and non-aggregate operation can be extracted from user's Datalog program. These abstract operations are automatically checked for verifying whether this recursive program satisfies asynchronous execution conditions. The automatic verification is achieved with the help of a Satisfactory Module Theory (SMT) solver Z3 \cite{DeMoura:2008:ZES:1792734.1792766}.
 
 {\color{red}
-To address the third problem,  The previous works\cite{Fan2018Adaptive,Xie2015SYNC} show that the neither synchronous model nor asynchronous model consistently outperforms the other. \cite{Xie2015SYNC}proposed a SYNC/ASYNC hybrid system by modifying graphlab. \cite{Fan2018Adaptive} proposed a more general model They develope GRAPE+ which can switch from BSP/AP/SSP/ models. While none of these work concern about why asynchronous is not always better. 
-
-NOT FINISHED
+To address the third problem, The previous works\cite{Fan2018Adaptive,Xie2015SYNC}point out that the neither synchronous model nor asynchronous model consistently outperforms the other. \cite{Xie2015SYNC}proposed a SYNC/ASYNC hybrid system by modifying graphlab. \cite{Fan2018Adaptive} proposed a more general model. They develope GRAPE+ with SSP/BSP/AP hybirded.% While none of these work concerned about improving the performance of asynchronous processing. 
+In distributed environment, the network cannot tolerate fully real-time communication. So previous asynchronous processing system choose to using message buffer strategy to avoid frequent communication. In traditional opinion, message buffer size should be setted as small as possible to speedup the information update.  However according to our work, too fast updating is not always effective. The optimal buffer size for different workload is not fixed. Even within one running cycle, the optimal buffer size is also dynamic changing. But none of the previous work discussed this. So in this paper, we proposed a dynamic buffer strategy. Different from the previous work, we use only asynchronous mode with dynamic buffer, which realized similar function with previous work.  
 }
 %Our system is able to automatically check whether a recursive Datalog program can return correct result with asynchronous recursive execution from user's Datalog program. This is achieved by automated sufficient conditions verification using Z3 smt solver.
 %A3Log can also automate the conversion for some algorithm that satisfied the convertible condition without user's participation. Further, A3Log provides both shared-memory runtime engine and distributed runtime engine for fast execution.
@@ -63,16 +62,16 @@ The contributions of this paper are summarized as follows.
 	
 		
 	{\color{red}
-	\item We experimentally evaluate Asynchronous processing with different workload and find out that unreasonable buffer settings may cause serious performance degradation, So we propose an adaptive message buffer strategy to auto tune the Message sending frequency. Which effectively solved this problem.
+	\item We experimentally evaluate Asynchronous processing with different workload and point out the reason  serious performance degradation, Then we propose an adaptive message buffer strategy to auto tune the Message sending frequency.
 
-	\item We propose a Datalog implementation A3Log, A3Log is built by modifying distributed Socialite \cite{Seo:2013:DSD:2556549.2556572}. The condition verification techniques are embedded in a Condition Checker component, so that it can asynchronize user's program automatically. Morever We implement a lightweight adaptive strategy,which effectively enhanced asynchronous performance and only incur very low overhead.
+	\item We propose a Datalog implementation A3Log, A3Log is built by modifying distributed Socialite \cite{Seo:2013:DSD:2556549.2556572}. The condition verification techniques are embedded in a Condition Checker component, so that it can asynchronize user's program automatically. Morever We implement a lightweight adaptive strategy, which effectively enhanced asynchronous performance and only incur very low overhead.
 	%A3Log provides both shared-memory runtime engine and distributed runtime engine. The evaluation of a Datalog program are executed updating a distributed hash table structure.
 	 A3Log also offers numerous optimizations and functionalities to support high performance iterative computations, such as concurrency control, priority scheduling, and termination control.
 	
 	\item We experimentally evaluate A3Log by comparing with Socialite\cite{Lam:2013:SDE:2510649.2511289} , %GraphLab\cite{Low:2012:DGF:2212351.2212354},
 	 Myria\cite{Wang:2015:AFR:2824032.2824052} and Bigdatalog\cite{Shkapsky:2016:BDA:2882903.2915229}.
 	 %The experiments are performed on a cluster with 16 instances for distributed experiments.
-	 Our results show that A3Log outperforms other systems in Distribute environment. And, the optimized asynchronous processing consistently outperform synchronous processing achieve 1.3X~6.5X speedup over the synchronous version for various datasets and algorithm. 
+	 Our results show that A3Log outperforms other systems in Distribute environment. And, the optimized asynchronous processing consistently outperform synchronous processing achieve 1.3X-6.5X speedup over the synchronous version for various datasets and algorithm. 
 	}
 \end{itemize}
 
