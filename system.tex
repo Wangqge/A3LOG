@@ -7,19 +7,19 @@ In this section, we propose a Datalog System A3Log to support accumulate asynchr
     \centering
   \includegraphics[width=3.2in]{fig/overview2}
   \vspace{-0.1in}
-  \caption{A3Log overview NEED TO MODIFY}
+  \caption{A3Log overview}
   \label{fig:overview}
   \vspace{-0.2in}
 \end{figure}
 
-A3Log is implemented using Java and contains several components as shown in Fig. \ref{fig:overview}. The \textbf{Parser} parses user's Datalog program into an abstract syntax tree (AST) by using ANTLR \cite{antlr}. The \textbf{Analyzer} traverses the AST to performs syntactic and semantic analysis, identifies the recursive rule, and analyzes the aggregate operation $g$ and non-aggregate operation $f$. If the program is a recursive program, it will be further processed by our system, otherwise it will be executed by the Socialite runtime engine \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572}. Given the $f$ and $g$ operations retrieved by the Analyzer, the \textbf{Condition Checker} relies on Z3 SMT Solver \cite{DeMoura:2008:ZES:1792734.1792766,z3} to verify the conditions and automatically chooses the appropriate evaluation technique. The \textbf{Code Generator} provides a series of code templates for generating the share-memory runtime code and distributed runtime code, where we use StringTemplate \cite{stringtemplate} to generate source code. Then, the recursive program will be executed by our execution engine (Sec. \ref{sec:system:runtime}). A3Log provides both \textbf{Shared-Memory Runtime Engine} and \textbf{Distributed Runtime Engine}. The shared-memory runtime and distributed runtime share several functionalities, including lock control, scheduling, termination check. The distributed runtime additionally supports data distribution, MPI control, and fault tolerance. We use TROVE \cite{trove} for high performance container operations which are frequently used due to our key table structure, use openmpi \cite{mpich} for  communication, and use ProtoStuff \cite{kryo} for efficient serialization and deserialization. As implemented in Socialite, A3Log also relies on HDFS to store data and to checkpoint intermediate computation state.
+A3Log is implemented using Java and contains several components as shown in Fig. \ref{fig:overview}. The \textbf{Parser} parses user's Datalog program into an abstract syntax tree (AST) by using ANTLR \cite{antlr}. The \textbf{Analyzer} traverses the AST to performs syntactic and semantic analysis, identifies the recursive rule, and analyzes the aggregate operation $g$ and non-aggregate operation $f$. If the program is a recursive program, it will be further processed by our system, otherwise it will be executed by the Socialite runtime engine \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572}. Given the $f$ and $g$ operations retrieved by the Analyzer, the \textbf{Condition Checker} relies on Z3 SMT Solver \cite{DeMoura:2008:ZES:1792734.1792766,z3} to verify the conditions and automatically chooses the appropriate evaluation technique. The \textbf{Code Generator} provides a series of code templates for generating the share-memory runtime code and distributed runtime code, where we use StringTemplate \cite{stringtemplate} to generate source code. Then, the recursive program will be executed by our execution engine (Sec. \ref{sec:system:runtime}). A3Log provides both \textbf{Shared-Memory Runtime Engine} and \textbf{Distributed Runtime Engine}. The shared-memory runtime and distributed runtime share several functionalities, including lock control, scheduling, termination check. The distributed runtime additionally supports data distribution, MPI control, and fault tolerance. We use TROVE \cite{trove} for high performance container operations which are frequently used due to our key table structure, use openmpi \cite{mpich} for  communication, and use ProtoStuff \cite{Protostuff} for efficient serialization and deserialization. As implemented in Socialite, A3Log also relies on HDFS to store data and to checkpoint intermediate computation state.
 
 \subsection{Datalog and Extension}
 \label{sec:system:datalog}
 
 A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n$, where $h$ is the \emph{head} and $b_1,\ldots,b_n$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND). $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for SSSP computation can be written as follows.
 %The data associated with abstract predicate is referred to as \emph{fact}.
-
+\begin{comment}
 \begin{verbatim}
 Program 1. Single Source Shortest Path
 \end{verbatim}
@@ -33,7 +33,20 @@ r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
 \normalsize
 
 In Program 1, rule \texttt{r1} initializes the predicate \texttt{sssp} by specifying the source node $X=1$ and the shortest distance from source as $d=0$. \texttt{r2} is a recursive rule since it has the \texttt{sssp} predicate in both its head and body. \texttt{r2} will recursively produce \texttt{sssp} fact by joining the old \texttt{sssp} and \texttt{edge}. If there is a path from source to $X$ of length $d_1$ and an edge from $X$ to $Y$ of length $d_2$, there is a path from source to $Y$ with length $d=d_1+d_2$. If there is already a path to $Y$ found before, it should be also considered. Hence, the shortest distance from source to $Y$ is updated by the minimum of these possible distances, i.e., min$[d]$. The recursion will terminate as soon as no shortest distance is updated.
-
+\end{comment}
+ \begin{verbatim}
+ Program 4. Computing Paths in a DAG
+ \end{verbatim}\vspace{-0.1in}\small
+ \begin{lstlisting}
+ r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
+ r2. cpaths(X,Y,count[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
+                          edges(Z,Y),
+                          cpaths(X,Y,$c$).
+ \end{lstlisting}
+ \normalsize
+ 
+ Program 4 counts the paths between pairs of vertices in an acyclic graph. \texttt{r1} counts each edge as one path between its vertices. In \texttt{r2}, any \texttt{edge(Z,Y)} that extends from a computed path count \texttt{cpath(X,Z,$c$)} establishes $c$ distinct paths from \texttt{X} to \texttt{Y} through \texttt{Z}.
+ 
 Originally, the Datalog program terminates when no new fact can be found. However, some programs will never stop since it continuously produces ``tiny'' facts. For example, the PageRank computation will continuously update the PageRank scores even though the changes are less and less. In order to help users express more termination conditions, we allow users to specify the termination conditions using aggregations.
 
 
@@ -81,10 +94,10 @@ Before launching the recursive computation, the key table structure, AsyncTable,
 \begin{figure}[!t]
     \centering
   \includegraphics[width=3.2in]{fig/asynctable}
-  \vspace{-0.1in}
+  \vspace{-0.0in}
   \caption{AsyncTable update}
   \label{fig:asynctable}
-  \vspace{-0.2in}
+  \vspace{-0.0in}
 \end{figure}
 
 
@@ -102,14 +115,14 @@ A few additional facts should be noticed: 1) It is possible that two or more ite
 \begin{figure}[!t]
     \centering
   \includegraphics[width=2.9in]{fig/runtime}
-  \vspace{-0.1in}
+  \vspace{-0.0in}
   \caption{Execution Runtime Engine}
   \label{fig:runtime}
   \vspace{-0.1in}
 \end{figure}
 
 \noindent\textbf{Overall Architecure}
-A3Log provides both shared-memo-ry runtime engine and distributed runtime engine. Fig. \ref{fig:runtime} shows the overall structure. The shared-memory runtime has a simple design. A number of compute threads are created to update the AsyncTable in parallel, and a termination check thread is running separately to check the stop condition. The distributed runtime contains a number of workers and a master worker. Each worker creates a number of compute threads to update the local AsyncTable shard. A communicate thread tackles the remote update. We adopt a send buffer design to control the overhead of frequent communications. The master worker creates a termination check thread to globally check stop condition periodically.
+A3Log provides both shared-memory runtime engine and distributed runtime engine. Fig.\\ref{fig:runtime} shows the overall structure. The shared-memory runtime has a simple design. A number of compute threads are created to update the AsyncTable in parallel, and a termination check thread is running separately to check the stop condition. The distributed runtime contains a number of workers and a master worker. Each worker creates a number of compute threads to update the local AsyncTable shard. A communicate thread tackles the remote update. We adopt a send buffer design to control the overhead of frequent communications. The master worker creates a termination check thread to globally check stop condition periodically.
 
 
 \noindent\textbf{Concurrency Control}
@@ -117,7 +130,7 @@ The accumulation column entries and intermediate column entries keep being updat
 
 
 \noindent\textbf{Scheduling}
-When executed in synchronous module,There is no necessary or chance to schedule the computing.But in asynchronous module.The clever scheduling of aggregate operations has the potential of accelerating the convergence of recursive computations.The scheduling should be performed by evaluating the intermediate aggregation result (intermediate column entries in AsyncTable). The top intermediate column entries (in the partial order defined by $g$) should be scheduled. Since the intermediate column entries keep being pdated, the top entries should be evaluated frequently. For the sake of reducing scheuduling cost, we utilize the sampling technique \cite{Zhang:2011:PDF:2038916.2038929} to approximately obtain the top $N\%$ entries. The scheduling is even more costly in distributed environment. Rather than global scheduling, local scheduling in each worker is preferred.
+When executed in synchronous module,There is no necessary or chance to schedule the computing.But in asynchronous module.The clever scheduling of aggregate operations has the potential of accelerating the convergence of recursive computations.The scheduling should be performed by evaluating the intermediate aggregation result (intermediate column entries in AsyncTable). The top intermediate column entries (in the partial order defined by $g$) should be scheduled. Since the intermediate column entries keep being updated, the top entries should be evaluated frequently. For the sake of reducing scheuduling cost, we utilize the sampling technique \cite{Zhang:2011:PDF:2038916.2038929} to approximately obtain the top $N\%$ entries. The scheduling is even more costly in distributed environment. Rather than global scheduling, local scheduling in each worker is preferred.
 %The portion ($N\%$) of entries to be scheduled balances the tradeoff between the optimal scheduling benefit and the sorting cost. We will empirically study the effect of $N\%$ in Sec. \ref{sec:expr:schedle}.
 
 \noindent\textbf{Termination Check}

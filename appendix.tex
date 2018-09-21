@@ -1,5 +1,5 @@
 \begin{appendix}
-You can use an appendix for optional proofs or details of your evaluation which are not absolutely necessary to the core understanding of your paper.
+%You can use an appendix for optional proofs or details of your evaluation which are not absolutely necessary to the core understanding of your paper. 
 \section{proofs}
 \subsection{Proof of Theorem Monotonic}
 
@@ -9,38 +9,38 @@ You can use an appendix for optional proofs or details of your evaluation which 
 	\begin{align}
 	&G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big)\notag \\
 	=&G\Big(\Delta Y^0\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big)    \notag\\
-	=&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)  \tag{1}\\
-	=&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{2}\\
+	=&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)\tag{3}\\
+	=&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{4}\\
 	=& \ldots \notag \\
-	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{3}\\
+	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{5}\\
 	=&(G \circ F)^{k+1}(X^0).\notag
 	\end{align}
-	Line (1) is true because of the accumulative property. Due to the monotonic property Line (2) is true because  Repeat applying these two property ,we can reduce all the low order items in turn and line(3) can be obtained. 
+	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties ,we can reduce all the low order items in turn and line 5 can be obtained. 
 \end{proof}
 
 \subsection{Proof of Theorem Asynchronous}
  \begin{proof}
  \label{sec:app:proof:correct}
- In this section .Since $X$ has been divided into two disjoint set. we exchange the subset belongs to any two adjacent recursion,and the prove that they have the same formula.It
+ In this section. We assumed that $X$ can be divided into two disjoint subset $X_0$ and $X_1$. we exchange the subset belongs to any two adjacent recursion, and then prove that they have the same formula. This is the basic form which can generalize all the other situations.
  \begin{align}
- &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^{r_i}_0 \cup \Delta X^{r_{i+1}}_1)\cup\ F\circ G(\Delta X^{r_{i+1}}_0 \cup \notag\\ &\Delta X^{r_i}_1) \ldots\cup \Delta X^n)\tag{1} \\
- =&G( \ldots \cup G \circ F\circ G(\Delta X^{r_i}_0 \cup \Delta X^{r_{i+1}}_1)\cup\ G \circ F\circ G(\Delta X^{r_{i+1}}_0 \cup \notag\\ &\Delta X^{r_i}_1) \ldots)\tag{2} \\
- =&G( \ldots \cup G \circ F(\Delta X^{r_i}_0 \cup \Delta X^{r_{i+1}}_1)\cup\ G \circ F(\Delta X^{r_{i+1}}_0 \cup \Delta X^{r_{i}}_1) \ldots)\tag{3} \\
-  =&G( \ldots \cup (G\circ F(\Delta X^{r_i}_0) \cup G\circ F(\Delta X^{r_{i+1}}_1))\cup\ (G \circ F(\Delta X^{r_{i+1}}_0) \cup \notag\\ &G \circ F(\Delta X^{r_i}_1)) \ldots )\tag{4} \\
-  =&G( \ldots \cup (G\circ F(\Delta X^{r_i}_0) \cup G\circ F(\Delta X^{r_i}_1))\cup\ (G \circ F(\Delta X^{r_{i+1}}_0) \cup \notag\\ &G \circ F(\Delta X^{r_{i+1}}_1)) \ldots )\tag{5} \\
-  =&G( \ldots \cup G \circ F(\Delta X^{r_i}_0 \cup \Delta X^{r_{i}}_1)\cup\ G \circ F(\Delta X^{r_{i+1}}_0 \cup \Delta X^{r_{i+1}}_1) \ldots)\tag{6} \\
-  =&G( \ldots \cup F \circ G(\Delta X^{r_i}_0 \cup \Delta X^{r_{i}}_1)\cup\ F \circ G(\Delta X^{r_{i+1}}_0 \cup \Delta X^{r_{i+1}}_1) \ldots)\tag{7} \\
+ &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^{i}_0 \cup \Delta X^{i+1}_1)\cup\ F\circ G(\Delta X^{i+1}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots\cup \Delta X^n)\tag{1} \\
+ =&G( \ldots \cup G \circ F\circ G(\Delta X^{i}_0 \cup \Delta X^{{i+1}}_1)\cup\ G \circ F\circ G(\Delta X^{{i+1}}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots)\tag{2} \\
+ =&G( \ldots \cup G \circ F(\Delta X^{i}_0 \cup \Delta X^{{i+1}}_1)\cup\ G \circ F(\Delta X^{{i+1}}_0 \cup \Delta X^{{i}}_1) \ldots)\tag{3} \\
+  =&G( \ldots \cup (G\circ F(\Delta X^{i}_0) \cup G\circ F(\Delta X^{{i+1}}_1))\cup\ (G \circ F(\Delta X^{{i+1}}_0) \notag\\ &\cup G \circ F(\Delta X^{i}_1)) \ldots )\tag{4} \\
+  =&G( \ldots \cup (G\circ F(\Delta X^{i}_0) \cup G\circ F(\Delta X^{i}_1))\cup\ (G \circ F(\Delta X^{{i+1}}_0) \notag\\ &G \cup \circ F(\Delta X^{{i+1}}_1)) \ldots )\tag{5} \\
+  =&G( \ldots \cup G \circ F(\Delta X^{i}_0 \cup \Delta X^{{i}}_1)\cup\ G \circ F(\Delta X^{{i+1}}_0 \cup \Delta X^{{i+1}}_1) \ldots)\tag{6} \\
+  =&G( \ldots \cup F \circ G(\Delta X^{i}_0 \cup \Delta X^{{i}}_1)\cup\ F \circ G(\Delta X^{{i+1}}_0 \cup \Delta X^{{i+1}}_1) \ldots)\tag{7} \\
 =&G(\ldots \cup F \circ G(\Delta X^i)\cup\ F \circ G(\Delta X^{i+1}) \ldots\cup \Delta X^n).\tag{8}
  \end{align}
 
-By applying the \textbf{accumulative} property and \textbf{order indenpendent} property,we can have line(2,3),and line (4)is true because of \textbf{accumulative}property
-and \textbf{distributive} property, line (5,6) is because of the \textbf{community} property.The Line (7)can be obtained by applying \textbf{order indenpende} property again.
-The formula as line(8) shown has the same result with the synchronous one.And it is obvious that the result can be extended to general situation if the recursion continuous infinity times.
+By applying the \textbf{accumulative} property and \textbf{order indenpendent} property, we can have line 2, 3. Line 4 is true because of \textbf{accumulative}property
+and \textbf{distributive} property, line (5,6) is because of the \textbf{community} property.ine (7)can be obtained by applying \textbf{order independent} property again.
+The formula as line 8 shows has the same result with the synchronous one.And it is obvious that the result can be extended to general situation if the recursion continuous infinity times.
  \end{proof}
  \subsection{Proof of Theorem Convertibility}
+ \label{sec:app:proof:convert}
  \begin{proof}
- 	\label{sec:app:proof:convert}
- 	Since $g$ and $f$ satisfied the previous properties,Due to the definition of group-by aggregation, the convertible condition of $G$ can be express as $G\circ F(X)=G'(X\cup G'\circ F(\Delta X))$ and we have $\Delta X^0=X^1-X^0$.
+ Since we have $\Delta X^0=X^1-X^0$.
  \begin{align}
 &G'(X^0\cup \Delta X^0 \cup G'\circ F(\Delta X^0)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
 =&G'(X^1 \cup G'\circ F(\Delta X^0  )\cup \ldots (G' \circ F)^{k-1}(\Delta X^0  )) \notag\\
@@ -50,10 +50,9 @@ The formula as line(8) shown has the same result with the synchronous one.And it
 =&G'((G\circ F)^{k-2}(X^1)\cup(G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
 =&G\circ F(X^{k-1})=X^k\tag{6}
  \end{align}
-Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the convertibility.As previous description, Line 6 is the Asynchronous Recursive Program Formula.if the \textbf{eliminable} condition satisfied and recursion executed infinity times,we have $lim_{n\rightarrow\infty}G'((G\circ F)^{n-1}(X^1)\cup (G' \circ F)^{n}(X^1))=(G\circ F)^{n}(X^1)=G'((G\circ F)^{n-1}(X^1))$,So the eliminable condition implies the same terminate conditions with Normal recursive aggregation.
+Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the convertibility.As previous description, Line 6 is the Asynchronous Recursive Program Formula. 
 
  \end{proof}
-
  \section{Datalog Examples}
  \label{sec:app:example}
  
@@ -63,7 +62,7 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \begin{lstlisting}
  r1. cc(X,X)$\leftarrow$ edge(X,_).
  r2. cc(Y,min[$v$])$\leftarrow$ cc(X,$v$),edge(X,Y),
- cc(Y,$v$).
+                    cc(Y,$v$).
  \end{lstlisting}
  \normalsize
  
@@ -75,8 +74,8 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \begin{lstlisting}
  r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
  r2. cpaths(X,Y,count[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
- edges(Z,Y),
- cpaths(X,Y,$c$).
+                             edges(Z,Y),
+                             cpaths(X,Y,$c$).
  \end{lstlisting}
  \normalsize
  
@@ -89,9 +88,9 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \begin{lstlisting}
  r1. reach(X,Y,$P$) $\leftarrow$ net(X,Y,$P$).
  r2. reach(X,Y,max[$P$]) $\leftarrow$ reach(X,Z,$P1$),
- reach(Z,Y,$P2$),
- $P=P1*P2$,
- reach(X,Y,$P$).
+                          reach(Z,Y,$P2$),
+                          $P=P1*P2$,
+                          reach(X,Y,$P$).
  \end{lstlisting}
  \normalsize
  
@@ -103,12 +102,12 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \begin{lstlisting}
  r1. ancestor(Y,X,1) $\leftarrow$ cite(Y,X), X<seed.
  r2. ancestor(Z,X,min[$d$]) $\leftarrow$ ancestor(Z,Y,$d'$),
- cite(Y,X),$d=d'+1$,
- ancestor(Z,X,$d$).
+                             cite(Y,X),$d=d'+1$,
+                             ancestor(Z,X,$d$).
  r3. LCA(p1,p2,min[max(  $\leftarrow$ ancestor(p1,X,d1),
- d1,d2)],year,X)      ancestor(p2,X,d2),
- Paper(X,year),
- p1<p2.
+ d1,d2)],year,X)          ancestor(p2,X,d2),
+                          Paper(X,year),
+                          p1<p2.
  \end{lstlisting}
  \normalsize
  
@@ -120,9 +119,9 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \begin{lstlisting}
  r1. cost(Part,$\mathcal{C}$) $\leftarrow$ basic(Part,cost).
  r2. cost(Part,sum[$\mathcal{C}$]) $\leftarrow$ assb(Part,Sub,$n$),
- cost(Sub,$c$),
- $\mathcal{C}=c*n$,
- cost(Part,$\mathcal{C}$).
+                                    cost(Sub,$c$),
+                                    $\mathcal{C}=c*n$,
+                                    cost(Part,$\mathcal{C}$).
  \end{lstlisting}
  \normalsize
  
@@ -133,11 +132,11 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \end{verbatim}\vspace{-0.1in}\small
  \begin{lstlisting}
  r1. calcV(0,X,max($L$)) $\leftarrow$ s(0,EX),p(X,EX,$L1$),
- pi(X,$L2$),$L=L1*L2$.
+                          pi(X,$L2$),$L=L1*L2$.
  r2. calcV($T$,Y,max[$L$]) $\leftarrow$ s($T$,EY),p(Y,EY,$L1$),
- $T1=T-1$,t(X,Y,$L2$),
- calcV($T1$,X,$L3$),
- $L=L1*L2*L3$.
+                            $T1=T-1$,t(X,Y,$L2$),
+                            calcV($T1$,X,$L3$),
+                            $L=L1*L2*L3$.
  \end{lstlisting}
  \normalsize
  
@@ -150,7 +149,7 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  r1. coming(X) $\leftarrow$ sure(X).
  r2. coming(X) $\leftarrow$ cntComing(X,$N$), $N\geq 3$.
  r3. cntComing(Y,count[*]) $\leftarrow$ friend(Y,X),
- coming(X).
+                            coming(X).
  \end{lstlisting}
  \normalsize
  
@@ -162,11 +161,11 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \begin{lstlisting}
  r1. galaxies(1,gid) $\leftarrow$ galaxies_seed(gid).
  r2. galaxies(t+1,gid2) $\leftarrow$ galaxies(t,gid1),
- edges(t,gid1,gid2,c),
- c$\geq$threshold.
+                         edges(t,gid1,gid2,c),
+                         c$\geq$threshold.
  r3. edges(t,gid1,gid2, $\leftarrow$ galaxies(t,gid1),
- count[*])           particles(pid,gid1,t),
- particles(pid,gid2,t+1).
+ count[*])               particles(pid,gid1,t),
+                         particles(pid,gid2,t+1).
  \end{lstlisting}
  \normalsize
  
@@ -181,10 +180,10 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  r2. B(v,c,b) $\leftarrow$ E(v,c,b).
  r3. G(t,i) $\leftarrow$ G(s,i-1),A(s,t,w),$\neg$G(t,_).
  r4. B(t,c2,sum[b']) $\leftarrow$ G(t,i),A(s,t,w),
- B(s,c1,b),
- G(s,i-1),H(c1,c2,h),
- b'=w*b*h,
- [sum$[\Delta b']<T$];
+                     B(s,c1,b),
+                     G(s,i-1),H(c1,c2,h),
+                     b'=w*b*h,
+                     [sum$[\Delta b']<T$];
  \end{lstlisting}
  \normalsize
  
@@ -197,9 +196,9 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  r1. D(X,count[*]) $\leftarrow$ E(X,Y).
  r2. S(X,Y,1) $\leftarrow$ E(X,Y).
  r3. S(X,Y,sum[s']) $\leftarrow$ S(X',Y',s),E(X,X'),E(Y,Y'),
- D(X,d1),D(Y,d2),X$\neq$Y,
- s'=$\frac{C}{d1*d2}$*s,
- [sum$[\Delta s']<T$].
+                    D(X,d1),D(Y,d2),X$\neq$Y,
+                    s'=$\frac{C}{d1*d2}$*s,
+                    [sum$[\Delta s']<T$].
  \end{lstlisting}
  \normalsize
  
@@ -211,96 +210,40 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \begin{lstlisting}
  r1. X(i,x) $\leftarrow$ X(i,1).
  r2. C(i,c) $\leftarrow$ A(i,i,$a_{ii}$),B(i,$b_i$),
- c=$\frac{b_i}{a_{ii}}$.
+            c=$\frac{b_i}{a_{ii}}$.
  r3. X(i,sum[x']+c) $\leftarrow$ X(j,x),A(i,j,$a_{ij}$),
- C(i,c),A(i,i,$a_{ii}$),i$\neq$j,
- x'=$-\frac{a_{ij}}{a_{ii}}$*x,
- [sum$[\Delta x']<T$].
+                    C(i,c),A(i,i,$a_{ii}$),i$\neq$j,
+                    x'=$-\frac{a_{ij}}{a_{ii}}$*x,
+                    [sum$[\Delta x']<T$].
  \end{lstlisting}
  \normalsize
  
  In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
- 
-  
-  \begin{comment}
+
  \section{More Experiments}
  \label{sec:app:expr}
 
- \subsection{Scaling Performance}
- \label{sec:expr:scale}
- 
- \begin{figure}[!t]
- 	\centering
- 	\includegraphics[width=2.8in]{fig/single-scalability}
- 	\vspace{-0.1in}
- 	\caption{Scaling performance (many-core)}
- 	\label{fig:single-scalability}
- \end{figure}
- 
- \begin{figure}[!t]
- 	\centering
- 	\includegraphics[width=2.8in]{fig/dist-scalability}
- 	\vspace{-0.1in}
- 	\caption{Scaling performance (distributed)}
- 	\label{fig:dist-scalability}
- \end{figure}
-
- 
- Due to coordination avoidance, asynchronous aggregation is expected to achieve better scaling performance. We evaluate the scaling performance of A3Log's share-memory runtime on an r3.8xlarge EC2 instance. We perform PageRank computation with the synchronous and asynchronous versions (without scheduling) of A3Log and vary the number of threads from 1 to 32. The runtime results are shown in Fig. \ref{fig:single-scalability}. We also draw the ideal scaling performance curve based on the runtime result of 1 thread. The asynchronous A3Log's scaling performance curve is closer to its ideal curve, while the synchronous A3Log exhibits larger difference to its ideal curve when running on more threads. Asynchronous execution also shows higher speedup over synchronous execution when running on more threads.
- 
- We also evaluate the scaling performance of A3Log's distributed runtime on a cluster with a number of c4.large EC2 instances, each with 2 vCPUs and 3.75GB memory. We perform PageRank computation with the synchronous and asynchronous executions (without scheduling) and vary the number of workers from 1 to 32. The runtime results are shown in Fig. \ref{fig:dist-scalability}. We also draw the ideal scaling performance curve based on the runtime result of 2-workers. Similar to the results on shared-memory runtime, asynchronous execution also shows better scaling performance. Higher speedup over synchronous execution is achieved when running on larger size cluster.
- \end{comment}
- \begin{comment}
  \subsection{Effectiveness of Aggregate Operations}
  \label{sec:expr:aggregations}
- 
+
  \begin{figure}[!t]
- 	%\vspace{-0.1in}
- 	\centerline{
- 		\subfloat[RoadCA]{\includegraphics[width=1.3in, angle=-90]{fig/roadca_aggregate_progress}
- 			\label{fig:single-numagg:roadca}
- 			\vspace{-0.05in}}
- 		\hspace{-5mm}
- 		\subfloat[Livejournal]{\includegraphics[width=1.3in, angle=-90]{fig/livejournal_aggregate_progress}
- 			\label{fig:single-numagg:livejournal}
- 			\vspace{-0.05in}}
- 	}
- 	\vspace{-0.1in}
- 	\caption{Effectiveness of aggregate operations to converging progress}
- 	\label{fig:single-numagg}
- 	\vspace{-0.1in}
+ \vspace{-0.1in}
+ \centerline{
+ \subfloat[RoadCA]{\includegraphics[width=1.3in, angle=-90]{fig/roadca_aggregate_progress}
+ \label{fig:single-numagg:roadca}
+ \vspace{-0.05in}}
+ \hspace{-5mm}
+ \subfloat[Livejournal]{\includegraphics[width=1.3in, angle=-90]{fig/livejournal_aggregate_progress}
+ \label{fig:single-numagg:livejournal}
+ \vspace{-0.05in}}
+ }
+ \vspace{-0.1in}
+ \caption{Effectiveness of aggregate operations to converging progress}
+ \label{fig:single-numagg}
+ \vspace{-0.1in}
  \end{figure}
+In this experiment, we evaluate the effectiveness of asynchronous aggregations on accelerating the computation prog-ress.
  
- The effectiveness of aggregate operations in asynchronous aggregation is an important advantage but tends to be underestimated. Synchronous aggregation requires to aggregate the information from previous iteration, while asynchronous aggregation accumulates the most up-to-date information. Thus, the aggregate operation is expected to be more effective. In this experiment, we evaluate the effectiveness of aggregations on accelerating the computation progress.
- 
- We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous ex \begin{comment}
- \begin{proof}
- \ref{sec:app:proof:convert}
- Since $g$ and $f$ satisfied the previous properties,the convertible condition of $G$ can be express as$G(X)=G'(X \cup C)$ where C is the constant vector which has the same size with the result of $G$. each item should be aggregate by the corresponding $g$ operations.and the result of $${\lim_{n \to +\infty}(F \circ G')(Y^0)}$$ is a zero vector size of the result of $G$ operations.
- \begin{align}
- &(G \circ F)^n(X^0)=(G \circ F)^{n-1}G \circ F(X^{0})\notag\\
- =&(G \circ F)^{n-1}G'\circ (F(X^{0}) \cup C)\tag{1}\\
- =&G(F \circ G)^{n-2}F \circ G'\circ (G'\circ F(X^{0}) \cup G'(C))\tag{2}\\
- =&G(F \circ G)^{n-2}F \circ (G'\circ F(X^{0}) \cup G'(C))\tag{3}\\
- =&G(F \circ G)^{n-2}F \circ (G'(Y^{0}) \cup G'(C))\notag\\
- =&G(F \circ G)^{n-2}(F \circ G'(Y^{0}) \cup F\circ G'(C))\tag{4}\\
- =&\ldots \notag\\
- =&G(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C))\tag{5} \\
- =&G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \cup  C)\tag{6}
- \end{align}
- line (1) is obtained from the convertible condition and  line (2) is true because \textbf{accumulative} property.Line (3) is true because the \textbf{order-indenpendent} property.Line(4) is true because of the \textbf{distributive} property.
- line(5,6) is the final result by Repeat applying these three property on line(4).
- Due to the \textbf{elimited} Condition $${\lim_{n \to +\infty}(F \circ G')(Y^0)=\textbf{0}}$$
- we have:
- \begin{align}
- &{\lim_{n\to +\infty}}G'(F \circ G')^{n-1}(Y^0)\cup(F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C) \notag\\
- &\cup C)\notag\\
- =&G'((F \circ G')^{n-1}(C)\ldots \cup F\circ G'(C)\cup C)\notag
- \end{align}
- As previous description, this is the Asynchronous Recursive Program Formula which has the same result with normal recursive formula.
- 
- \end{proof} 
- \end{comment}ecution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.
-\end{comment}
+ We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous execution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.
 
 \end{appendix}
