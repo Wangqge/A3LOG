@@ -16,36 +16,36 @@
 		\hline\hline
 		{\textbf{Algorithm}} &
 		{\textbf{$g$}} &
-		{\textbf{$f$}} & 
+		{\textbf{$f$:(broadcast, self)}} & 
 		{\textbf{Monot}} &
 		{\textbf{Commu}} & 
 		{\textbf{Accumu}} & 
 		{\textbf{OrderInd}} &
 		{\textbf{Conver}}\\
 		\hline
-		\textbf{Pagerank} & $sum(\centerdot)+c$ &($(1-c)*x$)   &$\times$ & $\surd$ & $\times$  & - &$\surd$\\
+		\textbf{Pagerank} & $sum(\centerdot)$ &($(1-c)*x$), $0.15$   &$\times$ & $\surd$ & $\times$  & - &$\surd$\\
 		\hline
-		\textbf{SSSP} & $min(\centerdot)$ & ($x+w$) &$\surd$ & $\surd$& $\surd$ & $\surd$ & -\\
+		\textbf{SSSP} & $min(\centerdot)$ & ($x+w$), $x$ &$\surd$ & $\surd$& $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{CC} & $min(\centerdot)$& ($x$) & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{CC} & $min(\centerdot)$& ($x$), $x$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{DAG} & $count(\centerdot)$ &$(c)$& $\surd$ &$\surd$& $\surd$ & $\surd$ & -\\
+		\textbf{PATH} & $sum(\centerdot)$ &$(x)$, $x$& $\surd$ &$\surd$& $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{MAX PRO PATH} & $max(\centerdot)$ &  send$(p_1\& p_2) p=p_1*p_2$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{MAX PRO PATH} & $max(\centerdot)$ &  send$(p_1\& p_2) p=p_1*p_2$, p & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{COST} & $sum(\centerdot)$&$(c*n)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{COST} & $sum(\centerdot)$&$(x*n)$, $x$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{Viterbi} & $max(\centerdot)$ & $L=L_1*L_2*L_3$ & $\times$ & $\surd$ &  $\surd$ &  - &$\surd$\\
+		\textbf{Viterbi} & $max(\centerdot)$ & $L=L_1*L_2*L_3$, $nothing$ & $\times$ & $\surd$ &  $\surd$ &  - &$\times$\\
 		\hline
-		\textbf{PARTY} & $count(\centerdot)$&$(x)$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{PARTY} & $count(\centerdot)$&$((x)\&(N>3))$,x & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{Galaxy evolution} & $count(\centerdot)$ &broadcast$(pract(gid1\& gid2))$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
+		\textbf{Galaxy evolution} & $count(\centerdot)$ &$pract(gid1\& gid2)$, gid& $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
 		\hline
-		\textbf{Belief propagation} & $sum(\centerdot)$ &$b'=w*b*h$ & $\times$ & $\surd$ & $\surd$ & - & $\surd$\\
+		\textbf{Belief propagation} & $sum(\centerdot)$ &$w*x*h$, $nothing$ & $\times$ & $\surd$ & $\surd$ & - & $\surd$\\
 		\hline
-		\textbf{Simrank} & $sum(\centerdot)$& $c/(d_1*d_2)*x$ & $\times$ &  $\surd$ &  $\surd$ & - & $\surd$\\
+		\textbf{Simrank} & $sum(\centerdot)$& $c/(d_1*d_2)*x$, $nothing$ & $\times$ &  $\surd$ &  $\surd$ & - & $\surd$\\
 		\hline
-		\textbf{Jacobi Method} &$sum(\centerdot)+c$ &$-a_{ij}/a_{ii}*x$& $\times$ & $\surd$  & $\times$ & - & $\surd$\\
+		\textbf{Jacobi Method} &$sum(\centerdot)$ &$-a_{ij}/a_{ii}*x$, $c$& $\times$ & $\surd$  & $\times$ & - & $\surd$\\
 		\hline
 		\hline
 	\end{tabular}
@@ -56,16 +56,16 @@ We empirically evaluate A3Log on Amazon EC2. We will show the comparison results
 \subsection{Result of Condition Checker}
 
 
-In this section, we test more algorithms to check the asynchronous conditions. We list $f$ and $g$ operations and each property of each algorithm. As shown in table \ref{tab:resut}, SSSP, CC, DAG, PATH, COST, PART and Galaxy evolution algorithm satisfied all the correctness conditions which can be correctly asynchonized directly. Belief Propagation, Viterbi and Simrank, doesn't satisfy the monotonic condition. Pagerank and \textbf{Jacobi Method} satisfied neither the monotonic condition nor the accumulative condition. While all these five algorithm can be converted to accumulative recursive aggregation model and executed asynchronously. 
+In this section, we test more algorithms to check the asynchronous conditions. We list $f$ and $g$ operations and each property of each algorithm. As shown in table \ref{tab:resut}, SSSP, CC, DAG, PATH, COST and Galaxy evolution algorithm  can be correctly asynchonized directly. Belief Propagation,pagerank, Jacobi Method and Simrank doesn't satisfy the monotonic condition. While all these five algorithm can be converted to accumulative recursive aggregation model and executed asynchronously. Viterbi algorithm  satisfy neither the monotonic condition nor the convertibility condition. 
 
 \subsection{Comparison to Other Systems}
 \label{sec:expr:othersystems}
 
-\noindent\textbf{Competitors}
+\Paragraph{Competitors}
 A3Log is compared with four state-of-the-art parallel/distributed frameworks. \textbf{SociaLite} \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572} is a Datalog implementation for social network analysis. \textbf{Myria} \cite{Halperin:2014:DMB:2588555.2594530,Wang:2015:AFR:2824032.2824052} supports Datalog asynchronous evaluation. Both SociaLite and Myria support monotonic aggregation inside recursion. \textbf{GraphLab} \cite{Low:2012:DGF:2212351.2212354} is a graph-based parallel/distributed engine supporting asynchronous iteration. \textbf{Maiter} \cite{maiter} supports delta-based accumulative iterative computation which can be executed asynchronously. All these systems are configured with their default parameters. Myria, GraphLab, and Maiter are configured to run with asynchronous model unless particularly mentioned. The runtime results are the execution time excluding data loading time, and each is a mean of two runs.
 
-\noindent\textbf{Algorithms and Datasets}
-We compare A3Log with other systems in the context of three algorithms, including SSSP (Program 1), PageRank (Program 2), and Connected Components (CC, Program 3). These three algorithms are all supported by these systems. For SSSP and CC, the computations terminate as soon as no new update is found. For PageRank in A3Log and Maiter, which has no notion of iterations, the computation terminates when the sum of difference to the theoretical convergence point \cite{Zhang:2011:PDF:2038916.2038929} is less than $10^{-4}$ (see Appendix Sec. \ref{sec:expr:aggregations}), based on which we know the number of iterations that is required to reach the same point (42 iterations) \cite{Zhang:2011:PDF:2038916.2038929}. Socialite and Myria (Myria does not support asynchronous PageRank) are set to run 42 iterations. GraphLab terminates after the PageRank value of every vertex changes by less than a user-specified threshold $\epsilon$ between two consecutive executions of that vertex. These algorithms are performed on a large graph dataset ClueWeb09 \cite{clueweb}. In order to finish the experiments in a reasonable time, we truncate the original dataset into a smaller ClueWeb20M dataset with 20,000,000 nodes, 243,063,334 edges, and 3.8GB size. Since ClueWeb is an unweighted graph, we assign a random weight to each edge for SSSP computation.
+\Paragraph{Algorithms and Datasets}
+We compare A3Log with other systems in the context of three algorithms, including SSSP, PageRank, and Connected Components\cite{fullversion}. These three algorithms are all supported by these systems. For SSSP and CC, the computations terminate as soon as no new update is found. For PageRank in A3Log and Maiter, which has no notion of iterations, the computation terminates when the sum of difference to the theoretical convergence point \cite{Zhang:2011:PDF:2038916.2038929} is less than $10^{-4}$, based on which we know the number of iterations that is required to reach the same point (42 iterations) \cite{Zhang:2011:PDF:2038916.2038929}. Socialite and Myria (Myria does not support asynchronous PageRank) are set to run 42 iterations. GraphLab terminates after the PageRank value of every vertex changes by less than a user-specified threshold $\epsilon$ between two consecutive executions of that vertex. These algorithms are performed on a large graph dataset ClueWeb09 \cite{clueweb}. In order to finish the experiments in a reasonable time, we truncate the original dataset into a smaller ClueWeb20M dataset with 20,000,000 nodes, 243,063,334 edges, and 3.8GB size. Since ClueWeb is an unweighted graph, we assign a random weight to each edge for SSSP computation.
 
 \begin{figure}[!t]
 	\vspace{0.08in}
@@ -118,9 +118,9 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 		\cline{7-12}
 		&  & & & & & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}} & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}}\\
 		\hline\hline
-		\textbf{Actor} & 382,219 & 33,115,812 & \footnotesize{collaborate} & 13 & 2.131 & 34.62s & 1.54s & 22.44X & 63.62s & 7.03s & 9.05X \\
+		\textbf{Actor} & 382,219 & 33,115,812 & collaborate & 13 & 2.131 & 34.62s & 1.54s & 22.44X & 63.62s & 7.03s & 9.05X \\
 		\hline
-		\textbf{Amazon} & 403,394 & 3,387,388 & \footnotesize{co-purchase} & 25 & 3.151 & 79.18s & 1.55s & 51.05X & 53.77s & 1.02s & 52.9X \\
+		\textbf{Amazon} & 403,394 & 3,387,388 & co-purchase & 25 & 3.151 & 79.18s & 1.55s & 51.05X & 53.77s & 1.02s & 52.9X \\
 		\hline
 		\textbf{arXiv} & 28,093 & 4,596,803 & co-author & 9 & 1.731 & 19.7s & 1.51s & 13.03X & 53.2s & 1.01s & 52.7X \\
 		\hline
@@ -152,7 +152,7 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 		\hline
 		\textbf{web-Google} & 875,713 & 5,105,039 & web & 24 & 2.731 & 70.8s & 1.59s & 44.64X & 54.24s & 2.03s & 26.67X \\
 		\hline
-		\textbf{Wiki-Talk} & 2,987,535 & 24,981,163 & \footnotesize{communicate} & 9 & 1.811 & 23.81s & 3.1s & 7.68X & 83.57s & 28.27s & 2.96X \\
+		\textbf{Wiki-Talk} & 2,987,535 & 24,981,163 & communicate & 9 & 1.811 & 23.81s & 3.1s & 7.68X & 83.57s & 28.27s & 2.96X \\
 		\hline
 		\textbf{Youtube-u} & 3,223,589  & 9,375,374 & social & 31 & 2.211 & 30.6s & 2.43s & 12.6X & 65.91s & 5.08s & 12.96X \\
 		\hline
@@ -165,7 +165,7 @@ In the distributed experiment, we deploy all the systems on an EC2 cluster with 
 In order to analyze the factors for performance improvement and eliminate the interference from system implementation factors, we also implement a synchronous version of A3Log, which uses synchronous semi-naive evaluation (i.e., synchronous accumulated recursive programs). In addition, we turn off the scheduling then it shows the performance ahieved by pure asynchronous aggregation.
 
 \noindent\textbf{Algorithms and Datasets}
-We test more algorithms to see the effect variations on different workloads, including Least Common Ancestor (LCA, Program 6), ``What is the cost of each part?'' (COST, Program 7), ``Who will come to the party?'' (PARTY, Program 9), and ``Computing Paths in a DAG'' (PATH, Program 4). More details of these algorithms can be found in Appendix Sec. \ref{sec:app:example}. For LCA, we use a citation network Patent-US \cite{konect}. For COST, we synthetically generate a hierarchical (tree-like) dataset with 30,000,000 tree nodes. PARTY is a graph based algorithm, so we use the same ClueWeb20M dataset. For PATH, we synthetically generate a directed acyclic graph (DAG) dataset with 500 nodes and 35,952 edges. PATH is a computation intensive workload since it evaluates the paths between all pairs.
+We test more algorithms to see the effect variations on different workloads, including Least Common Ancestor(LCA), ``What is the cost of each part?'' (COST), ``Who will come to the party?'' (PARTY), and ``Computing Paths in a DAG'' (PATH). More details of these algorithms can be found in \cite{fullversion}. For LCA, we use a citation network Patent-US \cite{konect}. For COST, we synthetically generate a hierarchical (tree-like) dataset with 30,000,000 tree nodes. PARTY is a graph based algorithm, so we use the same ClueWeb20M dataset. For PATH, we synthetically generate a directed acyclic graph (DAG) dataset with 500 nodes and 35,952 edges. PATH is a computation intensive workload since it evaluates the paths between all pairs.
 
 
 We run these algorithms on the an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. All these experiments are run with 32 threads. Fig. \ref{fig:single-optimize} shows the results. The runtime by synchronous semi-naive evaluation is considered as the baseline. The speedups from asynchronous execution and prioritized scheduling exhibit variations for different workloads. Generally speaking, the graph based algorithms benefit from asynchronous aggregation and priority scheduling more. For SSSP and PageRank, great performance gains are achieved by priority scheduling. However, for COST, the priority scheduling brings negative effect. This is because that COST aims to compute all parts' cost in a hierarchical structure and the computations on these parts equally contribute to the output. Using priority scheduling will not bring any benefit but only incurs scheduling overhead. However, we still take advantage of asynchronous aggregation to achieve better performance.

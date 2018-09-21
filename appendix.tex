@@ -5,54 +5,54 @@
 
 \begin{proof}
 	\label{sec:app:proof:monotonic}
-	It is known that $\Delta Y^k=f(\Delta X^k)$and $\Delta X^0=X^0\\$.
+	It is known that $\Delta Y^k=F(\Delta X^k)$and $\Delta X^0=X^0$.
 	\begin{align}
 	&G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big)\notag \\
-	=&G\Big(\Delta Y^0\cup F\circ G(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big)    \notag\\
-	=&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)\tag{3}\\
-	=&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{4}\\
+	=&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)\tag{2}\\
+	=&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{3}\\
 	=& \ldots \notag \\
-	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{5}\\
+	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{4}\\
 	=&(G \circ F)^{k+1}(X^0).\notag
 	\end{align}
-	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties ,we can reduce all the low order items in turn and line 5 can be obtained. 
+	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties, we can reduce the original formula to line 5, the result of normal recursive aggregation. 
 \end{proof}
 
 \subsection{Proof of Theorem Asynchronous}
  \begin{proof}
  \label{sec:app:proof:correct}
- In this section. We assumed that $X$ can be divided into two disjoint subset $X_0$ and $X_1$. we exchange the subset belongs to any two adjacent recursion, and then prove that they have the same formula. This is the basic form which can generalize all the other situations.
+ In this proof, We assumed that $X$ can be divided into two disjoint subset $X_0$ and $X_1$. we exchange the subset belongs to any two  recursion, and then prove that they have the same formula with the origin form. This is the basic form which can generalize all the other situations.
  \begin{align}
- &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^{i}_0 \cup \Delta X^{i+1}_1)\cup\ F\circ G(\Delta X^{i+1}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots\cup \Delta X^n)\tag{1} \\
- =&G( \ldots \cup G \circ F\circ G(\Delta X^{i}_0 \cup \Delta X^{{i+1}}_1)\cup\ G \circ F\circ G(\Delta X^{{i+1}}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots)\tag{2} \\
- =&G( \ldots \cup G \circ F(\Delta X^{i}_0 \cup \Delta X^{{i+1}}_1)\cup\ G \circ F(\Delta X^{{i+1}}_0 \cup \Delta X^{{i}}_1) \ldots)\tag{3} \\
-  =&G( \ldots \cup (G\circ F(\Delta X^{i}_0) \cup G\circ F(\Delta X^{{i+1}}_1))\cup\ (G \circ F(\Delta X^{{i+1}}_0) \notag\\ &\cup G \circ F(\Delta X^{i}_1)) \ldots )\tag{4} \\
-  =&G( \ldots \cup (G\circ F(\Delta X^{i}_0) \cup G\circ F(\Delta X^{i}_1))\cup\ (G \circ F(\Delta X^{{i+1}}_0) \notag\\ &G \cup \circ F(\Delta X^{{i+1}}_1)) \ldots )\tag{5} \\
-  =&G( \ldots \cup G \circ F(\Delta X^{i}_0 \cup \Delta X^{{i}}_1)\cup\ G \circ F(\Delta X^{{i+1}}_0 \cup \Delta X^{{i+1}}_1) \ldots)\tag{6} \\
-  =&G( \ldots \cup F \circ G(\Delta X^{i}_0 \cup \Delta X^{{i}}_1)\cup\ F \circ G(\Delta X^{{i+1}}_0 \cup \Delta X^{{i+1}}_1) \ldots)\tag{7} \\
-=&G(\ldots \cup F \circ G(\Delta X^i)\cup\ F \circ G(\Delta X^{i+1}) \ldots\cup \Delta X^n).\tag{8}
+ &G(\Delta X^0\cup \ldots \cup F\circ G(\Delta X^{i}_0 \cup \Delta X^{j}_1)\cup\ F\circ G(\Delta X^{j}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots\cup \Delta X^n)\tag{1} \\
+ =&G( \ldots \cup G \circ F\circ G(\Delta X^{i}_0 \cup \Delta X^{{j}}_1)\cup\ G \circ F\circ G(\Delta X^{{j}}_0 \cup \notag\\ &\Delta X^{i}_1) \ldots)\tag{2} \\
+ =&G( \ldots \cup G \circ F(\Delta X^{i}_0 \cup \Delta X^{{j}}_1)\cup\ G \circ F(\Delta X^{{j}}_0 \cup \Delta X^{{i}}_1) \ldots)\tag{3} \\
+  =&G( \ldots \cup (G\circ F(\Delta X^{i}_0) \cup G\circ F(\Delta X^{{j}}_1))\cup\ (G \circ F(\Delta X^{{j}}_0) \notag\\ &\cup G \circ F(\Delta X^{i}_1)) \ldots )\tag{4} \\
+  =&G( \ldots \cup (G\circ F(\Delta X^{i}_0) \cup G\circ F(\Delta X^{i}_1))\cup\ (G \circ F(\Delta X^{{j}}_0) \notag\\ &\cup G  \circ F(\Delta X^{{j}}_1)) \ldots )\tag{5} \\
+  =&G( \ldots \cup G \circ F(\Delta X^{i}_0 \cup \Delta X^{{i}}_1)\cup\ G \circ F(\Delta X^{{j}}_0 \cup \Delta X^{{j}}_1) \ldots)\tag{6} \\
+  =&G( \ldots \cup F \circ G(\Delta X^{i}_0 \cup \Delta X^{{i}}_1)\cup\ F \circ G(\Delta X^{{j}}_0 \cup \Delta X^{{j}}_1) \ldots)\tag{7} \\
+=&G(\ldots \cup F \circ G(\Delta X^i)\cup\ F \circ G(\Delta X^{j}) \ldots\cup \Delta X^n).\tag{8}
  \end{align}
 
-By applying the \textbf{accumulative} property and \textbf{order indenpendent} property, we can have line 2, 3. Line 4 is true because of \textbf{accumulative}property
-and \textbf{distributive} property, line (5,6) is because of the \textbf{community} property.ine (7)can be obtained by applying \textbf{order independent} property again.
-The formula as line 8 shows has the same result with the synchronous one.And it is obvious that the result can be extended to general situation if the recursion continuous infinity times.
+By applying the \textbf{accumulative} property and \textbf{order indenpendent} property, we can have line 2, 3. Line 4 is true because of \textbf{accumulative} property
+and \textbf{distributive} property, line (5,6) is because of the \textbf{community} property. line (7)can be obtained by applying \textbf{order independent} property again.
+Line 8 is the formula of synchronous accumulative recursive aggregation. Since the difference between $i$ and $j$ can be arbitrary large, the computation need to iterative infinity.
  \end{proof}
  \subsection{Proof of Theorem Convertibility}
  \label{sec:app:proof:convert}
  \begin{proof}
  Since we have $\Delta X^0=X^1-X^0$.
  \begin{align}
-&G'(X^0\cup \Delta X^0 \cup G'\circ F(\Delta X^0)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
-=&G'(X^1 \cup G'\circ F(\Delta X^0  )\cup \ldots (G' \circ F)^{k-1}(\Delta X^0  )) \notag\\
-=&G'(G'(X^1\cup G'\circ F(\Delta X^0  ))\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \tag{3}\\
-=&G'(G\circ F(X^1)\cup \ldots (G' \circ F)^{k-1}(\Delta X^0 )) \tag{4}\\
+&G^+(X^0\cup \Delta X^0 \cup G^+\circ F'(\Delta X^0)\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \notag\\
+=&G^+(X^1 \cup G^+\circ F'(\Delta X^0  )\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0  )) \notag\\
+=&G^+(G^+(X^1\cup G^+\circ F'(\Delta X^0  ))\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \tag{3}\\
+=&G^+(G\circ F(X^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \tag{4}\\
 =&\ldots \notag\\
-=&G'((G\circ F)^{k-2}(X^1)\cup(G' \circ F)^{k-1}(\Delta X^0 )) \notag\\
-=&G\circ F(X^{k-1})=X^k\tag{6}
+=&G^+((G\circ F)^{k-2}(X^1)\cup(G^+ \circ F')^{k-1}(\Delta X^0 )) \notag\\
+=&G\circ F(X^{k-1})\tag{6}
  \end{align}
-Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the convertibility.As previous description, Line 6 is the Asynchronous Recursive Program Formula. 
-
+Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula. 
  \end{proof}
+ 
+
  \section{Datalog Examples}
  \label{sec:app:example}
  
@@ -67,19 +67,20 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \normalsize
  
  Program 3 computes the connected components in a graph. Each vertex starts as its own connected component with its identifier. For all combinations of facts that satisfy the recursive bodies, the aggregate function \texttt{min} keeps and propagates only the current minimal component ID $v$ for each vertex \texttt{Y}.
- 
- \begin{verbatim}
- Program 4. Computing Paths in a DAG
- \end{verbatim}\vspace{-0.1in}\small
- \begin{lstlisting}
- r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
- r2. cpaths(X,Y,count[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
-                             edges(Z,Y),
-                             cpaths(X,Y,$c$).
- \end{lstlisting}
- \normalsize
- 
- Program 4 counts the paths between pairs of vertices in an acyclic graph. \texttt{r1} counts each edge as one path between its vertices. In \texttt{r2}, any \texttt{edge(Z,Y)} that extends from a computed path count \texttt{cpath(X,Z,$c$)} establishes $c$ distinct paths from \texttt{X} to \texttt{Y} through \texttt{Z}.
+  \begin{comment}
+\begin{verbatim}
+Program 4. Single Source Shortest Path
+\end{verbatim}
+\vspace{-0.1in}
+\small
+\begin{lstlisting}
+r1. sssp(X,$d$)$\leftarrow$ X=1,$d=0$.
+r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
+$d=d1+d2$,sssp(Y,$d$).
+\end{lstlisting}
+\normalsize
+
+In Program 4, rule \texttt{r1} initializes the predicate \texttt{sssp} by specifying the source node $X=1$ and the shortest distance from source as $d=0$. \texttt{r2} is a recursive rule since it has the \texttt{sssp} predicate in both its head and body. \texttt{r2} will recursively produce \texttt{sssp} fact by joining the old \texttt{sssp} and \texttt{edge}. If there is a path from source to $X$ of length $d_1$ and an edge from $X$ to $Y$ of length $d_2$, there is a path from source to $Y$ with length $d=d_1+d_2$. If there is already a path to $Y$ found before, it should be also considered. Hence, the shortest distance from source to $Y$ is updated by the minimum of these possible distances, i.e., min$[d]$. The recursion will terminate as soon as no shortest distance is updated.
  
  
  \begin{verbatim}
@@ -219,7 +220,9 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \normalsize
  
  In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
+ \end{comment}
 
+\begin{comment}
  \section{More Experiments}
  \label{sec:app:expr}
 
@@ -245,5 +248,5 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
 In this experiment, we evaluate the effectiveness of asynchronous aggregations on accelerating the computation prog-ress.
  
  We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous execution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.
-
+\end{comment}
 \end{appendix}
