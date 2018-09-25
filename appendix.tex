@@ -1,6 +1,22 @@
 \begin{appendix}
 %You can use an appendix for optional proofs or details of your evaluation which are not absolutely necessary to the core understanding of your paper. 
 \section{proofs}
+ \begin{figure*}[!t]
+	\centering
+	\vspace{-0.5in}
+	\includegraphics[width=6.6in]{figuration/combine.eps}
+	\vspace{0in}
+	\caption{buffer and delta}
+	\label{fig:sssdi}
+\end{figure*}
+ \begin{figure*}[!t]
+	\centering
+	\vspace{0.5in}
+	\includegraphics[width=6.6in]{figuration/summary.eps}
+	\vspace{0in}
+	\caption{summary of buffer}
+	\label{fig:sssdi2}
+\end{figure*}
 \subsection{Proof of Theorem Monotonic}
 
 \begin{proof}
@@ -55,7 +71,6 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
 
  \section{Datalog Examples}
  \label{sec:app:example}
- 
  \begin{verbatim}
  Program 3. Connected Components
  \end{verbatim}\vspace{-0.1in}\small
@@ -66,8 +81,8 @@ Line 3 is true because of the \textbf{accumulative} property.Line 4 is true beca
  \end{lstlisting}
  \normalsize
  
- Program 3 computes the connected components in a graph. Each vertex starts as its own connected component with its identifier. For all combinations of facts that satisfy the recursive bodies, the aggregate function \texttt{min} keeps and propagates only the current minimal component ID $v$ for each vertex \texttt{Y}.
-  \begin{comment}
+ Program 3 computes the connected components in a graph. Each vertex starts as its own connected component with its identifier. For all combinations of facts that satisfy the recursive bodies, the aggregate function \texttt{mmin} keeps and propagates only the current minimal component ID $v$ for each vertex \texttt{Y}.
+ 
 \begin{verbatim}
 Program 4. Single Source Shortest Path
 \end{verbatim}
@@ -125,9 +140,7 @@ In Program 4, rule \texttt{r1} initializes the predicate \texttt{sssp} by specif
                                     cost(Part,$\mathcal{C}$).
  \end{lstlisting}
  \normalsize
- 
- Program 7 \cite{7113340} is for computing the cost of a part from the cost of its subparts. The \texttt{assb} predicate denotes each part¡¯s required subparts and number required, and basic denotes the part¡¯s cost.
- 
+
  \begin{verbatim}
  Program 8. Viterbi Algorithm
  \end{verbatim}\vspace{-0.1in}\small
@@ -220,7 +233,6 @@ In Program 4, rule \texttt{r1} initializes the predicate \texttt{sssp} by specif
  \normalsize
  
  In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
- \end{comment}
 
 \begin{comment}
  \section{More Experiments}
