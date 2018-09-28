@@ -91,9 +91,9 @@ We compare A3Log with other systems in the context of three algorithms, includin
 		\hline
 		{\textbf{LiveJournal}} & 4,847,571 & 68,475,391 &\cite{}\\
 		\hline
-		{\textbf{Orkut}} &3072441& 117184899 & \cite{} \\
+		{\textbf{Orkut}} &3,072,441& 117,184,899 & \cite{} \\
 		\hline
-		{\textbf{culeweb09}} & 20000000 & 243,063,334 &\cite{}\\		\hline
+		{\textbf{culeweb09}} & 20,000,000 & 243,063,334 &\cite{}\\		\hline
 		{\textbf{Wiki-link}} & 12,150,976 &378,142,420&\cite{} \\
 		\hline
 		{\textbf{arabic05}} & 22,744,080 & 639,999,458 &\cite{}\\		\hline
@@ -120,13 +120,12 @@ We perform all the three algorithm on all datasets in Table \ref{tab:Dataset}.
 %In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. We configured all these systems with 32 threads. The normalized runtime results. In general, A3Log outperforms all the competitors. For the PageRank computation, A3Log achieves 22.8X speedup over GraphLab, 22X speedup over Socialite, 6X speedup over Maiter, and much more speedup over Myria\footnote{The runtime results of Myria may be wrong because they are all unexpected long, say 135 times longer for PageRank and 321 times longer for SSSP than A3Log. We are contacting with Myria authors to fix it but cannot find the problem before the submission.} are shown in Fig. \ref{fig:single-result}. There is an exception for SSSP computation. Socialite is 1.6X faster than A3Log. This may be due to their \emph{prioritization} optimization, which is similar to our scheduling technique that leads to Dijkstra algorithm.
 
 \begin{figure*}[!t]
-	\vspace{0.0in}
+	\vspace{1in}
 	\centering
 	\includegraphics[width=6.6in]{figuration/compare.eps}
 	\vspace{-0.1in}
 	\caption{Performance comparison with other systems (distributed environment)}
 	\label{fig:dist-result}
-	\vspace{-0.2in}
 \end{figure*}
 In the distributed comparsion we deploy all the systems on an Aliyun ECS cluster with
 16 ecs.r5.xlarge ECS instances, each with 4 vCPUs and 32GB memory. The network bandwidth between instance workers is  1.5Gbps/s. We configured all these systems with 4 threads for each worker. Myria was configured with one instance of Myria and PostgreSQL. For bigdatalog, we evaluate with one partition per available CPU core, and configured according to\cite{Shkapsky:2016:BDA:2882903.2915229}. For asynchronous A3log we set the Message buffer size to 500, 1000, 2000, 4000 in turn and keep the best result. Runtime results are shown in Fig.\ref{fig:dist-result}. A3log outperform all these three competitors on three algorithm whether synchronous or asynchronous on SSSP and CC algorithms.
@@ -150,9 +149,8 @@ In this section, we evaluate the effectness of adaptive message buffer strategy 
 	\label{fig:summary}
 	\vspace{-0.1in}
 \end{figure*}
-We perform the three algorithm with four dataset, we compare each query with five cases. Synchronous processing, Asynchronous processing with manual optimized buffer size and with Adaptive sending buffer strategy.we set the message Message buffer as 500, 1000, 2000 and 4000 in turn, and choose the best one as the manual optimized result,then we   and the result was shown in figure\ref{fig:summary}
-
-
+We perform the three algorithm with four dataset, we compare each query with five cases. Synchronous processing, Asynchronous processing with manual optimized buffer size and with Adaptive sending buffer strategy. We also evalute the effective of priority scheduling under different cases. To get the manual optimized buffer size, we fixed the buffersize to 500, 1000, 2000 and 4000 in turn, and choose the best one as result.  and the overall result is shown in figure \ref{fig:summary}.
+For CC and SSSP algorithm, the Adaptive Message buffer strategy shows significent speed up over fixed buffer setting on clueweb09 ahd wiki, says1.7 to   
 
 \begin{comment}
 \begin{table*}[!t]
@@ -213,6 +211,17 @@ We perform the three algorithm with four dataset, we compare each query with fiv
 	\vspace{-0.1in}
 \end{table*}
 \end{comment}
+
+\Paragraph{Convergence and buffer changes}
+\begin{figure*}[!t]
+	\vspace{0.0in}
+	\centering
+	\includegraphics[width=6.6in]{figuration/combine.eps}
+	\vspace{-0.1in}
+	\caption{Effectiveness of Adaptive Message Buffer}
+	\label{fig:details}
+	\vspace{-0.1in}
+\end{figure*}
 In order to analyze the factors for performance improvement and eliminate the interference from system implementation factors, we also implement a synchronous version of A3Log, which uses synchronous semi-naive evaluation (i.e., synchronous accumulated recursive programs). In addition, we turn off the scheduling then it shows the performance ahieved by pure asynchronous aggregation.
 
 \noindent\textbf{Algorithms and Datasets}
@@ -242,7 +251,15 @@ We run these algorithms on the an r3.8xlarge EC2 instance with 32 vCPUs and 244G
  	\label{fig:dist-scalability}
  \end{figure}
 \end{comment}
-
+\begin{figure}[!t]
+	\vspace{0.0in}
+	\centering
+	\includegraphics[width=3.4in]{figuration/scale.eps}
+	\vspace{-0.1in}
+	\caption{ScalePerformance}
+	\label{fig:scale}
+	\vspace{-0.1in}
+\end{figure}
 asynchronous aggregation is expected to achieve better scaling performance. We evaluate the scaling performance of A3Log's share-memory runtime on an r3.8xlarge EC2 instance. We perform PageRank computation with the synchronous and asynchronous versions (without scheduling) of A3Log and vary the number of threads from 1 to 32. The runtime results are shown in Fig.\ref{fig:single-scalability}. We also draw the ideal scaling performance curve based on the runtime result of 1 thread. The asynchronous A3Log's scaling performance curve is closer to its ideal curve, while the synchronous A3Log exhibits larger difference to its ideal curve when running on more threads. Asynchronous execution also shows higher speedup over synchronous execution when running on more threads.
 
  We also evaluate the scaling performance of A3Log's distributed runtime on a cluster with a number of c4.large EC2 instances, each with 2 vCPUs and 3.75GB memory. We perform PageRank computation with the synchronous and asynchronous executions (without scheduling) and vary the number of workers from 1 to 32. The runtime results are shown in Fig. \ref{fig:dist-scalability}. We also draw the ideal scaling performance curve based on the runtime result of 2-workers. Similar to the results on shared-memory runtime, asynchronous execution also shows better scaling performance. Higher speedup over synchronous execution is achieved when running on larger size cluster.
@@ -256,6 +273,7 @@ Table \ref{tab:wrokload} shows the graph datasets and the runtime results. The a
 
  \subsection{Effectiveness of Aggregate Operations}
  \label{sec:expr:aggregations}
+ \begin{comment}
  \begin{figure}[!t]
  	\vspace{-0.1in}
  	\centerline{
@@ -272,7 +290,7 @@ Table \ref{tab:wrokload} shows the graph datasets and the runtime results. The a
  	\label{fig:single-numagg}
  	\vspace{-0.1in}
  \end{figure}
-
+\end{comment}
  In this experiment, we evaluate the effectiveness of asynchronous aggregations on accelerating the computation prog-ress.
 
  We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous execution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.

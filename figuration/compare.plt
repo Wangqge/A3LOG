@@ -5,13 +5,13 @@ set output "compare.eps"
 
 set rmargin 2
 set lmargin 5
-set size 3,1.25
+set size 3,1.1
 
 set multiplot layout 1,3
-set size 1,1.2
+set size 1,0.9
 set origin 0,0
 #set key top outside horizontal center maxrows 2 font ",28"
-set key at graph 3,1.125 maxrows 1 font ",28" samplen 4
+set key at graph 3,1.225 maxrows 1 font ",28" samplen 4
 set ylabel "Time(s)"  offset 3.4
 set xlabel "CC"
 unset grid
@@ -27,7 +27,7 @@ plot for [COL=2:5:1] 'compare_cc.txt' using COL:xticlabels(1) title columnheader
 
 set rmargin 2
 set lmargin 5
-set size 1,1.2
+set size 1,0.9
 set origin 1,0
 unset key
 #set key top outside horizontal center maxrows 1
@@ -45,7 +45,7 @@ set style data  histogram
 plot for [COL=2:5:1] 'compare_sssp.txt' using COL:xticlabels(1) title columnheader(COL)
 
 
-set size 1,1.2
+set size 1,0.9
 set origin 2,0
 unset key
 #set title "PageRank"

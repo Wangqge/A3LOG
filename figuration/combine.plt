@@ -137,66 +137,70 @@ unset format
 #########################################################################################PAGERANK
 set size 1,1
 set origin 0,2
-set xlabel "times" font ", 28"
-set ylabel "delta" font ", 28"
+#set yrange [0:1E+15]
 set size ratio 0.6
+set ylabel "delta" font ", 28"
 set tics font ",28"
-set xlabel "PageRank-arabic-delta"
+set xlabel "CC-clueweb09-delta"
 set key top outside horizontal center maxrows 2 font ",28"
-#set format y "10^{%L}"
+set logscale y
+set format y "10^{%L}"
 set xtics rotate by 330
 
-plot "arabic_pagerank.txt" u 1:2 w lp linetype 1 pt 1 ps 2 lc 1 lw 7 title columnheader(2), "arabic_pagerank.txt" u 3:4 w lp linetype 1 pt 3 ps 2 lc 3 lw 5 title columnheader(4), "arabic_pagerank.txt" u 5:6 w lp lt 2 pt 2 ps 2 lc 2 lw 5 title columnheader(6), "arabic_pagerank.txt" u 7:8 w lp lt 3 pt 4 ps 2 lc 4 lw 5 title columnheader(8), "arabic_pagerank.txt" u 9:10 w lp lt 4 pt 0 ps 2 lc 0 lw 5 title columnheader(10)
-unset logscale
+#set output "arabic_cc.eps"
+plot "clue_cc.txt" u 1:2 w lp lt 1 pt 6 ps 2 lc 6 lw 5 title columnheader(2), "clue_cc.txt" u 3:4 w lp lt 1 pt 1 ps 2 lc 1 lw 5 title columnheader(4), "clue_cc.txt" u 5:6 w lp lt 2 pt 5 ps 2 lc 5 lw 5 title columnheader(6), "clue_cc.txt" u 7:8 w lp lt 3 pt 2 ps 2 lc 2 lw 5 title columnheader(8), "clue_cc.txt" u 9:10 w lp lt 4 pt 3 ps 2 lc 3 lw 5 title columnheader(10), "clue_cc.txt" u 11:12 w lp lt 5 pt 4 ps 2 lc 4 lw 5 title columnheader(12), "clue_cc.txt" u 13:14 w lp lt 5 pt 0 ps 2 lc 0 lw 5 title columnheader(14)
+unset yrange
 unset format
 
 set size 1,1
 set origin 1,2
-set xlabel "times" font ", 28"
+#set yrange [0:8000]
 set ylabel "buffersize" font ", 28"
 set size ratio 0.6
 set tics font ",28"
-set xlabel "PageRank-arabic-buffer"
+set xlabel"CC-clueweb-buffer"
 set key top outside horizontal center maxrows 2 font ",28"
-#set logscale y
-#set format y "10^{%L}"
+unset logscale
+unset format
 set xtics rotate by 330
 
-plot "arabic_pagerank_buffer.txt" u 1:2 w lp pt 3 ps 2 lc 3 lw 5 title "async_{dym}", "arabic_pagerank_buffer.txt" u 3:4 w lp  pt 4 ps 2 lc 4 lw 5 title "async_{pd}", "arabic_pagerank_buffer.txt" u 5:6 w lp lt 2 pt 1 ps 2 lc 1 lw 5 title "async_{1000}","arabic_pagerank_buffer.txt" u 7:8 w lp lt 2 pt 5 ps 2 lc 5 lw 5 title "async_{2000}","arabic_pagerank_buffer.txt" u 9:10 w lp lt 2 pt 6 ps 2 lc 6 lw 5 title "async_{4000}" ,"arabic_pagerank_buffer.txt" u 11:12 w lp lt 2 pt 2 ps 2 lc 2 lw 5 title "async_{pri}"
-unset logscale
+plot "clue_cc_buffer.txt" u 1:2 w lp pt 3 ps 2 lc 3 lw 5 title "async_{dym}", "clue_cc_buffer.txt" u 3:4 w lp  pt 4 ps 2 lc 4 lw 5 title "async_{pd}", "clue_cc_buffer.txt" u 5:6 w lp lt 2 pt 1 ps 2 lc 1 lw 5 title "async_{1000}","clue_cc_buffer.txt" u 7:8 w lp lt 2 pt 5 ps 2 lc 5 lw 5 title "async_{2000}","clue_cc_buffer.txt" u 9:10 w lp lt 2 pt 6 ps 2 lc 6 lw 5 title "async_{4000}"
+unset yrange
 unset format
 
 
 set size 1,1
 set origin 2,2
-set xlabel "times" font ", 28"
-set ylabel "delta" font ", 28"
+#set yrange [0:1E+15]
 set size ratio 0.6
+set ylabel "delta" font ", 28"
 set tics font ",28"
-set xlabel "PageRank-wiki-delta"
+set xlabel "SSSP-clueweb-delta"
 set key top outside horizontal center maxrows 2 font ",28"
-#set format y "10^{%L}"
+set logscale y
+set format y "10^{%L}"
 set xtics rotate by 330
 
-plot "wiki_pagerank.txt" u 6:7 w lp linetype 1 pt 0 ps 2 lc 0 lw 7 title "sync", "wiki_pagerank.txt" u 1:2 w lp linetype 1 pt 1 ps 2 lc 1 lw 5 title "async_{1000}", "wiki_pagerank.txt" u 1:3 w lp lt 2 pt 2 ps 2 lc 2 lw 5 title "async_{pri}", "wiki_pagerank.txt" u 1:4 w lp lt 3 pt 3 ps 2 lc 3 lw 5 title "async_{dym}", "wiki_pagerank.txt" u 1:5 w lp lt 4 pt 4 ps 2 lc 4 lw 5 title "async_{pd}"
-unset logscale
+
+#set output "arabic_cc.eps"
+plot "arabic_cc.txt" u 1:2 w lp lt 1 pt 1 ps 2 lc 1 lw 5 title columnheader(2), "clue_sssp.txt" u 3:4 w lp lt 1 pt 5 ps 2 lc 5 lw 5 title columnheader(4), "clue_sssp.txt" u 5:6 w lp lt 2 pt 6 ps 2 lc 6 lw 5 title columnheader(6), "clue_sssp.txt" u 7:8 w lp lt 3 pt 2 ps 2 lc 2 lw 5 title columnheader(8), "clue_sssp.txt" u 9:10 w lp lt 4 pt 3 ps 2 lc 3 lw 5 title columnheader(10), "clue_sssp.txt" u 11:12 w lp lt 5 pt 4 ps 2 lc 4 lw 5 title columnheader(12), "clue_sssp.txt" u 13:14 w lp lt 5 pt 0 ps 2 lc 0 lw 5 title columnheader(14)
 unset format
 
 
 set size 1,1
 set origin 3,2
-set xlabel "times" font ", 28"
+#set yrange [0:8000]
 set ylabel "buffersize" font ", 28"
 set size ratio 0.6
 set tics font ",28"
-set xlabel "PageRank-wiki-buffer"
+set xlabel"SSSP-clueweb-buffer"
 set key top outside horizontal center maxrows 2 font ",28"
-#set logscale y
-#set format y "10^{%L}"
-set xtics rotate by 330
-plot "wiki_pagerank_buffer.txt" u 1:2 w lp pt 4 ps 2 lc 4 lw 5 title "async_{pd}", "wiki_pagerank_buffer.txt" u 3:4 w lp  pt 3 ps 2 lc 3 lw 5 title "async_{dym}", "wiki_pagerank_buffer.txt" u 5:6 w lp lt 2 pt 2 ps 2 lc 2 lw 5 title "async_{pri}", "wiki_pagerank_buffer.txt" u 7:8 w lp lt 2 pt 5 ps 2 lc 5 lw 5 title "async_{2000}"
 unset logscale
 unset format
+set xtics rotate by 330
+
+plot "clue_sssp_buffer.txt" u 1:2 w lp pt 3 ps 2 lc 3 lw 5 title "async_{dym}", "clue_sssp_buffer.txt" u 3:4 w lp  pt 4 ps 2 lc 4 lw 5 title "async_{pd}", "clue_sssp_buffer.txt" u 5:6 w lp lt 2 pt 1 ps 2 lc 1 lw 5 title "async_{1000}","clue_sssp_buffer.txt" u 7:8 w lp lt 2 pt 5 ps 2 lc 5 lw 5 title "async_{2000}","clue_sssp_buffer.txt" u 9:10 w lp lt 2 pt 6 ps 2 lc 6 lw 5 title "async_{4000}"
+unset yrange
 
 unset multiplot
 set output
