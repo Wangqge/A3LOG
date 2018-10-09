@@ -1,5 +1,4 @@
-SSSP	async_{opt}	async_{pri}	async_{dym}	async_{pd}	sync
-orkut	11.236	10.063	7.257	10.111	21.228
-clueweb09	52.9	46.384	43.725	37.092	60.28
-wiki	44.3	41.071	23.92	25.142	65.482
-arabic	56.942	52.116	45.885	48.565	60.339
+SSSP	async_{default}	async_{pri}	async_d	async_p_d	sync	async_{block}
+clueweb09	36.94	33.299	30.615	28.099	49.265	49.87
+wiki	44.3	41.071	23.92	25.142	65.482	39.871
+arabic	150.403	143.807	29.919	32.106	60.339	28.301

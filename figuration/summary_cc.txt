@@ -1,5 +1,4 @@
-CC	async\_{opt}	async\_{pri}	async\_{dym}	async\_{pd}	sync
-orkut	7.833	7.817	6.813	6.825	27.036
-clueweb09	51.86	51.818	36.049	36.029	123.852
-wiki	29.072	27.983	15.366	15.918	75.203
-arabic	49.933	49.098	44.866	46.984	112.212
+CC	async_{default}	async_{pri}	async_d	async_p_d	sync	async_{block}
+clueweb09	33.217	29.668	28.039	26.752	101.924	73.194
+wiki	29.072	27.983	15.366	15.918	75.203	23.024
+arabic	151.405	152.581	35.477	34.104	47.56	38.084

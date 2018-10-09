@@ -11,7 +11,7 @@ set multiplot layout 1,3
 set size 1,0.9
 set origin 0,0
 #set key top outside horizontal center maxrows 2 font ",28"
-set key at graph 3,1.225 maxrows 1 font ",28" samplen 4
+set key at graph 3.3,1.225 maxrows 1 font ",28" samplen 4
 set ylabel "Time(s)"  offset 3.4
 set xlabel "CC"
 unset grid
@@ -23,7 +23,7 @@ set boxwidth 1
 set style fill solid 2 border lt -1
 set style histogram cluster gap 1
 set style data  histogram
-plot for [COL=2:5:1] 'compare_cc.txt' using COL:xticlabels(1) title columnheader(COL)
+plot for [COL=2:6:1] 'compare_cc.txt' using COL:xticlabels(1) title columnheader(COL)
 
 set rmargin 2
 set lmargin 5
@@ -42,8 +42,8 @@ set boxwidth 1
 set style fill solid 2 border lt -1
 set style histogram cluster gap 1
 set style data  histogram
-plot for [COL=2:5:1] 'compare_sssp.txt' using COL:xticlabels(1) title columnheader(COL)
-
+plot for [COL=2:6:1] 'compare_sssp.txt' using COL:xticlabels(1) title columnheader(COL)
+unset yrange
 
 set size 1,0.9
 set origin 2,0
@@ -52,7 +52,7 @@ unset key
 set xlabel "PageRank"
 unset grid
 unset ylabel
-set yrange [0:1000]
+#set yrange [0:1000]
 set logscale y
 set xtics rotate by 340 offset -2,0
 set boxwidth 1
@@ -60,6 +60,6 @@ set boxwidth 1
 set style fill solid 2 border lt -1
 set style histogram cluster gap 1
 set style data  histogram
-plot for [COL=2:5:1] 'compare_pagerank.txt' using COL:xticlabels(1)  title columnheader(COL)
+plot for [COL=2:6:1] 'compare_pagerank.txt' using COL:xticlabels(1)  title columnheader(COL)
 unset multiplot
 set output

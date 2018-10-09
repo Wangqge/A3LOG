@@ -1,5 +1,4 @@
-PAGERANK	async_{opt}	async_{pri}	async_{dym}	async_{pd}	sync
-orkut	165.253	30.876	137.755	26.438	153.65
-clueweb09	568.01	468.032	454.229	369.947	497.123
-wiki	180.259	164.223	165.339	150.321	253.763
-arabic	255.999	35.508	231.145	34.58	218.963
+PAGERANK	async_{default}	async_{pri}	async_d	async_p_d	sync	async_{block}
+clueweb09	568.01	468.032	178.807	131.763	399.149	337.613
+wiki	126.842	116.165	120.644	110.56	193.993	154.584
+arabic	218.413	29.649	177.987	26.317	176.559	141.756
