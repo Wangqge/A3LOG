@@ -207,16 +207,71 @@ In Program 4, rule \texttt{r1} initializes the predicate \texttt{sssp} by specif
  \end{verbatim}\small
  \begin{lstlisting}
  r1. X(i,x) $\leftarrow$ X(i,1).
- r2. C(i,c) $\leftarrow$ A(i,i,$a_{ii}$),B(i,$b_i$),
-            c=$\frac{b_i}{a_{ii}}$.
- r3. X(i,sum[x']+c) $\leftarrow$ X(j,x),A(i,j,$a_{ij}$),
-                    C(i,c),A(i,i,$a_{ii}$),i$\neq$j,
-                    x'=$-\frac{a_{ij}}{a_{ii}}$*x,
-                    [sum$[\Delta x']<T$].
+ r2. C(i,c) $\leftarrow$ A(i,i,$a_{ii}$), B(i,$b_i$), c=$\frac{b_i}{a_{ii}}$.
+ r3. X(i,sum[x']+c) $\leftarrow$ X(j,x), A(i,j,$a_{ij}$),
+                        C(i,c), A(i,i,$a_{ii}$), i$\neq$j,
+                        x'=$-\frac{a_{ij}}{a_{ii}}$*x.
  \end{lstlisting}
+\begin{lstlisting}
+r1. X(i,$\delta$x) $\leftarrow$ X(i,1).
+r2. C(i,c) $\leftarrow$ A(i,i,$a_{ii}$), B(i,$b_i$), c=$\frac{b_i}{a_{ii}}$.
+r3. X(i,,dsum[$\delta$x']+c) $\leftarrow$ X(j,$\delta$x), A(i,j,$a_{ij}$),
+                        C(i,c), A(i,i,$a_{ii}$), i$\neq$j,
+                        $\delta$x'=$-\frac{a_{ij}}{a_{ii}}$*$\delta$x.
+
+ \end{lstlisting}
+
  \normalsize
  
  In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
+  In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
+   In numerical linear algebra, the Jacobi method is a famous iterative algorithm for solving linear equations of the form $A\cdot X=b$, where $A$ is a matrix with each entry $a_{ij}$, and b is a vector with each entry $b_i$. In Program 13, \texttt{X} is the solution vector, \texttt{A} is the matrix, \texttt{B} is the vector, \texttt{C} is a vector maintaining the entry-specific constant $\frac{b_i}{a_{ii}}$. A sufficient (but not necessary) condition for the method to converge is that the matrix \texttt{A} is strictly or irreducibly diagonally dominant, i.e., $|a_{ii}>\sum_{j\neq i}{|a_{ij}|}|$, which implies the convertable condition, so Jacobi Method can be converted and executed asynchronously.
+  \begin{verbatim}
+Program 13. PageRank
+\end{verbatim}\small
+Original PageRank
+\begin{lstlisting}
+r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
+r2. rank(X,$r$) $\leftarrow$ node(X),$r=1$.
+r3. rank(Y,sum[$r$]) $\leftarrow$ Node(N),r=0.15;rank(X,$r1$),edge(X,Y),
+                         degree(X,$d$),$r=0.85\cdot r1/d$.
+\end{lstlisting}
+
+Our monotonic PageRank in System implement
+\begin{lstlisting}
+r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
+r2. rank(X,$r$) $\leftarrow$ node(X),$r=0.15$.
+r3. rank(Y,dsum[$r$]) $\leftarrow$ rank(X,$r1$),edge(X,Y),
+                         degree(X,$d$),$r=0.85\cdot r1/d$.
+\end{lstlisting}
+
+I think it should be
+\begin{lstlisting}
+r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
+r2. rank(X,$r$,$\delta$) $\leftarrow$ node(X),$r=0$,$\delta=0.15$.
+r3. rank(Y,dsum[$\delta'$],sum[$\delta'$]) $\leftarrow$ rank(X,_,$\delta$),edge(X,Y),
+                         degree(X,$d$),$\delta'=0.85\cdot \delta/d$.
+\end{lstlisting}
+Or(unknown correctness)
+\begin{lstlisting}
+r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
+r2. rank(X,$r$,$\delta$) $\leftarrow$ node(X),$r=0$,$\delta=0.15$.
+r3. rank(Y,_+sum[$\delta'$],sum[$\delta'$]) $\leftarrow$ rank(X,_,$\delta$),edge(X,Y),
+                         degree(X,$d$),$\delta'=0.85\cdot \delta/d$.
+\end{lstlisting}
+Or Indirect recursion (unknown correctness)
+\begin{lstlisting}
+r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
+r2. rank(X,$r$) $\leftarrow$ node(X),$r=0$.
+r3. delta(X,$\delta$)$\leftarrow$ node(X),$\delta=0.15$.
+r4_1. rank(X,dsum[$\delta$]) $\leftarrow$ delta(X,$\delta$).
+r4_2. delta(Y,sum[$\delta'$]) $\leftarrow$ delta(X,$\delta$),edge(X,Y),
+                         degree(X,$d$),$\delta'=0.85\cdot \delta/d$.
+\end{lstlisting}
+
+
+
+
 
 \begin{comment}
  \section{More Experiments}

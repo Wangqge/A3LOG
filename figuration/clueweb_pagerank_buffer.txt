@@ -1,9 +1,9 @@
-time	async_p_d	time	async_d	time 	async_{1000}	time	async_p
+time	async_p_d	time	async_d	time 	async_{1000}	time	async_{2000}
 0	110	0	738	0	1000	0	1000
 0	188	0	1034	568	1000	468	1000
 0	985	0	1327				
 0	5150	1	9274				
 0	9189	1	12374				
 3	12561	3	15559				
-3	15973	131	15559				
-178	15973						
+3	15973	178	15559				
+131	15973						
