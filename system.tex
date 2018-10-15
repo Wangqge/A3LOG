@@ -148,10 +148,17 @@ Moreover the communicate frequency is not only depend on the property of workloa
 Further due to the sharding strategy, and data distribution,  the message amount between workers is also different, so we need a more flexiable Message strategy to  
 Based on these observation, we propose a dynamic buffer scheme that adaptively adjusts the
 sending buffer size by monitoring the heaviness of workload on each worker. we proposed a message driven sengding policy by levraging both vertex-centric mode and block-centric mode. 
- 
-\Paragraph{Strategy}
+
 To adaptively adjust the message sending frequency and maxmize the advantage of both vertex/block-centric modes, we proposed to dynamicly changing the message buffer to suit for different workload and maximized the async. performance.
-1)Every worker maintain a conter 
- 
- 
+
+\Paragraph{Message passing.}Similar to Grape$+_{AP}$,  share-nothing enginee adopt a point to point communication and push-based  message passing: local worker $W_i$sends message $M(i,j)$ to worker$W_j$ as soon as the size of $M(i,j)$ reach the threshold $\beta{(i,j)}$.
+Each work $W_j$ maintiain a threshold list $\beta{(i,*)}$ with size of worker number $N$. Define each Each threshold trigger as a knock.
+\Paragraph{Adjust Strategy}
+To suit different workload and suiting multithreads environment, we define unit time message volume as the total Message amount between two knock, denote $\Delta M_t(i,j)$ as the total message amount from $W_i$ to $W_j$ after $t$'s knock. Then system can dynamicly adjusting the threshold $\beta_{t}{(i,j)}$ according to the following equation.
+\begin{equation}
+\begin{aligned}
+\beta_t(i,j)=\frac{\alpha\sum_{i=1}^{c}|\Delta M_{t-i}(i,j)|}{c}
+\end{aligned}
+\end{equation}
+In which $c$ denote as the number of knocks be take in account, this parameter controls the flexiability of dynamic adjustment. If set with a large value, the change might not on time if take too much previous information into account. And if set with a small value, the buffer size will change on time. $alpha$ is a const number which controls the relation between message amount and buffer size. In the experiment, we set $c$ as 2 and set $\alpha$ as $0.8$.
 
