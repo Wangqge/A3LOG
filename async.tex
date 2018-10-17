@@ -70,6 +70,7 @@ Intuitively, the accumulated recursive program performs the same computation as 
 	
 \end{theorem}
 Since $G$ and $F$ are group-by operations of $g$ and $f$,the group-by operations satisfy the conditions only if $g$ and $f$ satisfied the same condition for each key.In order to facilitate expression and proof,we use the group-by operation to formalize the theorem and proof.We provide the formal proof.
+\begin{comment}
 \begin{proof}
 	\label{sec:app:proof:monotonic}
 	It is known that $\Delta Y^k=F(\Delta X^k)$and $\Delta X^0=X^0$.
@@ -83,7 +84,7 @@ Since $G$ and $F$ are group-by operations of $g$ and $f$,the group-by operations
 	\end{align}
 	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties, we can reduce the original formula to line 5, the result of normal recursive aggregation. 
 \end{proof}
-
+\end{comment}
 The accumulative property is not only essential for theorem proof but also helpful for efficient system design. If the accumulative condition is satisfied, only the aggregation result $X^k=G(\Delta Y^{0},\ldots,\Delta Y^{k-1})$ needs to be maintained (i.e., the maintained result set size is equal to the number of unique keys) and is updated by accumulating a new $\Delta Y^{k}$, i.e., $X^{k+1}=G(Y^k \cup \Delta Y^k)$. Otherwise, the large set $\Delta Y^{k}$ needs to be maintained for every recursion $k$, which incur considerable storage cost. The accumulative property will be exploited in our system design to save a lot of maintaining cost.
 
 %\Paragraph{Example 1: Compuiting Paths in a DAG} This algorithm (denoted as \textbf{PATHS}) counts the paths between all pairs of vertices in an acyclic graph. The number of paths between vertex $s$ and vertex $d$, $path(s,d)$, is initialized as $1$ for each edge $(s,d)$ and $0$ for others. The $f$ operation of the $k$th recursion for vertex pair $(s,d)$ takes $path^k(s,d)$ as input and outputs $path_{tmp}^k(s,d')$ if edge $(d,d')$ exists. The aggregation operation $g()$ with respect to each pair $(s,d')$ takes all $path_{tmp}^k(s,d')$ as inputs and computes $path^{k+1}(s,d')=\sum_{d'} path_{tmp}^k(s,d')+path^k(s,d')$ as the result. The computation terminates when the path numbers for all vertex pairs are not changed from previous recursion.
@@ -110,6 +111,7 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 
 By asynchronous aggregation, the partial aggregation result is immediately used by the next $F()$ operation. The order independent property implies that no matter the $F()$ operation is first applied or the $G()$ operation is first applied, the effect is the same. As long as the same number of $G()$ operations are applied on all data, the eventual aggregation result will be the same.%Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition.
 Here we give the formal proof, 
+
 \begin{proof}
 	\label{sec:app:proof:correct}
 	In this proof, We assumed that $X$ can be divided into two disjoint subset $X_0$ and $X_1$. we exchange the subset belongs to any two  recursion, and then prove that they have the same formula with the origin form. Exchanging the subset for one time is the basic form which can generalize all the general situation by exchanging the subset from two arbitrary recursion arbitrary times under different division.
@@ -129,7 +131,6 @@ Here we give the formal proof,
 	Line 8 is the formula of synchronous accumulative recursive aggregation. Since the difference between $i$ and $j$ can be arbitrary large, the computation need to iterative infinity.
 	\end{proof}
 %can be found in Appendix \ref{sec:app:proof:correct}
-
 \begin{comment}
 <<<<<<< HEAD
 For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., for each node $j$, $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
@@ -140,7 +141,7 @@ For the PATH example, the $F()$ operation broadcast current paths number to all 
 %>>>>>>> cc27860cdb8b8c649dcef6d4748c1bb51a40b379
 
 
-\subsection{Conversion Possibility}
+\subsection{Converting Nonmonotonic Aggregation for Semi-Naive Evaluation}
 \label{sec:async:convert}
 \begin{comment}
 <<<<<<< HEAD
@@ -149,11 +150,46 @@ Some non-monotonic computations cannot be written as accumulated recursive progr
 Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the conversion is to incrementally computing the original problem $X^k=(G\circ F)^n(X^0)$ and iteratively computing the incremental value $\Delta X^k$ of each recursion using normal recursive aggregation. i.e.,
 =======
 \end{comment}
-As discussed above, the primary requirement for asynchronous aggregation is that the recursive program is an accumulated recursive program. However, a large number of recursive algorithms do not satisfy this requirement. For example, the PageRank algorithm is not an accumulated recursive program.
 
-\textbf{Example 3: PageRank} The PageRank computation is another typical recursive program for ranking the nodes in a graph. The ranking score is initialized as $r_i^0=1/|V|$ for each node $i$ where $|V|$ is the total number of nodes. The $f()$ operation for node $i$ takes a tuple $\langle i,r_i^k\rangle$ as input where $r_i^k$ is the ranking score in the $k$th recursion, computes $f(r_i^k)=0.85*r_i^k/d_i=tr_j^{k+1}$ for any outgoing neighbors $j$ and $0.15$ for itself(where 0.85 is the constant damping factor and $d_i$ is the out-degree of node $i$), and outputs the tuples set $\{\langle j,tr_j^{k+1}\rangle\}$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,tr_j^{k+1}\rangle\}$ and constant  $0.15$, performs the SUM aggregation $g(\{\{tr_j^{k+1}\},0.15\})=\sum_j{tr_j^{k+1}}+0.15=r_j^{k+1}$ and outputs $\langle j,r_j^{k+1}\rangle$. It terminates when the difference between two continuous recursions' ranking scores is small enough.
+As discussed above, the primary requirement for asynchronous aggregation is that the recursive program is an accumulated recursive program {\color{red} in other words,  The progranm can be semi-naive evaluated}. However, a large number of recursive algorithms do not satisfy this requirement. {\color{red} Soicialite proposed \emph{meet aggregation} conditions for a series of recursive aggregate program. And Myria proposed \emph{bag monotonic} conditions, extend the application of Semi-Naive evaluation. In this paper we further proposed the convertibility conditions for some algorithms that  satisified neither meet aggregate conditions nor bagmonotonic conditions}.  
+For example,COSt and PageRank algorithm is not an accumulated recursive program.
 
-With regard to PageRank algorithm, the monotonic condition (i.e., $X\in F(X)$) is not satisfied. After applying the $F(X^k)$ operation, it produces a new set of kv-pairs representing the outgoing messages to neighbors but without preserving the old kv-pairs that represent the ranking scores of vertices (new ranking scores will be calculated based on the incoming messages). In other words, the aggregation result $X^{k}$ is replaced by $F(X^{k})$ but not contained in $F(X^{k})$.
+
+
+\textbf{Example 2: What is the cost of each part}
+ \begin{verbatim}
+Program 7. What is the cost of each part
+\end{verbatim}
+\vspace{-0.1in}\small
+\begin{lstlisting}
+r1. cost(Part,$\mathcal{C}$) $\leftarrow$ basic(Part,cost).
+r2. cost(Part,sum[$\mathcal{C}$]) $\leftarrow$ assb(Part,Sub,$n$),
+                         cost(Sub,$c$),
+                         $\mathcal{C}=c*n$;
+                         basic(Part,$\mathcal{C}$).
+\end{lstlisting}
+\normalsize
+
+
+\begin{comment}
+\textbf{Example 3: PageRank}
+%\begin{verbatim}
+%Program 2 PageRank
+%\end{verbatim}
+%\vspace{-0.1in}
+\small
+\begin{lstlisting}
+r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
+r2. rank(X,$r$) $\leftarrow$ node(X),$r=1$.
+r3. rank(Y,sum[$r$]) $\leftarrow$  Node(Y), r=0.15;
+		      rank(X,$r1$), edge(X,Y),
+		      degree(X,$d$), $r=0.85\cdot r1/d$.
+\end{lstlisting}
+\normalsize
+\end{comment}
+% The PageRank computation is another typical recursive program for ranking the nodes in a graph. The ranking score is initialized as $r_i^0=1/|V|$ for each node $i$ where $|V|$ is the total number of nodes. The $f()$ operation for node $i$ takes a tuple $\langle i,r_i^k\rangle$ as input where $r_i^k$ is the ranking score in the $k$th recursion, computes $f(r_i^k)=0.85*r_i^k/d_i=tr_j^{k+1}$ for any outgoing neighbors $j$ and $0.15$ for itself(where 0.85 is the constant damping factor and $d_i$ is the out-degree of node $i$), and outputs the tuples set $\{\langle j,tr_j^{k+1}\rangle\}$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,tr_j^{k+1}\rangle\}$ and constant  $0.15$, performs the SUM aggregation $g(\{\{tr_j^{k+1}\},0.15\})=\sum_j{tr_j^{k+1}}+0.15=r_j^{k+1}$ and outputs $\langle j,r_j^{k+1}\rangle$. It terminates when the difference between two continuous recursions' ranking scores is small enough.
+
+With regard to PageRank algorithm, the monotonic condition (i.e., $X\in F(X)$) is not satisfied. After applying the $F(X^k)$ operation, it produces a new set of kv-pairs representing the outgoing messages to neighbors  without preserving the old kv-pairs. {\color{green}that represent the ranking scores of vertices} (new ranking scores will be calculated based on the incoming messages). In other words, the aggregation result $X^{k}$ is replaced by $F(X^{k})$ but not contained in $F(X^{k})$.
 
 Fortunately, a number of recursive algorithms that are not originally with monotonic property can be equivalently converted into accumulated recursive programs as long as three conditions are satisfied.
 
@@ -161,7 +197,7 @@ The first requirement is that the aggregation is SUM. Then the increment of aggr
 \begin{equation}
 \label{eq:findf}
 \begin{aligned}
-&G^{+}\circ F(X^{k+1})-G^{+}\circ F(X^{k})=G^{+}\circ F'(X^{k+1}-X^k).
+&G^{+}\circ (F(X^{k+1})-F(X^{k}))=G^{+}\circ F'(X^{k+1}-X^k).
 \end{aligned}
 \end{equation}
 This is the second requirement that helps us find a feasible non-aggregate operation $F'$ according to the current $F$ function. There is one more question we should answer before proposing the new accumulated recursive program. How to initialize $\Delta X^0$? To initialize $\Delta X^0$,  We can perform the normal recursive program for one iteration to obtain $X^1$, and set $\Delta X^0=X^1-X^0$ where $X^0$ is the initial value in original recursive program. 
@@ -195,7 +231,7 @@ Note that, the last condition can be relaxed with condition $lim_{n\rightarrow\i
  	Line 2, 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula. 
  \end{proof}
  
-PageRank is such an recursive program that can be converted to the accumulated recursive program. The $G$ operation is SUM. The new $F'$ operation is $f(r_i^k)=0.85*r_i^k/d_i$ without adding the constant 0.15 to itself. Further, after an infinite number of iterations we have $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ due to the contraction property. There also exist some other convertible algorithms, such as Belief Propagation, Simrank and Jacobi method. The datalog program are detailed in technical report\cite{fullversion}. 
+PageRank is such an recursive program that can be converted to the accumulated recursive program. The $G$ operation is SUM. The new $F'$ operation is $f(r_i^k)=0.85*r_i^k/d_i$ without adding the constant 0.15 to itself. Further, after an infinite number of iterations we have $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ due to the contraction property. There also exist some other convertible algorithms, such as COST algorithm, Belief Propagation, Simrank and Jacobi method. The datalog program are detailed in technical report\cite{fullversion}. 
 
 
 
