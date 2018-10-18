@@ -39,7 +39,7 @@ In Program 1, rule \texttt{r1} initializes the predicate \texttt{sssp} by specif
  \end{verbatim}\vspace{-0.1in}\small
  \begin{lstlisting}
  r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
- r2. cpaths(X,Y,[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
+ r2. cpaths(X,Y,count[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
                           edges(Z,Y),
                           cpaths(X,Y,$c$).
  \end{lstlisting}
