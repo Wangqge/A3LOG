@@ -138,6 +138,7 @@ The termination condition might rely on aggregation of either the accumulation c
 
 \noindent\textbf{Fault Tolerance}
 For large scale operations that involve many machines for a substantial amount of time, it is also important to provide fault tolerance support. A3Log relies on Socialite's fault tolerance scheme \cite{Seo:2013:DSD:2556549.2556572}. The intermediate computation states are checkpointed occasionally on HDFS and restorable as needed. If one or more workers fail, the intermediate states are restored from the latest checkpoint and the evaluation is resumed from that point.
+{\color{red}
 \subsection{Message driven sengding policy}
 
 Previous work proposed two major asynchronous processing strategy in distributed environment, block-centric and verterx centric. The key difference between the two strategies is the message sending policy. Block-centric strategy only sending message after the local shard between this two worker has been completely processed for a pass, all the message is cached in local memory before sending. While vertex-centric processing require as frequent communication as possible within the limit of network e.g., using a small fixed buffer to cache the export message.
@@ -161,4 +162,4 @@ To suit different workload and suiting multithreads environment, we define unit 
 \end{aligned}
 \end{equation}
 In which $c$ denote as the number of knocks be take in account, this parameter controls the flexiability of dynamic adjustment. If set with a large value, the change might not on time if take too much previous information into account. And if set with a small value, the buffer size will change on time. $alpha$ is a const number which controls the relation between message amount and buffer size. In the experiment, we set $c$ as 2 and set $\alpha$ as $0.8$.
-
+}
