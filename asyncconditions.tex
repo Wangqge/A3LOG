@@ -1,5 +1,3 @@
-\section{Automatic Asynchronous Aggregation}
-\label{sec:async}
 %Obviously, the waiting cost of synchronous aggregation is sometime harmful, So we proposed using asynchronous aggregation to reduce the coordination.
 %In this section, we first formally define asynchronous aggregation and introduce accumulated recursive aggregation program. We then propose the sufficient conditions for returning correct results by analyzing the aggregate/non-aggregate operations.And then we propose a conversion technology for some unsatisfied algorithm.
 In this section, we propose the foundations of automatic asynchronous aggregation.
@@ -41,7 +39,7 @@ From the definition of recursive aggregation in Equation (\ref{eq:recursive2}), 
 \label{sec:async:accrec}
 
 {\color{red}
-	Evaluating  the origin recursive aggregation with naive-evaluation technology is very inefficient. The program will terminate only if all the aggregate result converged to their fixpoints. So accumulative recursive aggregation has been proposede, e.g.,seminaive-evaluation technology. Here we give the definition.
+	Previous studies\cite{Seo:2013:DSD:2556549.2556572,Wang:2015:AFR:2824032.2824052,Lam:2013:SDE:2510649.2511289} showes that evaluating  the origin recursive aggregation with naive-evaluation technology is very inefficient in datalog system . The program will terminate only if all the aggregate result converged to their fixpoints. So accumulative recursive aggregation has been proposed, e.g.,seminaive-evaluation technology. Here we give the definition.
 	
 \begin{definition}
 	\label{def:accumasync}
@@ -52,19 +50,19 @@ From the definition of recursive aggregation in Equation (\ref{eq:recursive2}), 
 	\Delta X^{k+1}= G(\Delta Y^{k})
 	\end{aligned}
 	\end{equation}
-	It starts from $\Delta X^0=X^0$ and terminates when th norm of $\Delta X^k$ is 0 or small enough. The final result is the aggregation of all intermediate results, i.e., $X^{k+1}=G(\Delta Y^{0} \cup \Delta Y^{1} \cup \ldots \cup \Delta Y^{k})$. Alternatively, the result can be represented as follows.
+	It starts from $\Delta X^0=X^0$ and terminates when there is no new $\Delta X^k$ produced. The final result is the aggregation of all intermediate results, i.e., $X^{k+1}=G(\cup_{i=0}^{k} \Delta X^{i})$. Alternatively, the result can be represented as follows.
 	\begin{equation}
 	\label{eq:accumasyncres}
-	G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big).
+	G\Big(\Delta X^0\cup (G\circ F)(\Delta X^0)\cup\ldots\cup (G\circ F)^k(\Delta X^0)\Big).
 	\end{equation}
 \end{definition}
 	
 	
-While not all the recursive aggregation can correctly converted with seminaive technology.  Several previous works proposed that some of the recursve aggregation program can be conditionally converted to incremental evaluation(using seminaive-evaluation) . Socialite\cite{} proposed that a small class of aggregates, $meet$ aggregated, can be evaluated recursively, if these aggregate operations are associative, commutative, and idempoent, such as $min$ and $max$.
+While not all the recursive aggregation can correctly evaluated with seminaive technology.  % previous works proposed that some of the recursve aggregation program can be conditionally converted to incremental evaluation(using seminaive-evaluation).
+Socialite\cite{} proposed that a small class of aggregates, $meet$ aggregated, can be evaluated recursively, if these aggregate operations are associative, commutative, and idempoent, such as $\$min$ and $\$max$.
 	
-Myria \cite{} further proposed $bag-monotonic$ aggregates conditions that removed the idempoent constraint and covers most popular aggregate functions including $min$, $max$, $sum$ and $count$.
- 
-However all of these framework has a important precondition that the $F$ operation should be monotonic. So based on these observation we summarize the correctness condition  of accumulated recursive aggregation.
+Myria \cite{} further proposed $bag-monotonic$ aggregates conditions that removed the idempoent constraint and makes more popular aggregate functions including $\$min$, $\$max$, $\$sum$ and $\$count$.
+However all of these framework has a important precondition that the $F$ operation should be monotonic. So based on these observation we summarize the correctness conditions of accumulated recursive aggregation.
 }
 
 
@@ -76,7 +74,7 @@ Intuitively, the accumulated recursive program performs the same computation as 
 	(\textbf{Monotonizability}) The accumulated recursive aggregation defined in Equation (\ref{eq:accumasync}) will return the same result as the normal recursive aggregation defined in Equation (\ref{eq:recursive2}), as long as the the following conditions are satisfied.
 	\begin{itemize}
 		\item \textbf{monotonic}: $X\subseteq F(X)$
-		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$
+		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)${\color{red}  is this associate property? should here be rewrite}
 	%	\item \textbf{semi-accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$	
 		%\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
 	\end{itemize}
@@ -100,15 +98,19 @@ Since $G$ and $F$ are group-by operations of $g$ and $f$, the group-by operation
 	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties, we can reduce the original formula to line 5, the result of normal recursive aggregation. 
 \end{proof}
 \end{comment}
-
 The accumulative property is not only essential in theorem proof but also helpful for efficient system design. If the accumulative condition is satisfied, only the aggregation result $X^k=G(\Delta Y^{0},\ldots,\Delta Y^{k-1})$ needs to be maintained (i.e., the maintained result set size is equal to the number of unique keys) and is updated by accumulating a new $\Delta Y^{k}$, i.e., $X^{k+1}=G(Y^k \cup \Delta Y^k)$. Otherwise, the large set $\Delta \{Y^{k}\}$ needs to be maintained for every recursion $k$, which incur considerable storage cost. The accumulative property will be exploited in our system design to save a lot of maintaining cost. And also accumulative is also inportant in asynchronous conditions.
-There is a special case of accumulative recursive aggregation $count$, which doesn't satisfied the accumulative property but can also write as accumulative form:
+
+{\color{blue}
+I have some disputes about these statement. It is related with the conversion conditions which can be temporarily removed:::	
+	
+	
+There is a special case of aggregates $count$, which doesn't satisfied the accumulative property but can also write as accumulative form:
 \begin{equation}
 \label{eq:accumasyncres}
 G^+\Big(G(\Delta Y^0)\cup G(F\circ G)(\Delta Y^0)\cup\ldots\cup G(F\circ G)^k(\Delta Y^0)\Big).
 \end{equation}
-in which $G^+$ is $sum$ operations. it can be seminaive-evaluating, but hard to asynchronous.
-
+in which $G^+$ is $\$sum$ operations. it can be seminaive-evaluating, but hard to asynchronous.
+}
 %\Paragraph{Example 1: Compuiting Paths in a DAG} This algorithm (denoted as \textbf{PATHS}) counts the paths between all pairs of vertices in an acyclic graph. The number of paths between vertex $s$ and vertex $d$, $path(s,d)$, is initialized as $1$ for each edge $(s,d)$ and $0$ for others. The $f$ operation of the $k$th recursion for vertex pair $(s,d)$ takes $path^k(s,d)$ as input and outputs $path_{tmp}^k(s,d')$ if edge $(d,d')$ exists. The aggregation operation $g()$ with respect to each pair $(s,d')$ takes all $path_{tmp}^k(s,d')$ as inputs and computes $path^{k+1}(s,d')=\sum_{d'} path_{tmp}^k(s,d')+path^k(s,d')$ as the result. The computation terminates when the path numbers for all vertex pairs are not changed from previous recursion.
 
 %\textcolor{red}{this description seems to be wrong in many parts, including some lables. I can't fix them one by one. Please make them consistent with the previous description of Example 1} 
@@ -161,3 +163,139 @@ For the SSSP example, the $F()$ operation expands the BFS searching scope to one
 %\textcolor{red}{why not using PATH example? I'd like to remove the SSSP example in the paper.} 
 For the PATH example, the $F()$ operation broadcast current paths number to all the one-hop-away nodes, and the $G()$ operation sum the paths number from all the in neighbors. The paths number are the same no mather making broadcast $G\circ F(X)$ first or making aggregation first $F\circ G(X)$, i.e., for each node pair $(i,j)$, $sum_{i,j}(p_1,p_2)= sum_{i,j}(sum_{i,j}(p_1),sum_{i,j}(p_2))$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in our technical report \cite{fullversion}).
 %>>>>>>> cc27860cdb8b8c649dcef6d4748c1bb51a40b379
+
+
+
+
+\subsection{Converting Nonmonotonic program to Semi-Naive Evaluation}
+\label{sec:async:convert}
+\begin{comment}
+<<<<<<< HEAD
+Some non-monotonic computations cannot be written as accumulated recursive program and are not originally qualified for asynchronous aggregation. For example, the PageRank computation cannot be executed as an accumulated recursive program since the monotonic condition is not satisfied. After applying $F\circ G$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. In other words, there is no incremental computing relationship between $X^k$ and $X^{k-1}$. Further, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
+
+Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the conversion is to incrementally computing the original problem $X^k=(G\circ F)^n(X^0)$ and iteratively computing the incremental value $\Delta X^k$ of each recursion using normal recursive aggregation. i.e.,
+=======
+\end{comment}
+
+As discussed above, the primary requirement for asynchronous aggregation is that the recursive program is an accumulated recursive program. %{\color{red} in other words,  The progranm can be semi-naive evaluated}.
+However, a large number of recursive algorithms do not satisfy this requirement. {\color{red} Soicialite proposed \emph{meet aggregation} conditions for a series of recursive aggregate program, and Myria proposed \emph{bag monotonic aggregation} extend the application of Semi-Naive evaluation, but these conditions all require the non-aggregate operations $f$ to be monotonic. However some algorithms that doesn't satisfied the monotonic condition still have the posibility to convert to semi-naive evaluation }.So in this section, we will introduced a convert technology to guide the trasnformation.
+
+
+\textbf{Example 2: What is the cost of each part}
+\small
+\begin{lstlisting}
+r1. cost(Part,$\mathcal{C}$) $\leftarrow$ basic(Part,cost).
+r2. cost(Part,sum[$\mathcal{C}$]) $\leftarrow$ assb(Part,Sub,$n$),
+			cost(Sub,$c$), $\mathcal{C}=c*n$;
+			basic(Part,$\mathcal{C}$).
+\end{lstlisting}
+\normalsize
+
+
+
+\textbf{Example 3: PageRank}
+\small
+\begin{lstlisting}
+r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
+r2. rank(X,$r$) $\leftarrow$ node(X),$r=1$.
+r3. rank(Y,sum[$r$]) $\leftarrow$  Node(Y), r=0.15;
+			rank(X,$r1$), edge(X,Y),
+			degree(X,$d$), $r=0.85\cdot r1/d$.
+\end{lstlisting}
+\normalsize
+
+% The PageRank computation is another typical recursive program for ranking the nodes in a graph. The ranking score is initialized as $r_i^0=1/|V|$ for each node $i$ where $|V|$ is the total number of nodes. The $f()$ operation for node $i$ takes a tuple $\langle i,r_i^k\rangle$ as input where $r_i^k$ is the ranking score in the $k$th recursion, computes $f(r_i^k)=0.85*r_i^k/d_i=tr_j^{k+1}$ for any outgoing neighbors $j$ and $0.15$ for itself(where 0.85 is the constant damping factor and $d_i$ is the out-degree of node $i$), and outputs the tuples set $\{\langle j,tr_j^{k+1}\rangle\}$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,tr_j^{k+1}\rangle\}$ and constant  $0.15$, performs the SUM aggregation $g(\{\{tr_j^{k+1}\},0.15\})=\sum_j{tr_j^{k+1}}+0.15=r_j^{k+1}$ and outputs $\langle j,r_j^{k+1}\rangle$. It terminates when the difference between two continuous recursions' ranking scores is small enough.
+
+With regard to PageRank algorithm, the monotonic condition (i.e., $X\in F(X)$) is not satisfied. After applying the $F(X^{k})$ operation, it produces a new set of kv-pairs representing the outgoing messages to neighbors  without preserving the old kv-pairs. {\color{green}that represent the ranking scores of vertices} (new ranking scores will be calculated based on the incoming messages). In other words, the aggregation result $X^{k}$ is replaced by $F(X^{k})$ but not contained in $F(X^{k})$.
+
+Fortunately, a number of recursive algorithms that are not originally with monotonic property can be equivalently converted into accumulated recursive programs by changing the original recursive form, as long as two conditions are satisfied.
+
+
+{\color{red}
+	
+	The first requirement is that{\color{blue} the aggregate operation is $\$sum$ } the results can be incrementally computed. then we define $\Delta^{k}$ as the increment between each two recursion i.e., $\Delta^{k}=X^k-X^{k-1}$. Then the program can be evaluated with $X^k=G^+(\cup_{i=1}^{k}\Delta^i\cup X^0)$.
+	% $ G^+\circ F(X^{k})=G^+(X^{k}\cup F'(\Delta^{k-1}))$.
+	%In which $G^+$ is the aggregate function, and $F'$ is an new non-aggregate operation for $\Delta$ computing.
+	
+	%and denote 
+	%$\Delta X^{k}=G^+\circ F(X^k)-X^{k}$ i.e., $G^+\circ F(X^{k})=G^+(X^{k}\cup G^+\circ F(X^k)-X^{k})$.
+	Further, as defined in Equation (\ref{eq:accumasync}), the increment $\Delta^{k}$ should be computed based on $\Delta^{k-1}$ using the same aggregate functions $G^+$ and new non-aggregate operation $F'$, i.e., $\Delta^{k}=G^+\circ F'(\Delta X^{k-1})$.
+	Then the Original form $(G^+\circ F)^k(X^0)$ can be converted to 
+	\begin{equation}
+	\label{eq:convertform}
+	\begin{aligned}
+	&(G^+\circ F)^k(X^0)
+	=G^+( \cup_{i=0}^{k-1}{(G\circ F)^i(\Delta^{1})\cup X^0})
+	%=&G^+(X^0\cup\Delta^0\cup G^+\circ F'(\Delta^0)\ldots \cup (G^+\circ F')^{k-1}(\Delta^0))
+	\end{aligned}
+	\end{equation}
+Take COST algorithm as an example, the original COST program using $\$sum$ as aggregate operations. But the algorithm can be incrementally evaluated, the F operations contains two part 1) send self-total-cost times number to the higher level part, 2)get the basic cost of ites self.  Then the new $F'$ operation is the previous $F$ with second operation removed. The new program start from the basic cost of each part, and the cost of each sub part can be incrementally evaluated, e.g., Only the difference of cost is accumulated. The program terminated when there is no new difference produced.
+	
+While the question rised that how to determine a new non-aggregate operation $F'$? Since
+	%$G^+\circ F(X^{k})=G^+(X^{k}\cup\Delta^{k})$,
+	\begin{equation}
+	\label{eq:inferr}
+	\begin{aligned}
+	\Delta^k&=X^k-X^{k-1}\\
+	G^+(\Delta^{k})&=G^+(X^k-X^{k-1})\\
+	G^+(\Delta^{k})&=G^+(G^+\circ F(X^{k-1})-G^+\circ F(X^{k-2}))\\
+	\Delta^{k}&=G^+(F(X^{k-1})-F(X^{k-2}))\notag
+	\end{aligned}
+	\end{equation}
+	Then,
+	\begin{equation}
+	\label{eq:findf}
+	\begin{aligned}
+	&G^+\circ F'(\Delta^{k})=G^+(F(X^{k})-F(X^{k-1})).
+	\end{aligned}
+	\end{equation}
+}
+
+{\color{green}
+	The first requirement is that the aggregation is SUM. Then the increment of aggregation results can be computed as $\Delta X^k=X^{k+1}-X^k$. Note that, since $X$ is a kv-pairs set with unique keys, the `$+$'/`$-$' operation over two kv-pairs set denotes pair-wise value summation/subtraction indexed by key. As defined in Equation (\ref{eq:accumasync}), the increment $\Delta X^{k+1}$ should be computed based on $\Delta X^k$, i.e., $\Delta X^{k+1}=G^{+}\circ F'(\Delta X^k)$ where $G^{+}$ represents the group-by SUM aggregation referring to our first SUM operation requirement, and $F'$ is a new non-aggregate function. To find a feasible $F'$, since $\Delta X^{k+1}=G^{+}\circ F'(\Delta X^k)$, we have $X^{k+2}-X^{k+1}=G^{+}\circ F'(X^{k+1}-X^k)$. Further, we have
+}
+
+This is the second requirement that help us find a feasible non-aggregate operation $F'$ according to the current $F$ function. However is is still hard to get the non-aggregate formula directly through the Equation (8). Because of the coupling of multiple conditions. So we introduce an automatic determine technology by leveraging Z3 SMT solver.  
+{\color{green} There is one more question we should answer before proposing the new accumulated recursive program. How to initialize $\Delta X^0$? To initialize $\Delta X^0$,  We can perform the normal recursive program for one iteration to obtain $X^1$, and set $\Delta X^0=X^1-X^0$ where $X^0$ is the initial value in original recursive program.
+	
+	Given the new accumulated recursive program with $G^+$ and $F'$, we aim to find the conditions that guarantee the convergence and correctness. With an initial $X^0$, the final result of original recursive program is $(G^{+}\circ F)^n(X^0)$, while the final result of the new accumulated recursive program is $X^0+\Delta X^0+G^+\circ F'(\Delta X^0)+\ldots+(G^+\circ F')^n(\Delta X^0)$. By applying Equation (\ref{eq:findf}) to $(G^{+}\circ F)^n(X^0)$, we have $X^0+\Delta X^0+\ldots+(G^+\circ F')^n(\Delta X^0)+(G^+\circ F')^{n+1}(\Delta X^0)$. When $(G^+\circ F')^{n+1}(\Delta X^0)$ is approaching to \textbf{0} (i.e., the values of all kv-pairs are approaching to 0), the result of the new accumulated recursive program is approaching to that of the original program.
+}
+
+Therefore, we have the following definition to guide convertion.
+\begin{definition}
+	\label{th:convert}
+	A convertiable recursive program can be converted to an accumulated recursive program as Equation (\ref{eq:convertform}) and return the same results after $n$ iterations with naive-evaluation, as long as the following conditions are satisfied:
+	\begin{itemize}
+		\item The aggregate operation $G^+$ is $\$sum$ operations.{\color{blue} this  might has a high level statement please keep this mark here or totally removed this part}
+		
+		\item The original program can be incrementaly evaluated with $X^{k}=G^+(X^{k-1}\cup \Delta^{k-1})$
+		\item There exists an non-aggregate operation $F'$ satisfitd that $\Delta^{k}=G^+\circ F'(\Delta X^{k-1})$
+		%\item The increment can be iteratively evaluated with non-aggregate operation $F'$ i.e.,   $\Delta^{k+1}=G^+\circ F'(\Delta X^{k})$
+		%\item There exists an non-aggregate operation $F'$ satisfitd that $G^+\circ (F(X^{k-1})-F(X^{k-2}))=G^+\circ F'(\Delta^{k-2}).$
+		%		\item The initial $\Delta^0$ is defined as $X^1-X^{0}$ with naive evaluation result.
+		
+		
+		%		\item With the initialization $\Delta X^0=X^1-X^0$, we have $(G^+\circ F')^{n+1}(\Delta X^0)=\textbf{0}$.
+	\end{itemize}
+\end{definition}
+{\color{green}
+	Note that, the last condition can be relaxed with condition $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ to obtain an approximate result.
+}
+\begin{proof}
+	We init the $\Delta^1$ with $\Delta^1=X^1-X^0$.
+	\begin{align}
+	&G^+(X^0\cup \Delta^1 \cup G^+\circ F'(\Delta^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \notag\\
+	=&G^+(X^1 \cup G^+\circ F'(\Delta^1  )\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1  )) \tag{2}\\
+	=&G^+(G^+(X^1\cup G^+\circ F'(\Delta^1  ))\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \tag{3}\\
+	=&G^+(G\circ F(X^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \tag{4}\\
+	=&\ldots \notag\\
+	=&G^+((G\circ F)^{k-2}(X^1)\cup(G^+ \circ F')^{k-1}(\Delta^1 )) \notag\\
+	=&G\circ F(X^{k-1})\tag{6}
+	\end{align}
+	Line 2, 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula. 
+\end{proof}
+
+In System implementation, the initial value of $\Delta^1$ could be init with $X^1-X^0$ by performing naive-evaluation for one time. 
+
+PageRank is another recursive program that can be converted to the accumulated recursive program. The $G$ operation is $\$sum$. The new $F'$ operation is $f(r_i^k)=0.85*r_i^k/d_i$ without adding the constant 0.15 to itself. Further, after an infinite number of iterations we have $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ due to the contraction property. There also exist some other convertible algorithms, such as COST algorithm, Belief Propagation, Simrank and Jacobi method. The datalog programs are detailed in technical report\cite{fullversion}. 
+
