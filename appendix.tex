@@ -269,8 +269,21 @@ r4_2. delta(Y,sum[$\delta'$]) $\leftarrow$ delta(X,$\delta$),edge(X,Y),
                          degree(X,$d$),$\delta'=0.85\cdot \delta/d$.
 \end{lstlisting}
 
-
-
+\onecolumn
+\begin{equation}
+\label{eq:async_conditons_modify}
+G(G\circ F(X^0)\cup G\circ F(G \circ F(X^0))\ldots)
+\end{equation}
+It is obvious that equation (\ref{eq:async_conditons_modify}) is synchronous version. Synchronous version requires that $G\circ F$ should start after the previous one finished.
+However Asynchronous allows different part of an entire $G\circ F$ applying across another recursion.
+Here we gives the description:
+\begin{definition}
+Now divide the non-aggregate output $Y$ into two arbitrary non-intersect subset $Y_p$ and $Y_{\neg p}$. Then we decomposed the F operation into two part $F_p$ and $F_{\neg p}$. $F_p$ is used to get all  nonaggregate result belogs to $Y_{p}$ and $F_{\neg p}$ is the same, e.g., $Y^k_p=F_p(X^k)$, $Y^k_{\neg p}=F_{\neg p}(X_k)$ .Then gives that
+\begin{align}
+G(G\circ F_p(X)\cup G\circ F(G \circ F_p(X))\cup G(F_{\neg p}(X)\cup G\circ F_{\neg p} \circ G\circ F(G \circ F_{p}(X))) )
+\end{align}
+\end{definition}
+ Then we have $G\circ F(X)= G(G\circ F_p(X) \cup G\circ F_{\neg p}(X))$
 
 
 \begin{comment}
