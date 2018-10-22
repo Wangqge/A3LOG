@@ -1,31 +1,32 @@
-\section{Recursive Asynchronous Aggregation}
+\section{Asynchronous Recursive Aggregation}
 \label{sec:async}
 
-A \emph{sequential} computation (as opposed to parallel computation) is composed of a sequence of operations on input. These operations can be classified into two categories, the aggregate operations and the non-aggregate operations. %We focus on numerical aggregation in this paper.
+%A \emph{sequential} computation (as opposed to parallel computation) is composed of a sequence of operations on input. These operations can be classified into two categories, the aggregate operations and the non-aggregate operations. %We focus on numerical aggregation in this paper.
 
-\subsection{Aggregate/Non-Aggregate Operations}
-An \emph{\textbf{aggregate operation}} is a function $g()$ that requires more than one variables as input, i.e., $g(Y)$ where $Y=\{y_1, y_2, \ldots, y_n\}$, and outputs one value. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations. A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs (i.e., kv-pairs) are first grouped by key, and then the values in each group are aggregated to obtain a new set of kv-pairs. In other words, the group-by aggregation is composed of multiple aggregate operations applied on each group. Given a set of kv-pairs $Y=\{Y_{k_0} \cup Y_{k_1} \cup ... \cup Y_{k_n}\}$, where $Y_{k_i}$ denotes the set of kv-pairs that share the same key $k_i$ and there are $n$ unique keys. The group-by aggregation $G_k$ applied on $Y$ can be described as follows:
-\begin{equation}
-	\begin{aligned}
+%\subsection{Aggregate/Non-Aggregate Operations}
+An \emph{\textbf{aggregate operation}} is a function $g()$ with more than one input values, i.e., $g(Y)$ where $Y=\{y_1, y_2, \ldots, y_n\}$. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations. A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs (i.e., kv-pairs) are first grouped by key, and then an aggregate function is applied on each group to obtain a new set of kv-pairs. Given a set of kv-pairs $Y=\{\langle k_0,v1\rangle,\langle k_1,v2\rangle,\langle k_0,v3\rangle,\ldots\}$ with $n$ unique keys, the group-by aggregation $G(Y)$ applied on $Y$ will output $n$ new kv-pairs, each corresponding to the aggregated result of each group. On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that takes only one value as input, i.e., $f(x)$. The result of the non-aggregate operation $F(X)$ on a set of kv-pairs $X$ is the union of applying $f$ operation on each kv-pair.
+%In other words, the group-by aggregation is composed of multiple aggregate operations applied on each group. 
+%Given a set of kv-pairs $Y=\{Y_{k_0} \cup Y_{k_1} \cup ... \cup Y_{k_n}\}$, where $Y_{k_i}=\{\langle k_i,v1\rangle,\langle k_i,v2\rangle,\ldots\}$ denotes the set of kv-pairs that share the same key $k_i$ and there are totally $n$ unique keys. The group-by aggregation $G_k$ applied on $Y$ can be described as follows:
+%\begin{equation}
+%	\begin{aligned}
 		 %Y&=\{Y_{k_0} \cup Y_{k_1} \cup ... \cup Y_{k_n}\}\notag\\	
-	 G_k(Y)&=\{g(Y_{k_0}) \cup g(Y_{k_1}) \cup \dots \cup g(Y_{k_n})\}
- \end{aligned}
-\end{equation}
-The result of the group-by aggregation is a new set of aggregated kv-pairs.
+%	 G_k(Y)&=\{g(Y_{k_0}) \cup g(Y_{k_1}) \cup \dots \cup g(Y_{k_n})\}
+% \end{aligned}
+%\end{equation}
+%The result of the group-by aggregation is a new set of aggregated kv-pairs.
 %Note that, there is no intersection between different subsets, i.e.$Y_i \cup Y_j = \emptyset $
 
-On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that takes only one value as input, i.e., $f(x)$, and outputs zero or more values. Given a set of $m$ kv-pairs $X=\{x_{k_0}, x_{k_1}, ... x_{k_m}\}$ where $x_{k_i}$ is a kv-pair with key $k_i$, the non-aggregate operation $F_k$ applied on $X$ can be described as follows:
-\begin{equation}
-	\begin{aligned}	
-	F_k(X)&=\{f(x_{k_0}) \cup f(x_{k_1}) \cup \dots \cup f(x_{k_m})\}
-	\end{aligned}
-\end{equation}
+%\begin{equation}
+%	\begin{aligned}	
+%	F_k(X)&=\{f(x_{k_0}) \cup f(x_{k_1}) \cup \dots \cup f(x_{k_m})\}
+%	\end{aligned}
+%\end{equation}
 %Since the non-aggregate operation $f$ only takes one value as input, it is obvious that $F_k(X)$ has the distributive property, i.e., $F_k(X_1 \cup X_2)=F_k(X_1) \cup F_k(X_2)$.
 %In essence, the aggregate operation implies a \emph{data fusion}, while the non-aggregate operation implies a \emph{data transformation}.
 
 %Note that, the aggregate and non-aggregate operation should be judged according to the number of \emph{variable} inputs instead of constant inputs. For example, the join operation in relational algebra is in general an aggregation since it merges two data sets into one. It takes two inputs $A$ and $B$ and produces one output. However in distributed join implementation, the whole data set  $B$ can be small enough to be cached on all distributed workers, which implies that $B$ is a constant input for the distributed join operations. By partitioning and distributing $A$, the join operation is achieved by merging a part of $A$ and the locally cached whole $B$ on each worker. In such a case, the join operation is considered as a non-aggregate operation because each distributed join operation only takes a part of $A$ as a variable input which is different on different processor, where $B$ is the constant for all processors.
 
-\Paragraph{Parallelization}Non-aggregate operation $f()$ only takes one input and does not rely on any other variable, which makes the $F_k$ operation have the distributive property, i.e., $F_k(X_1 \cup X_2)=F_k(X_1) \cup F_k(X_2)$. By partitioning and distributing the inputs to many workers, the non-aggregate operations can be embarrassingly parallel \emph{without communication} between workers. In contrast, the aggregate operation $g()$ takes more than one values as input which may originate from other workers, so that the aggregate operations and the group-by aggregation $G_k()$ can be parallelized but \emph{with communication} between workers. If the inputs are produced by many other workers, the aggregate operations has to wait for all the inputs to be ready, which may incur a lot of coordination costs. Therefore, the efficiency of aggregation is the key to parallelization performance.
+\Paragraph{Parallelization}Non-aggregate operation $f$ only takes one input and does not rely on any other variable, which makes $F$ operation have the distributive property, i.e., $F(X_1 \cup X_2)=F(X_1) \cup F(X_2)$. By partitioning and distributing the inputs to many workers, the non-aggregate operations can be embarrassingly parallel \emph{without communication} between workers. In contrast, the aggregate operation $g$ takes more than one values as input which may originate from other workers, so that the parallelization of group-by aggregation $G$ \emph{requires communication} between workers. If the inputs are produced by many other workers, the aggregate operations has to wait for all the inputs to be ready, which may incur significant coordination costs. Therefore, the efficiency of aggregation is the key to parallelization performance.
 
 
 %If the inputs for all aggregate operations comes from same work, these aggregate operations can be parallelized without communication by carefully partitioning the inputs. However, this is usually impossible since the inputs probably result from the previous computations on other workers and cannot be particularly partitioned.In other words,the non-aggregate operations can be executed without waiting for all the inputs prepared, but the aggregate operations has to wait for all the inputs prepared when synchronously executed,which incur a lot of coordination costs.
@@ -33,16 +34,7 @@ On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that ta
 
 \subsection{Recursive Aggregation}
 
-{\color{green}
-\emph{Recursive aggregation} is a sequence of interleaving aggregate and non-aggregate operations 
-where all the aggregate operations are the same and all the non-aggregate operations are the same\footnote{There are also recursive programs without aggregations, which can be embarrassingly parallel.}. }
-
-{\color{red}
-	\emph{Recursive aggregation} is a sequence of interleaving aggregate and non-aggregate operations.  
-It is very common in graph algorithms, data mining and machine learning algorithms. The program with recursive aggregation is referred to as \emph{recursive program}. There is a special case of recursive datalog problem with aggregate operators which  can be represented  with \emph{recursive aggregations}. In this paper, we will focus on optimizing the performance of recursive aggregation programs.
-}
-%Let $Y$ denote a set of input variables of aggregate operation $\{Y_{k_0},Y_{k_1},\dots,Y_{k_m}\}$and $X$ denote the inputs of non-aggregate  operation.$\{x_{k_0},x_{k_1},\dots,x_{k_n}\}$%Define $F(X)$ as $\{f(x_0^k) \cup f(x_1^k) \cup \dots \cup f(x_n^k)\}$ that is performing non-aggregation function $f(\dot)$for each item in the set and then combine them. Similarly, We define $G(Y)$as $\{g(Y_0) \cup g(Y_1) \cup \dots \cup g(Y_n)\}$ in which $X_i$ is a subset of inputs X,note that there may be an intersection between any two subsets.
-We use $G()$ for $G_k()$ and $F()$ for $F_k()$ in the later text for brevity. Then a recursive program can be represented as follow.
+\emph{Recursive aggregation} is a sequence of interleaving aggregate and non-aggregate operations, which can be represented as follow.
 \begin{equation}
 \label{eq:recursive2}
 \begin{aligned}
@@ -50,17 +42,21 @@ Y^{k}=F(X^k),\\
 X^{k+1}=G(Y^k)
 \end{aligned}
 \end{equation}
-%It start from $X^0$ in which case the update order is exchanged and an aggregation is first applied \textcolor{red}{I don't understand your meaning this sentence}. 
-This recursive program starts from $X^0$ and terminates when there there is no difference between $X^k$ and $X^{k-1}$. Let $(G\circ F)^n$ denote $n$ applications of $(G\circ F)$. The final result of the recursive program is $(G\circ F)^n(X^0)$. Since $X$ contains a set of kv-pairs, the computation of $F(X)$ can be parallelized with each processer working on a subset of $X$. The group-by aggregate computation $G(Y)$ can be parallelized with each processer takes charge of one or several groups' aggregation. The aggregation has to wait for its complete input 
-%kv-pairs set (the kv-pairs that have the same key)
- to be ready. 
+This recursive program starts from $X^0$ and terminates when there there is no difference between $X^k$ and $X^{k-1}$. Let $(G\circ F)^n$ denote $n$ applications of $(G\circ F)$. The final result of the recursive program is $(G\circ F)^n(X^0)$. Since $X$ contains a set of kv-pairs, the computation of $F(X)$ can be parallelized with each processer working on a subset of $X$. The group-by aggregate computation $G(Y)$ can be parallelized with each processer performing one or several groups' aggregation. The aggregation for each group has to wait for its complete input kv-pairs set to be ready.
+
+The programs with recursive aggregation are very common in graph algorithms, data mining and machine learning algorithms. We take a graph algorithm Single Source Shortest Path (SSSP) as an illustrative example.
+%There is a special case of recursive datalog problem with aggregate operators which  can be represented  with \emph{recursive aggregations}. In this paper, we will focus on optimizing the performance of recursive aggregation programs.
+
+%Let $Y$ denote a set of input variables of aggregate operation $\{Y_{k_0},Y_{k_1},\dots,Y_{k_m}\}$and $X$ denote the inputs of non-aggregate  operation.$\{x_{k_0},x_{k_1},\dots,x_{k_n}\}$%Define $F(X)$ as $\{f(x_0^k) \cup f(x_1^k) \cup \dots \cup f(x_n^k)\}$ that is performing non-aggregation function $f(\dot)$for each item in the set and then combine them. Similarly, We define $G(Y)$as $\{g(Y_0) \cup g(Y_1) \cup \dots \cup g(Y_n)\}$ in which $X_i$ is a subset of inputs X,note that there may be an intersection between any two subsets.
+%We use $G()$ for $G_k()$ and $F()$ for $F_k()$ in the later text for brevity. Then a recursive program 
+%It start from $X^0$ in which case the update order is exchanged and an aggregation is first applied \textcolor{red}{I don't understand your meaning this sentence}.
+
 
 %\Paragraph{Example 1: Compuiting Paths in a DAG} This algorithm (denoted as \textbf{PATH}) counts the paths between all pairs of vertices in an acyclic graph. The number of paths between vertex $s$ and vertex $d$, $path(s,d)$, is initialized as $1$ for each edge $(s,d)$ and $0$ for others. The $f$ operation of the $k$th recursion for vertex pair $(s,d)$ takes $path^k(s,d)$ as input and outputs $path_{tmp}^k(s,d')$ if edge $(d,d')$ exists. The aggregation operation $g()$ with respect to each pair $(s,d')$ takes all $path_{tmp}^k(s,d')$ as inputs and computes $path^{k+1}(s,d')=\sum_{d'} path_{tmp}^k(s,d')+path^k(s,d')$ as the result. The computation terminates when the path numbers for all vertex pairs are not changed from previous recursion.
-{\color{green}
-\Paragraph{Example 1: SSSP} The single source shortest path (SSSP) computation is a recursive program that derives the shortest distance from a source node to all other nodes in a graph. The shortest distance is initialized as $+\infty$ for each node except for the source, which is initialized as 0. The $f()$ operation for a node $i$ takes a tuple $\langle i,d_i^k\rangle$ as input where $d_i^k$ is the shortest distance in the $k$th recursion, computes $f(d_i^k)=d_i^k+w_{i,j}=td_j^{k+1}$ for any outgoing neighbors $j$ (where $w_{i,j}$ is the distance from node $i$ to $j$), and outputs the tuples set $\{\langle j,td_j^{k+1}\rangle\}$ and its own $\langle i,d_i^k\rangle$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,td_j^{k+1}\rangle\}$, performs aggregation $g(td_j^{k+1})=min(\{td_j^{k+1}\},d_j^k)=d_j^{k+1}$, and outputs $\langle j,d_j^{k+1}\rangle$. It terminates when all nodes' shortest distances are not changed from previous recursion.
-}
+%{\color{green}
+%\Paragraph{Example 1: SSSP} The single source shortest path (SSSP) computation is a recursive program that derives the shortest distance from a source node to all other nodes in a graph. The shortest distance is initialized as $+\infty$ for each node except for the source, which is initialized as 0. The $f()$ operation for a node $i$ takes a tuple $\langle i,d_i^k\rangle$ as input where $d_i^k$ is the shortest distance in the $k$th recursion, computes $f(d_i^k)=d_i^k+w_{i,j}=td_j^{k+1}$ for any outgoing neighbors $j$ (where $w_{i,j}$ is the distance from node $i$ to $j$), and outputs the tuples set $\{\langle j,td_j^{k+1}\rangle\}$ and its own $\langle i,d_i^k\rangle$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,td_j^{k+1}\rangle\}$, performs aggregation $g(td_j^{k+1})=min(\{td_j^{k+1}\},d_j^k)=d_j^{k+1}$, and outputs $\langle j,d_j^{k+1}\rangle$. It terminates when all nodes' shortest distances are not changed from previous recursion.
+%}
 
-{\color{red}
-\Paragraph{Example 1: SSSP} The single source shortest path (SSSP) computation is a typical recursive program. The shortest distance is initialized as $+\infty$ for each node except for the source, which is initialized as 0. The $F()$ operation for node $i$  takes  shortest distance $\langle i, d^k\rangle$ as input and 1) computes $f(\langle i, d^k\rangle)$ for any outgoing neighbors $j$ and outputs $\langle j, d^k+w_j\rangle$ denote as $<j/i,d_{tmp}\rangle$, 2) outputs itself $\langle  i,d^k\rangle$ . The aggregate operation $G()$ with respect to each node $j$ takes the input tuples $\{\langle j,d_{tmp}\rangle\}$, performs aggregation $G(\langle j,d_tmp \rangle)=\langle j, min(\{d_{tmp}\})\rangle$, and outputs tuple $\langle j,d^{k+1}\rangle$. It terminates when all nodes' shortest distances are not changed from previous recursion.
-}
+\Paragraph{Example 1: SSSP} The SSSP computation is a typical recursive program. The shortest distance is initialized as $+\infty$ for each node except for the source, which is initialized as 0. For each node $i$, it takes the shortest distance $\langle i, d^k\rangle$ as input and performs $f(\langle i, d^k\rangle)$, which 1) outputs $\{\langle j,d_{tmp}\rangle\}$ to node $i$'s outgoing neighbors $j$ where $d_{tmp}=d^k+w_j$ and 2) outputs $\langle i,d^k\rangle$ to itself. The aggregate operation $g$ with respect to each node $j$ takes the set of input tuples $\{\langle j,d_{tmp}\rangle\}$, performs aggregation $g(\{\langle j,d_{tmp}\rangle\})=\langle j, min(\{d_{tmp}\})\rangle$, and outputs tuple $\langle j,d^{k+1}\rangle$. It terminates when all nodes' shortest distances are not changed from previous recursion.
+
 %\Paragraph{Example 2: PageRank} The PageRank computation is another typical recursive program for ranking the nodes in a graph. The ranking score is initialized as $r_i^0=1/|V|$ for each node $i$ where $|V|$ is the total number of nodes. The $f()$ operation for node $i$ takes a tuple $\langle i,r_i^k\rangle$ as input where $r_i^k$ is the ranking score in the $k$th recursion, computes $f(r_i^k)=0.85*r_i^k/d_i=tr_j^{k+1}$ for any outgoing neighbors $j$ (where 0.85 is the constant damping factor and $d_i$ is the out-degree of node $i$), and outputs the tuples set $\{\langle j,tr_j^{k+1}\rangle\}$. The aggregate operation $g()$ with respect to each node $j$ takes the input tuples $\{\langle j,tr_j^{k+1}\rangle\}$, performs aggregation $g(\{tr_j^{k+1}\})=\sum_j{tr_j^{k+1}}+0.15=r_j^{k+1}$ and outputs $\langle j,r_j^{k+1}\rangle$. It terminates when the difference between two continuous recursions' ranking scores is small enough.

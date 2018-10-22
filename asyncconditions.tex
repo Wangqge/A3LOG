@@ -1,12 +1,12 @@
 %Obviously, the waiting cost of synchronous aggregation is sometime harmful, So we proposed using asynchronous aggregation to reduce the coordination.
 %In this section, we first formally define asynchronous aggregation and introduce accumulated recursive aggregation program. We then propose the sufficient conditions for returning correct results by analyzing the aggregate/non-aggregate operations.And then we propose a conversion technology for some unsatisfied algorithm.
-In this section, we propose the foundations of automatic asynchronous aggregation.
+%In this section, we propose the foundations of automatic asynchronous aggregation.
 
 \subsection{Asynchronous Aggregation}
 \label{sec:async:async}
 
 The recursive program in Equation (\ref{eq:recursive2}) is defined with synchronous aggregation. In the $k$th iteration, suppose the aggregate operation $g_{p}^k()$ associated with key $p$ will be applied on the subsets $\{Y_{p,1}^k,Y_{p,2}^k,\ldots,Y_{p,m}^k\}$. The synchronous aggregate operation has to wait for all its inputs to perform aggregation $g_{p}^k(Y_{p,1}^k,Y_{p,2}^k,\ldots,Y_{p,m}^k)$ before starting the $(k+1)$th round of $F$ operations. Correspondingly, we define asynchronous aggregation as follows.
- 
+
 %on all subsets $\{Y_{k_p 1}^k,Y_{k_p2}^k,\ldots,Y_{k_pm}^k\}$ have to be completed before the next $G()$ operation starts. %The $g()$ operation has to be applied on the whole set $X^k$.
 
 
@@ -95,7 +95,7 @@ Since $G$ and $F$ are group-by operations of $g$ and $f$, the group-by operation
 	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{4}\\
 	=&(G \circ F)^{k+1}(X^0).\tag{5}
 	\end{align}
-	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties, we can reduce the original formula to line 5, the result of normal recursive aggregation. 
+	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties, we can reduce the original formula to line 5, the result of normal recursive aggregation.
 \end{proof}
 \end{comment}
 The accumulative property is not only essential in theorem proof but also helpful for efficient system design. If the accumulative condition is satisfied, only the aggregation result $X^k=G(\Delta Y^{0},\ldots,\Delta Y^{k-1})$ needs to be maintained (i.e., the maintained result set size is equal to the number of unique keys) and is updated by accumulating a new $\Delta Y^{k}$, i.e., $X^{k+1}=G(Y^k \cup \Delta Y^k)$. Otherwise, the large set $\Delta \{Y^{k}\}$ needs to be maintained for every recursion $k$, which incur considerable storage cost. The accumulative property will be exploited in our system design to save a lot of maintaining cost. And also accumulative is also inportant in asynchronous conditions.
@@ -113,7 +113,7 @@ in which $G^+$ is $\$sum$ operations. it can be seminaive-evaluating, but hard t
 }
 %\Paragraph{Example 1: Compuiting Paths in a DAG} This algorithm (denoted as \textbf{PATHS}) counts the paths between all pairs of vertices in an acyclic graph. The number of paths between vertex $s$ and vertex $d$, $path(s,d)$, is initialized as $1$ for each edge $(s,d)$ and $0$ for others. The $f$ operation of the $k$th recursion for vertex pair $(s,d)$ takes $path^k(s,d)$ as input and outputs $path_{tmp}^k(s,d')$ if edge $(d,d')$ exists. The aggregation operation $g()$ with respect to each pair $(s,d')$ takes all $path_{tmp}^k(s,d')$ as inputs and computes $path^{k+1}(s,d')=\sum_{d'} path_{tmp}^k(s,d')+path^k(s,d')$ as the result. The computation terminates when the path numbers for all vertex pairs are not changed from previous recursion.
 
-%\textcolor{red}{this description seems to be wrong in many parts, including some lables. I can't fix them one by one. Please make them consistent with the previous description of Example 1} 
+%\textcolor{red}{this description seems to be wrong in many parts, including some lables. I can't fix them one by one. Please make them consistent with the previous description of Example 1}
 %For example,
 % the paths computation (Example 1) can be executed as an accumulated recursive program. Its non-aggregate operation $f()$ on vertex pair $(s,d)$ outputs not only the tuples set $\{path_{tmp}^k(s,d')\}$ to $d$'s outgoing neighbors $d'$ but also its previous recursion's aggregation result $path^k(s,d)$. That is, $\{path_{tmp}^k(s,d')\}$ and $path^k(s,d)$ are all contained in $f(path^k(s,d))$. Hence, $X^{k}\subseteq F(X^{k})$ and the monotonic condition is satisfied. In addition, the aggregate operation $g()$ which is SUM has the accumulative condition.
 %the SSSP computation (Example 2) can also be executed as an accumulated recursive program. Its non-aggregate operation $f()$ on node $i$ outputs not only the tuples set $\{\langle j,td_j^{k+1}\rangle\}$ for its outgoing neighbors $j$ but also its previous recursion's aggregation result $\langle i,d_i^k\rangle$. That is, $\{\langle i,td_i^{k+1}\rangle\}$ and $\langle i,d_i^k\rangle$ are contained in $X^{k+1}$, while $\langle i,d_i^k\rangle$ is already contained in $X^{k}$. Hence, $X^{k}\subseteq X^{k+1}$ and the monotonic condition is satisfied. In addition, the aggregate operation $g()$ which is MIN has the accumulative and commutative conditions.
@@ -134,7 +134,7 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 \end{theorem}
 
 By asynchronous aggregation, the partial aggregation result is immediately used by the next $F()$ operation. The order independent property implies that no matter the $F()$ operation is first applied or the $G()$ operation is first applied, the effect is the same. As long as the same number of $G()$ operations are applied on all data, the eventual aggregation result will be the same.%Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition.
-Here we give the formal proof, 
+Here we give the formal proof,
 
 \begin{proof}
 	\label{sec:app:proof:correct}
@@ -160,7 +160,7 @@ Here we give the formal proof,
 For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., for each node $j$, $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in Appendix Sec. \ref{sec:app:example}).
 =======
 \end{comment}
-%\textcolor{red}{why not using PATH example? I'd like to remove the SSSP example in the paper.} 
+%\textcolor{red}{why not using PATH example? I'd like to remove the SSSP example in the paper.}
 For the PATH example, the $F()$ operation broadcast current paths number to all the one-hop-away nodes, and the $G()$ operation sum the paths number from all the in neighbors. The paths number are the same no mather making broadcast $G\circ F(X)$ first or making aggregation first $F\circ G(X)$, i.e., for each node pair $(i,j)$, $sum_{i,j}(p_1,p_2)= sum_{i,j}(sum_{i,j}(p_1),sum_{i,j}(p_2))$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously (Here we give several examples in our technical report \cite{fullversion}).
 %>>>>>>> cc27860cdb8b8c649dcef6d4748c1bb51a40b379
 
@@ -217,10 +217,10 @@ Fortunately, a number of recursive algorithms that are not originally with monot
 	% $ G^+\circ F(X^{k})=G^+(X^{k}\cup F'(\Delta^{k-1}))$.
 	%In which $G^+$ is the aggregate function, and $F'$ is an new non-aggregate operation for $\Delta$ computing.
 	
-	%and denote 
+	%and denote
 	%$\Delta X^{k}=G^+\circ F(X^k)-X^{k}$ i.e., $G^+\circ F(X^{k})=G^+(X^{k}\cup G^+\circ F(X^k)-X^{k})$.
 	Further, as defined in Equation (\ref{eq:accumasync}), the increment $\Delta^{k}$ should be computed based on $\Delta^{k-1}$ using the same aggregate functions $G^+$ and new non-aggregate operation $F'$, i.e., $\Delta^{k}=G^+\circ F'(\Delta X^{k-1})$.
-	Then the Original form $(G^+\circ F)^k(X^0)$ can be converted to 
+	Then the Original form $(G^+\circ F)^k(X^0)$ can be converted to
 	\begin{equation}
 	\label{eq:convertform}
 	\begin{aligned}
@@ -255,7 +255,7 @@ While the question rised that how to determine a new non-aggregate operation $F'
 	The first requirement is that the aggregation is SUM. Then the increment of aggregation results can be computed as $\Delta X^k=X^{k+1}-X^k$. Note that, since $X$ is a kv-pairs set with unique keys, the `$+$'/`$-$' operation over two kv-pairs set denotes pair-wise value summation/subtraction indexed by key. As defined in Equation (\ref{eq:accumasync}), the increment $\Delta X^{k+1}$ should be computed based on $\Delta X^k$, i.e., $\Delta X^{k+1}=G^{+}\circ F'(\Delta X^k)$ where $G^{+}$ represents the group-by SUM aggregation referring to our first SUM operation requirement, and $F'$ is a new non-aggregate function. To find a feasible $F'$, since $\Delta X^{k+1}=G^{+}\circ F'(\Delta X^k)$, we have $X^{k+2}-X^{k+1}=G^{+}\circ F'(X^{k+1}-X^k)$. Further, we have
 }
 
-This is the second requirement that help us find a feasible non-aggregate operation $F'$ according to the current $F$ function. However is is still hard to get the non-aggregate formula directly through the Equation (8). Because of the coupling of multiple conditions. So we introduce an automatic determine technology by leveraging Z3 SMT solver.  
+This is the second requirement that help us find a feasible non-aggregate operation $F'$ according to the current $F$ function. However is is still hard to get the non-aggregate formula directly through the Equation (8). Because of the coupling of multiple conditions. So we introduce an automatic determine technology by leveraging Z3 SMT solver.
 {\color{green} There is one more question we should answer before proposing the new accumulated recursive program. How to initialize $\Delta X^0$? To initialize $\Delta X^0$,  We can perform the normal recursive program for one iteration to obtain $X^1$, and set $\Delta X^0=X^1-X^0$ where $X^0$ is the initial value in original recursive program.
 	
 	Given the new accumulated recursive program with $G^+$ and $F'$, we aim to find the conditions that guarantee the convergence and correctness. With an initial $X^0$, the final result of original recursive program is $(G^{+}\circ F)^n(X^0)$, while the final result of the new accumulated recursive program is $X^0+\Delta X^0+G^+\circ F'(\Delta X^0)+\ldots+(G^+\circ F')^n(\Delta X^0)$. By applying Equation (\ref{eq:findf}) to $(G^{+}\circ F)^n(X^0)$, we have $X^0+\Delta X^0+\ldots+(G^+\circ F')^n(\Delta X^0)+(G^+\circ F')^{n+1}(\Delta X^0)$. When $(G^+\circ F')^{n+1}(\Delta X^0)$ is approaching to \textbf{0} (i.e., the values of all kv-pairs are approaching to 0), the result of the new accumulated recursive program is approaching to that of the original program.
@@ -292,10 +292,10 @@ Therefore, we have the following definition to guide convertion.
 	=&G^+((G\circ F)^{k-2}(X^1)\cup(G^+ \circ F')^{k-1}(\Delta^1 )) \notag\\
 	=&G\circ F(X^{k-1})\tag{6}
 	\end{align}
-	Line 2, 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula. 
+	Line 2, 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula.
 \end{proof}
 
-In System implementation, the initial value of $\Delta^1$ could be init with $X^1-X^0$ by performing naive-evaluation for one time. 
+In System implementation, the initial value of $\Delta^1$ could be init with $X^1-X^0$ by performing naive-evaluation for one time.
 
-PageRank is another recursive program that can be converted to the accumulated recursive program. The $G$ operation is $\$sum$. The new $F'$ operation is $f(r_i^k)=0.85*r_i^k/d_i$ without adding the constant 0.15 to itself. Further, after an infinite number of iterations we have $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ due to the contraction property. There also exist some other convertible algorithms, such as COST algorithm, Belief Propagation, Simrank and Jacobi method. The datalog programs are detailed in technical report\cite{fullversion}. 
+PageRank is another recursive program that can be converted to the accumulated recursive program. The $G$ operation is $\$sum$. The new $F'$ operation is $f(r_i^k)=0.85*r_i^k/d_i$ without adding the constant 0.15 to itself. Further, after an infinite number of iterations we have $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ due to the contraction property. There also exist some other convertible algorithms, such as COST algorithm, Belief Propagation, Simrank and Jacobi method. The datalog programs are detailed in technical report\cite{fullversion}.
 
