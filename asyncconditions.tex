@@ -38,8 +38,13 @@ From the definition of recursive aggregation in Equation (\ref{eq:recursive2}), 
 \subsection{Accumulated Recursive Aggregation}
 \label{sec:async:accrec}
 
-{\color{red}
-	Previous studies\cite{Seo:2013:DSD:2556549.2556572,Wang:2015:AFR:2824032.2824052,Lam:2013:SDE:2510649.2511289} showes that evaluating  the origin recursive aggregation with naive-evaluation technology is very inefficient in datalog system . The program will terminate only if all the aggregate result converged to their fixpoints. So accumulative recursive aggregation has been proposed, e.g.,seminaive-evaluation technology. Here we give the definition.
+{
+Previous studies\cite{Seo:2013:DSD:2556549.2556572,Wang:2015:AFR:2824032.2824052,Lam:2013:SDE:2510649.2511289} showes that evaluating the origin recursive aggregation with naive-evaluation technology is very inefficient in datalog system . The program will terminate only if all the aggregate result converged to their fixpoints. {\color{red}So seminaive-evaluation technology has been proposed\cite{Lam:2013:SDE:2510649.2511289},
+
+Socialite\cite{} proposed that a small class of aggregates, $meet$ aggregated, can be evaluated recursively, if these aggregate operations are associative, commutative, and idempoent, such as $\$min$ and $\$max$.Myria \cite{} further proposed $bag-monotonic$ aggregates conditions that removed the idempoent constraint and expand the application scope to more popular aggregate functions including $\$min$, $\$max$, $\$sum$ and $\$count$.
+These work shows that if aggregate operator is $bag-monotonic$ and non-aggregate operation $F$ is monotonic, the recursive program can be semi-naive evaluating. 		
+
+Comparing with naive evaluation technology,semi-naive technology can puring most redudent computation. To utilize both semi-naive technology and asynchronous aggregation , we further proposed \textbf{accumulative recursive aggregation} by improving semi-naive technology. First we give the definition.}
 	
 \begin{definition}
 	\label{def:accumasync}
@@ -53,16 +58,15 @@ From the definition of recursive aggregation in Equation (\ref{eq:recursive2}), 
 	It starts from $\Delta X^0=X^0$ and terminates when there is no new $\Delta X^k$ produced. The final result is the aggregation of all intermediate results, i.e., $X^{k+1}=G(\cup_{i=0}^{k} \Delta X^{i})$. Alternatively, the result can be represented as follows.
 	\begin{equation}
 	\label{eq:accumasyncres}
-	G\Big(\Delta X^0\cup (G\circ F)(\Delta X^0)\cup\ldots\cup (G\circ F)^k(\Delta X^0)\Big).
+	G\Big(\Delta X^0\cup \Delta X^q\cup\ldots\cup (\Delta X^k)\Big).
 	\end{equation}
 \end{definition}
 	
-	
-While not all the recursive aggregation can correctly evaluated with seminaive technology.  % previous works proposed that some of the recursve aggregation program can be conditionally converted to incremental evaluation(using seminaive-evaluation).
-Socialite\cite{} proposed that a small class of aggregates, $meet$ aggregated, can be evaluated recursively, if these aggregate operations are associative, commutative, and idempoent, such as $\$min$ and $\$max$.
-	
-Myria \cite{} further proposed $bag-monotonic$ aggregates conditions that removed the idempoent constraint and makes more popular aggregate functions including $\$min$, $\$max$, $\$sum$ and $\$count$.
-However all of these framework has a important precondition that the $F$ operation should be monotonic. So based on these observation we summarize the correctness conditions of accumulated recursive aggregation.
+accumulative recursive aggregation program can be evaluated with semi-naive technology,
+But not all semi-naive program can be expressed with accumulate recursive aggregates form.  % previous works proposed that some of the recursve aggregation program can be conditionally converted to incremental evaluation(using seminaive-evaluation).
+Based on the previous fundation, The accumulative further require the difference $\Delta X$ can be iteratively computed as equation \cite{\label{eq:accumasync}} 
+
+So based on these observation we summarize the correctness conditions of accumulated recursive
 }
 
 
@@ -74,15 +78,25 @@ Intuitively, the accumulated recursive program performs the same computation as 
 	(\textbf{Monotonizability}) The accumulated recursive aggregation defined in Equation (\ref{eq:accumasync}) will return the same result as the normal recursive aggregation defined in Equation (\ref{eq:recursive2}), as long as the the following conditions are satisfied.
 	\begin{itemize}
 		\item \textbf{monotonic}: $X\subseteq F(X)$
-		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)${\color{red}  is this associate property? should here be rewrite}
+		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$
+        \item \textbf{UNDEFINE-NAME}: $F(X_1)-F(X_2)=F(X_1-X_2)$
 	%	\item \textbf{semi-accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$	
 		%\item \textbf{commutative}: $g(X_1\cup X_2)=g(X_2\cup X_1)$;
 	\end{itemize}
 	
 \end{definition}
 {\color{green}
-Since $G$ and $F$ are group-by operations of $g$ and $f$, the group-by operations satisfy the conditions only if $g$ and $f$ satisfied the same condition for each key.In order to facilitate expression and proof,we use the group-by operation to formalize the definition and proof.We provide the formal proof.
-}
+Since $G$ and $F$ are group-by operations of $g$ and $f$, the group-by operations satisfy the conditions only if $g$ and $f$ satisfied the same condition for each key.In order to facilitate expression and proof,we use the group-by operation to formalize the definition and proof.We provide the formal proof.}
+
+Since UNDEFINE-NAME property, we have
+\begin{align}
+\Delta X^{k}&=X^{k+1}-X^{k}\\\notag
+&=G\circ F(X^k)-G\circ F(X^k-1)\\\notag
+&=G(F(X^k)-F(X^{k-1}))\\\notag
+&=G\circ F(X^k-X^{k-1})\\\notag
+&=G\circ F(\Delta X^{K-1})\notag
+\end{align}
+
 \begin{comment}
 \begin{proof}
 	\label{sec:app:proof:monotonic}
@@ -178,8 +192,8 @@ Fortunately, Some of these computations can be converted to accumulative recursi
 \end{comment}
 
 As discussed above, the primary requirement for asynchronous aggregation is that the recursive program is an accumulated recursive program. %{\color{red} in other words,  The progranm can be semi-naive evaluated}.
-However, a large number of recursive algorithms do not satisfy this requirement. {\color{red} Soicialite proposed \emph{meet aggregation} conditions for a series of recursive aggregate program, and Myria proposed \emph{bag monotonic aggregation} extend the application of Semi-Naive evaluation, but these conditions all require the non-aggregate operations $f$ to be monotonic. However some algorithms that doesn't satisfied the monotonic condition still have the posibility to convert to semi-naive evaluation }.So in this section, we will introduced a convert technology to guide the trasnformation.
-
+However, a large number of recursive algorithms do not satisfy this requirement. {\color{red} Soicialite proposed \emph{meet aggregation} conditions for a series of recursive aggregate program, and Myria proposed \emph{bag monotonic aggregation} extend the application of Semi-Naive evaluation, but these conditions all require the non-aggregate operations $f$ to be monotonic. However some algorithms that doesn't satisfied the monotonic condition still have the posibility to convert to semi-naive evaluation .So in this section, we will introduced a convert technology to guide the trasnformation.
+}
 
 \textbf{Example 2: What is the cost of each part}
 \small
