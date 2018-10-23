@@ -40,7 +40,9 @@ From the definition of recursive aggregation in Equation (\ref{eq:recursive2}), 
 {
 Previous studies\cite{Seo:2013:DSD:2556549.2556572,Wang:2015:AFR:2824032.2824052,Lam:2013:SDE:2510649.2511289} showes that evaluating the origin recursive aggregation with naive-evaluation technology is very inefficient in datalog system . The program will terminate only if all the aggregate result converged to their fixpoints. {\color{red}So seminaive-evaluation technology has been proposed\cite{Lam:2013:SDE:2510649.2511289},
 
-Socialite\cite{} proposed that a small class of aggregates, $meet$ aggregated, can be evaluated recursively, if these aggregate operations are associative, commutative, and idempoent, such as $\$min$ and $\$max$.Myria \cite{} further proposed $bag$-$monotonic$ aggregates conditions that removed the idempoent constraint and expand the application scope to more popular aggregate functions including $\$min$, $\$max$, $\$sum$ and $\$count$.
+Socialite\cite{} proposed that a small class of aggregates, $meet$ aggregated, can be evaluated recursively, if these aggregate operations are associative, commutative, and idempoent, such as
+ $\$min$ and $\$max$. Myria \cite{} further proposed $bag$-$monotonic$ conditions. An aggregate function $G_m$: $S\rightarrow V$ and a partial order $\preceq$ on $V$ in which $S$ is a tuple set
+  and $V$ is the kv-pair set. $G_m$ is $bag$-$monotonic$ if for any $x,y\in S \wedge x\preceq y$, we have $G^m(x)\preceq G^m(y)$ .The application scope to more popular aggregate functions including $\$min$, $\$max$, $\$sum$ and $\$count$.
 These work shows that if aggregate operator is $bag$-$monotonic$ and non-aggregate operation $F$ is monotonic, the recursive program can be evaluated with semi-naive technology.
 Comparing with naive evaluation technology,semi-naive technology can puring much redudent computation. and acclerating the convergence. To intergrate the advantage of both semi-naive evaluation  and asynchronous processing, we proposed a special form of recursive aggregation  \textbf{accumulative recursive aggregation}. First we give the definition.}
 
@@ -63,9 +65,8 @@ Comparing with naive evaluation technology,semi-naive technology can puring much
 	
 accumulative recursive aggregation program can also be evaluated with semi-naive technology, 
 But not all semi-naive program can be expressed with accumulate recursive aggregates form.  % previous works proposed that some of the recursve aggregation program can be conditionally converted to incremental evaluation(using seminaive-evaluation).
-Based on the previous fundation, The accumulative further require the difference $\Delta X$ can be iteratively computed as equation \cite{\label{eq:accumasync}} 
-
-So based on these observation we summarize the correctness conditions of accumulated recursive aggregation 
+Based on the previous fundation, accumulative recursive aggregation  satisfied the $bag$-$monotonic$ conditions, but there is a little more constraint.
+based on these observation we summarize the correctness conditions of accumulated recursive aggregation as follow.
 }
 
 
@@ -96,6 +97,28 @@ Since $G$ and $F$ are group-by operations of $g$ and $f$, the group-by operation
 %&=G\circ F(\Delta X^{K-1})\notag
 %\end{align}
 
+{\color{blue}
+	\begin{itemize}
+		\item \textbf{community}: $G(Y_1\cup Y_2)=G(Y_2\cup Y_1)$
+		\item \textbf{associate}: $G(G(Y_1)\cup Y_2)=G(Y_1\cup G(Y_2))$
+	\end{itemize}
+	The associate property can be infered from accumulative property if community property satisfied.
+	\begin{equation}
+	\begin{aligned}
+		&G(G(Y_1)\cup Y_2)=G(Y_1\cup Y_2)\\\notag
+		=&G(Y_2\cup Y_1)=G(G(Y_2)\cup Y_1)\\\notag
+		=&G(G(Y_2)\cup Y_1)\notag
+	\end{aligned}
+\end{equation}
+
+
+::::::::::::::::::::::::::::::::::::
+
+	I haven't infer the accumulative property from associate and community. But the seminaive condition socialite proposed is no longer essential(we have bag-monotonic conditions). So i am a little 
+	hesitate about this place, i'd like to remove these blue statement. 
+	
+}
+
 \begin{comment}
 \begin{proof}
 	\label{sec:app:proof:monotonic}
@@ -122,7 +145,7 @@ There is a special case of aggregates $count$, which doesn't satisfied the accum
 \label{eq:accumasyncres}
 G^+\Big(G(\Delta Y^0)\cup G(F\circ G)(\Delta Y^0)\cup\ldots\cup G(F\circ G)^k(\Delta Y^0)\Big).
 \end{equation}
-in which $G^+$ is $\$sum$ operations. it can be seminaive-evaluating, but hard to asynchronous.
+in which $G^+$ is $\$sum$ operations. it can be evaluated with semi-naive technology , but hard to asynchronous.
 }
 %\Paragraph{Example 1: Compuiting Paths in a DAG} This algorithm (denoted as \textbf{PATHS}) counts the paths between all pairs of vertices in an acyclic graph. The number of paths between vertex $s$ and vertex $d$, $path(s,d)$, is initialized as $1$ for each edge $(s,d)$ and $0$ for others. The $f$ operation of the $k$th recursion for vertex pair $(s,d)$ takes $path^k(s,d)$ as input and outputs $path_{tmp}^k(s,d')$ if edge $(d,d')$ exists. The aggregation operation $g()$ with respect to each pair $(s,d')$ takes all $path_{tmp}^k(s,d')$ as inputs and computes $path^{k+1}(s,d')=\sum_{d'} path_{tmp}^k(s,d')+path^k(s,d')$ as the result. The computation terminates when the path numbers for all vertex pairs are not changed from previous recursion.
 
