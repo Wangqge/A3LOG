@@ -280,10 +280,32 @@ Here we gives the description:
 \begin{definition}
 Now divide the non-aggregate output $Y$ into two arbitrary non-intersect subset $Y_p$ and $Y_{\neg p}$. Then we decomposed the F operation into two part $F_p$ and $F_{\neg p}$. $F_p$ is used to get all  nonaggregate result belogs to $Y_{p}$ and $F_{\neg p}$ is the same, e.g., $Y^k_p=F_p(X^k)$, $Y^k_{\neg p}=F_{\neg p}(X_k)$ .Then gives that
 \begin{align}
-G(G\circ F_p(X)\cup G\circ F(G \circ F_p(X))\cup G(F_{\neg p}(X)\cup G\circ F_{\neg p} \circ G\circ F(G \circ F_{p}(X))) )
+G(GF_p(X)\cup G (F G  F_p(X)\cup F_{\neg p}(X)) \cup
+G F G(F G  F_p(X)\cup F_{\neg p}(X)) )
 \end{align}
 \end{definition}
- Then we have $G\circ F(X)= G(G\circ F_p(X) \cup G\circ F_{\neg p}(X))$
+ Denote as $G(\delta Z^0\cup \delta Z^1\cup \delta Z^2)$, then due to the accumulative property and community property,
+ \begin{align}
+			\delta Z^1=&G (F G  F_p(X)\cup F_{\neg p}(X))\\
+			=&GF G  F_p(X\cup G(F_{\neg p}(X))
+ \end{align}
+ Due to the ORDER-INDEPENDENT property and accumulative property,
+  \begin{align}
+\delta Z^2 &=G F G(F G  F_p(X)\cup F_{\neg p}(X))\\
+&=\textbf{G F G}(G F G  F_p(X)\cup G F_{\neg p}(X))\\
+ &=\textbf{G F}(G F G  F_p(X)\cup G F_{\neg p}(X))\\
+ &=(GF)^2(GF_{p}(x))\cup GFGF_{\neg p}(X)
+ \end{align}
+
+sUNCE WE HAVE
+Then  the equation can  be rewrite as,
+\begin{align}
+&G(\delta Z^0\cup \delta Z^1\cup \delta Z^2)\\
+=&G(GF_{p}(X)\cup GF G  F_p(X\cup G(F_{\neg p}(X))\cup (GF)^2(GF_{p}(x))\cup GFGF_{\neg p}(X))\\
+=&G(GF(X)\cup GFGF(X)\cup (GF)^2GF_{p}(X))
+\end{align}
+This has a similar form with equation \ref{eq:async_conditons_modify} since the computation will terminate if there is no change generate. especialy when evaluate with semi-naive technology. 
+
 
 
 \begin{comment}
