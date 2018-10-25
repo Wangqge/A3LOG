@@ -60,7 +60,6 @@ r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
 r2. rank(X,$r$) $\leftarrow$ node(X),$r=1$.
 r3. rank(Y,sum[$r$]+0.15) $\leftarrow$ rank(X,$r1$),edge(X,Y),
 			degree(X,$d$),$r=0.85\cdot r1/d$,
-			[sum$[\Delta r]\leq 0.001$].
 \end{lstlisting}
 \normalsize
 

@@ -74,12 +74,28 @@ $d=d1+d2$,sssp(Y,$d$).
 
 \subsection{Datalog and Evaluation Techniques}
 
+\textcolor{red}{A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n$, where $h$ is the \emph{head} and $b_1,\ldots,b_n$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND). $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for SSSP computation can be written as follows.}
+\begin{verbatim}
+Program 1. Single Source Shortest Path
+\end{verbatim}
+\vspace{-0.1in}
+\small
+\begin{lstlisting}
+r1. sssp(X,$d$)$\leftarrow$ X=1,$d=0$.
+r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
+$d=d1+d2$;sssp(Y,$d$).
+\end{lstlisting}
+\normalsize
+The SSSP program can also be represent as recursive aggregation as equation \ref{eq:recursive2}. The aggregate operation is $\$min$, the non aggregate operation is sending $d=d1+d2$ to outgoing neighboors with current distant $d$ to itself.
+
 \textcolor{red}{Please add datalog background, and rewrite the blue part, introducing semi-naive evaluation by referring other datalog papers.}
 
 \textcolor{blue}{If evaluated with naive technology, The recursive rules will be repeatedly evaluating on the whole datasset untill terminate conditions are satisfied. Which incurs a lot of unnecessary computation. studies\cite{Seo:2013:DSD:2556549.2556572,Wang:2015:AFR:2824032.2824052,Lam:2013:SDE:2510649.2511289} showes that evaluating the origin recursive aggregation with naive-evaluation technology is very inefficient in datalog system. So seminaive-evaluation technology has been proposed\cite{Lam:2013:SDE:2510649.2511289},  the seminaive form is shown in equation \ref{eq:seminaive}, in which $-$ is set subtraction. This implies that only non convergence result will involved in the next step evaluation. Comparing with naive evaluation technology,semi-naive technology can puring much redudent computation. and acclerating the convergence. }
+
+
 	\begin{equation}
 	\label{eq:naive}
-	Naive:	R=(G\circ F)^k(X)\notag
+	Naive:	R=(G\circ F)^k(X^0)\notag
 	\end{equation}
 \begin{equation}
 \label{eq:seminaive}
