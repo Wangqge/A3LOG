@@ -86,24 +86,28 @@ r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
 $d=d1+d2$;sssp(Y,$d$).
 \end{lstlisting}
 \normalsize
-The SSSP program can also be represent as recursive aggregation as equation \ref{eq:recursive2}. The aggregate operation is $\$min$, the non aggregate operation is sending $d=d1+d2$ to outgoing neighboors with current distant $d$ to itself.
-
-\textcolor{red}{Please add datalog background, and rewrite the blue part, introducing semi-naive evaluation by referring other datalog papers.}
-
-\textcolor{blue}{If evaluated with naive technology, The recursive rules will be repeatedly evaluating on the whole datasset untill terminate conditions are satisfied. Which incurs a lot of unnecessary computation. studies\cite{Seo:2013:DSD:2556549.2556572,Wang:2015:AFR:2824032.2824052,Lam:2013:SDE:2510649.2511289} showes that evaluating the origin recursive aggregation with naive-evaluation technology is very inefficient in datalog system. So seminaive-evaluation technology has been proposed\cite{Lam:2013:SDE:2510649.2511289},  the seminaive form is shown in equation \ref{eq:seminaive}, in which $-$ is set subtraction. This implies that only non convergence result will involved in the next step evaluation. Comparing with naive evaluation technology,semi-naive technology can puring much redudent computation. and acclerating the convergence. }
-
-
+The distance are computed in rule body by $d=d1+d2$ to all the outgoing neighboor(non aggregate operation), and then the aggregate function $\$min$ is applied to find minimal distance. Evaluating datalog program with naive evaluation technology is inefficient, the non aggregate operation will generate all the paths in each iteration until there is no new fact produced. This method will re-produce existing results in every iteration which incurs many redundant conputation.
 	\begin{equation}
-	\label{eq:naive}
-	Naive:	R=(G\circ F)^k(X^0)\notag
-	\end{equation}
+\label{eq:naive}
+\text{Naive:  }	R=(G\circ F)^k(X^0)\notag
+\end{equation}
+So semi-naive evaluation technology has been proposed. Different with naive evaluation, semi-naive evaluation prun the redundant computation by joining only subgoal in non aggregate operation with at least one new answer produced in the previous iteration, and the final result is the union of all the results obtained in the iterative evaluation.
+
+
+%\textcolor{red}{Please add datalog background, and rewrite the blue part, introducing semi-naive evaluation by referring other datalog papers.}
+
+%\textcolor{blue}{If evaluated with naive technology, The recursive rules will be repeatedly evaluating on the whole datasset untill terminate conditions are satisfied. Which incurs a lot of unnecessary computation. studies\cite{Seo:2013:DSD:2556549.2556572,Wang:2015:AFR:2824032.2824052,Lam:2013:SDE:2510649.2511289} showes that evaluating the origin recursive aggregation with naive-evaluation technology is very inefficient in datalog system. So seminaive-evaluation technology has been proposed\cite{Lam:2013:SDE:2510649.2511289},  the seminaive form is shown in equation \ref{eq:seminaive}, in which $-$ is set subtraction. This implies that only non convergence result will involved in the next step evaluation. Comparing with naive evaluation technology,semi-naive technology can puring much redudent computation. and acclerating the convergence. }
+
+
+
 \begin{equation}
 \label{eq:seminaive}
 \begin{aligned}
-  Seminaive:	R&=G(X^0\cup \cup_{i=0}^{k}F(\Delta X^i) )\notag\\
+ \text{Semi-naive:  }	R&=G(X^0\cup \cup_{i=0}^{k}F(\Delta X^i) )\notag\\
+ 			X^{i+1}&=G(X^i \cup F(\Delta X^i))\notag\\
     \Delta X^i&=X^i-X^{i-1}
 \end{aligned}
 \end{equation}
-Seo et al. \cite{} show that semi-naive evaluation can be applied to recursively-defined aggregation functions, if $G$ are \textit{meet} operations (associative, commutative, and idempotent, e.g., min and max) and that $F$ is monotonic under the partial order induced by the meet operations. Wang et al. \cite{} generalize the conditions by allowing $G$ to be \textit{bag-monotonic} aggregate operations, such as min, max, count and sum. It also requires $F$ to be monotonic with respect to the order defined by $G$.
+Seo et al. \cite{Lam:2013:SDE:2510649.2511289} show that semi-naive evaluation can be applied to recursively-defined aggregation functions, if $G$ are \textit{meet} operations (associative, commutative, and idempotent, e.g., min and max) and that $F$ is monotonic under the partial order induced by the meet operations. Wang et al. \cite{Wang:2015:AFR:2824032.2824052} generalize the conditions by allowing $G$ to be \textit{bag-monotonic} aggregate operations, such as min, max, count and sum. It also requires $F$ to be monotonic with respect to the order defined by $G$.
 
 %Myria \cite{} further proposed $bag$-$monotonic$ conditions. An aggregate function $G_m$: $S\rightarrow V$ and a partial order $\preceq$ on $V$ in which $S$ is a tuple set and $V$ is the kv-pair set. $G_m$ is $bag$-$monotonic$ if for any $x,y\in S \wedge x\preceq y$, we have $G^m(x)\preceq G^m(y)$ .The application scope to more popular aggregate functions including $\$min$, $\$max$, $\$sum$ and $\$count$. These work shows that if aggregate operator is $bag$-$monotonic$ and non-aggregate operation $F$ is monotonic, the recursive program can be evaluated with semi-naive technology. Comparing with naive evaluation technology,semi-naive technology can puring much redudent computation. and acclerating the convergence. }
