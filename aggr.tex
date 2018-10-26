@@ -86,7 +86,7 @@ r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
 $d=d1+d2$;sssp(Y,$d$).
 \end{lstlisting}
 \normalsize
-The first statement initializes the distance to the source node (with ID 1) as 0. The second statement is a recursive statement declaring that there is a path from source to node Y with length $d1+d2$, if there is a path from source to X with length $d1$ and an edge from X to Y of length $d2$. The shortest path from source to Y is simply the shortest of all the possible paths from source to Y, as expressed by the min operation in the head.  
+The first statement initializes the distance to the source node (with ID 1) as 0. The second statement is a recursive statement declaring that there is a path from source to node Y with length $d1+d2$, if there is a path from source to X with length $d1$ and an edge from X to Y of length $d2$. The shortest path from source to Y is simply the shortest of all the possible paths from source to Y, as expressed by the $\$min$ operation in the head.  
 
 %The distance are computed in rule body by $d=d1+d2$ to all the outgoing neighboor(non aggregate operation), and then the aggregate function $\$min$ is applied to find minimal distance. 
 Suppose the initial result set is $X^0$, the naive evaluation of Datalog program recursively applies $(G\circ F)$ operation on $X^0$ and finally obtains $(G\circ F)^k(X^0)$ after $k$ iterations. But naive evaluation is inefficient since it re-produces the existing results already contained in previous iterations, which incurs many redundant computations.
@@ -95,11 +95,11 @@ Suppose the initial result set is $X^0$, the naive evaluation of Datalog program
 \begin{equation}
 \label{eq:seminaive}
 \begin{aligned}
-X^{i+1}&=G(X^i \cup F(\Delta X^i)),\notag\\
+X^{i+1}&=G(X^{i} \cup F(\Delta X^{i})),\notag\\
   \Delta X^i&=X^i-X^{i-1}, 
 \end{aligned}
 \end{equation}
-where $\Delta X^0=X^0$. The final result is the aggregation of all the results obtained in each iteration, i.e., $R=G(X^0\cup \cup_{i=0}^{k}F(\Delta X^i) )$. Seo et al. \cite{Lam:2013:SDE:2510649.2511289} show that semi-naive evaluation can be applied to recursively-defined aggregation functions, if $G$ are \textit{meet} operations (associative, commutative, and idempotent, e.g., min and max) and that $F$ is monotonic under the partial order induced by the meet operations. Wang et al. \cite{Wang:2015:AFR:2824032.2824052} generalize the conditions by allowing $G$ to be \textit{bag-monotonic} aggregate operations, such as min, max, count and sum. It also requires $F$ to be monotonic with respect to the order defined by $G$.
+where $\Delta X^i=X^i-X^{i-1}$. The final result is the aggregation of all the results obtained in each iteration, i.e., $R=G(X^0\cup \cup_{i=1}^{k}F(\Delta X^i) )$. Seo et al. \cite{Lam:2013:SDE:2510649.2511289} show that semi-naive evaluation can be applied to recursively-defined aggregation functions, if $G$ are \textit{meet} operations (associative, commutative, and idempotent, e.g., min and max) and that $F$ is monotonic under the partial order induced by the meet operations. Wang et al. \cite{Wang:2015:AFR:2824032.2824052} generalize the conditions by allowing $G$ to be \textit{bag-monotonic} aggregate operations, such as min, max, count and sum. It also requires $F$ to be monotonic with respect to the order defined by $G$.
 
 %\textcolor{red}{Please add datalog background, and rewrite the blue part, introducing semi-naive evaluation by referring other datalog papers.}
 

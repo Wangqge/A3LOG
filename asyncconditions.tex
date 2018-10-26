@@ -26,7 +26,7 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 
 \begin{definition}
 	\label{th:monotone}
-	(\textbf{Accumulable}) 
+	(\textbf{Accumulated Asynchronous}) 
 	\begin{itemize}
 		\item \textbf{communitive}: $G(Y_1\cup Y_2)=G(Y_2\cup Y_1)$
 		\item \textbf{monotonic}: $X\subseteq F(X)$
@@ -47,7 +47,7 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 	\end{equation}
 	It starts from $\Delta X^0=X^0$ and terminates when there is no new $\Delta Y^k$ produced. The final result is the aggregation of all intermediate results. We can easily proof that the accumulated recursive aggregation return the same result with normal recursive aggregation as equation \ref{eq:recursive2}.
 	
-	\small
+
 \begin{comment}
 	\begin{align}
 	&G( \Delta Y^0\cup F\circ G(\Delta Y^0)\cup\ldots)\notag \\
@@ -58,6 +58,8 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 	=&(G \circ F)^{k+1}(X^0)\notag
 	\end{align}
 \end{comment}
+{\color{yellow}
+	\small
 \begin{align}
 &G( \ldots\cup (F'\circ G)^{k-2}(\Delta Y^0)\cup(F'\circ G)^{k-1}(\Delta Y^0))\notag \\
 =&G( \ldots\cup G(F'\circ G)^{k-2}(\Delta Y^0)\cup(F'\circ G)(F'\circ G)^{k-2}(\Delta Y^0))\notag\\
@@ -69,10 +71,10 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 
 	\normalsize
 	Line (2) is true because the accumulative and communitive property and line (3) is true because monotonic property, then we can obtain the final result by repeatly applying these two property, which has the same form with equation \ref{eq:recursive2}
-
+}
 {\color{red}
 Accumulative recursive aggregation program has similar form and constraints with seminaive technology. But they are essentially different.
-seminaive technology was target on reducing redundant computation the increment is compuating with the original $F$. While accumulative recursive aggregation aims at incrementally evaluate the original datalog program to support asynchronous processing and remove the monotonic part of the non aggregate operation. However, the accumulative recursive aggregation program can also be evaluated with semi-naive technology. Since the aggregate operator is communitive, idempotent, and accumulative, we can drive that the aggregate operation is \texttt{meet} operation.
+seminaive technology was target on reducing redundant computation,The increment of each iteration is compuating with the original $F$. While accumulative recursive aggregation aims at incrementally evaluate the original datalog program to support asynchronous processing and remove the monotonic output of the non aggregate operation. However, the accumulative recursive aggregation program can also be evaluated with semi-naive technology. Since the aggregate operator is communitive, idempotent, and accumulative, we can drive that the aggregate operation is \texttt{meet} operation.
 }
 {\color{green}	
 accumulative recursive aggregation program can also be evaluated with semi-naive technology, 
@@ -116,7 +118,7 @@ Since $G$ and $F$ are group-by operations of $g$ and $f$, the group-by operation
 
 
 
-\text{blue}{
+\textcolor{blue}{
 The accumulative property is also essential for efficient system design. If the accumulative condition is satisfied, only the aggregation result $X^k=G(\Delta Y^{0},\ldots,\Delta Y^{k-1})$ needs to be maintained (i.e., the maintained result set size is equal to the number of unique keys) and is updated by accumulating a new $\Delta Y^{k}$, i.e., $X^{k+1}=G(Y^k \cup \Delta Y^k)$. Otherwise, the large set $\Delta \{Y^{k}\}$ needs to be maintained for every recursion $k$, which incur considerable storage cost. The accumulative property will be exploited in our system design to save a lot of maintaining cost. And also accumulative is also inportant in asynchronous conditions.
 }
 
@@ -179,23 +181,23 @@ From the definition of recursive aggregation in equation \ref{eq:recursive2}, $X
 The recursive program in equation \ref{eq:accumasync} is defined with synchronous aggregation. 
 In the $k$th iteration, The input of aggregate operation  $\Delta Y^{k-1}$ can be partition into $m$ disjoint part $\{\Delta Y_1^{k-1},\Delta Y_2^{k-1}\ldots \Delta Y_m^{k-1} \}$(value from same key might be divided into two or more subsets).
  
-The synchronous aggregate operation has to wait for all the subset ready to perform aggregation i.e. $G(\Delta Y^{k-1})$, before starting the $(k+1)$th round of $F$ operations.  Correspondingly, we define asynchronous aggregation as follows.
+The synchronous aggregate operation has to wait for all the $m$ subset ready to perform aggregation i.e. $X^k=G(\Delta Y^{k-1})$, before starting the $(k+1)$th round of $F$ operations.  Correspondingly, we define asynchronous aggregation as follows.
 \begin{definition}(\textbf{Asynchronous Aggregation})
 	\label{def:asyncaggre}
-	Divide the $k$th synchronous non-aggregate output $\Delta Y$ into $m$ arbitrary non-intersect subset $\{\Delta Y_1^{k-1},\Delta Y_2^{k-1}\ldots \Delta Y_m^{k-1} \}$. For the $k$th iteration, the aggregate operation $G$ takes only subset $\Delta Y_{i}^k(1\le i\le m)$ as inputs and the other subset will be aggregated in later iteration.
-     For equation \ref{eq:accumasync}, let $m=2$ we gives following example:
+	Divide the $k$th synchronous non-aggregate output $\Delta Y$ into $m$ arbitrary non-intersect subset $\{\Delta Y_1^{k-1},\Delta Y_2^{k-1}\ldots \Delta Y_m^{k-1} \}$. For the $k$th iteration, the aggregate operation $G$ takes only subset $\Delta Y_{i}^k(1\le i\le m)$ as inputs and the other subset is to be aggregated in later iteration.
+     Aim at equation \ref{eq:accumasync}, divide the nonaggregate output of $i$th iteration $\Delta Y^i$ into two subset $\Delta Y^i_1$ and $\Delta^i_2$ we gives following example:
      \begin{equation}
      \begin{aligned}
-	G\big(\ldots\cup G(\Delta Y^k_1)\cup &G(F(\Delta Y^k_1)\cup Y^k_2)\\
-	 \cup G\circ F(&G(F(\Delta Y^k_1)\cup Y^k_2)) \\
-	\ldots\cup (G\circ F)^{k-1}(&G(F(\Delta Y^k_1)\cup Y^k_2))\big)
+	G\big(\ldots \cup \Delta Y^{i-1}\cup G(\Delta Y^i_1)  \cup &G(F(\Delta Y^i_1)\cup Y^i_2)\\
+	 \cup G\circ F(&G(F(\Delta Y^i_1)\cup Y^i_2)) \\
+	\ldots\\
+	\cup (G\circ F)^{k-i}(&G(F(\Delta Y^i_1)\cup Y^i_2))\big)
 	\end{aligned}
 	\end{equation}
 \end{definition}
+This is also the basic form of asynchronous acumulated recursive aggregation. 
 
-
-
-As discussed, asynchronous aggregation is possible in accumulated recursive programs. However, not all accumulated recursive programs with asynchronous aggregation will return the same result as that with synchronous aggregation. We demonstrate the sufficient conditions for asynchronous aggregation in the following theorem.
+As discussed, asynchronous aggregation is possible in accumulated recursive programs. And accumulated recursive programs with asynchronous aggregation will return the same result as that with synchronous aggregation. We demonstrate the sufficient conditions for asynchronous aggregation in the following theorem.
 
 \begin{theorem}
 	\label{th:async}
@@ -205,7 +207,7 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 	%	\item \textbf{commutative}: $G(Y_1\cup Y_2)=G(Y_2\cup Y_1)$;
 	\end{itemize}
 \end{theorem}
-The \textcolor{blue}{order independent} property implies that no matter the $F()$ operation is first applied or the $G()$ operation is first applied, the effect is the same. As long as the same number of $F()$ operations are applied on all data and the final operator is $G()$, the eventual aggregation result will be the same.%Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition.
+The \textcolor{blue}{order independent} property implies that no matter the $F()$ operation is first applied or the $G()$ operation is first applied, the effect is the same. As long as the same number of $F()$ operations are applied on all the initial inputs and the final operator is $G()$, the eventual aggregation result will be the same.%Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition.
 We give the formal proof in appendix \ref{},
 \begin{comment}
 \begin{proof}
@@ -229,7 +231,7 @@ We give the formal proof in appendix \ref{},
 %can be found in Appendix \ref{sec:app:proof:correct}
 \end{comment}
 
-For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., for each node $j$, $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously
+For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., for each node $j$, $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously.
 
 %\textcolor{red}{why not using PATH example? I'd like to remove the SSSP example in the paper.}
 \begin{comment}
