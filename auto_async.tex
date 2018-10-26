@@ -56,7 +56,7 @@ Note that, it is not realistic to perform recursion infinite times. In practice,
 \section{Automatic Asynchronization}
 \label{sec:async:autoasync}
 
-
+\subsection{Automatation}
 Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these conditions manually. It is also hard to find a new function $F'()$ for converting a normal recursive program into an accumulated recursive program.
  To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this  section, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations\footnote{The $g$ and $f$ operations in Datalog programs can be identified as will be shown in next section.}. To simplify the analysis, we use key-specific operations $g$ and $f$ to describe the automation process instead of using the set oriented operations $G$ and $F$.
 
