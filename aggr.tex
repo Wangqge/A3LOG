@@ -86,7 +86,7 @@ r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
 $d=d1+d2$;sssp(Y,$d$).
 \end{lstlisting}
 \normalsize
-The first statement initializes the distance to the source node (with ID 1) as 0. The second statement is a recursive statement declaring that there is a path from source to node Y with length $d1+d2$, if there is a path from source to X with length $d1$ and an edge from X to Y of length $d2$. The shortest path from source to Y is simply the shortest of all the possible paths from source to Y, as expressed by the $\$min$ operation in the head.  
+The first rule initializes the distance to the source node (with ID 1) as 0. The second rule is a recursive statement declaring that there is a path from source to node Y with length $d1+d2$, if there is a path from source to X with length $d1$ and an edge from X to Y of length $d2$. The shortest path from source to Y is simply the shortest of all the possible paths from source to Y, as expressed by the $\$min$ operation in the head.  
 
 %The distance are computed in rule body by $d=d1+d2$ to all the outgoing neighboor(non aggregate operation), and then the aggregate function $\$min$ is applied to find minimal distance. 
 Suppose the initial result set is $X^0$, the naive evaluation of Datalog program recursively applies $(G\circ F)$ operation on $X^0$ and finally obtains $(G\circ F)^k(X^0)$ after $k$ iterations. But naive evaluation is inefficient since it re-produces the existing results already contained in previous iterations, which incurs many redundant computations.
