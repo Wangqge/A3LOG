@@ -4,7 +4,7 @@
 %A \emph{sequential} computation (as opposed to parallel computation) is composed of a sequence of operations on input. These operations can be classified into two categories, the aggregate operations and the non-aggregate operations. %We focus on numerical aggregation in this paper.
 \subsection{Recursive Program with Aggregation}
 
-\Paragraph{Aggregate Operation} An \emph{\textbf{aggregate operation}} is a function $g()$ with more than one input values, i.e., $g(Y)$ where $Y=\{y_1, y_2, \ldots, y_n\}$. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations. A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs (i.e., kv-pairs) are first grouped by key, and then an aggregate function is applied on each group to obtain a new set of kv-pairs. Given a set of kv-pairs $Y=\{\langle k_0,v1\rangle,\langle k_1,v2\rangle,\langle k_0,v3\rangle,\ldots\}$ with $n$ unique keys, the group-by aggregation $G(Y)$ applied on $Y$ will output $n$ new kv-pairs, each corresponding to the aggregated result of each group. On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that takes only one value as input, i.e., $f(x)$. The result of the non-aggregate operation $F(X)$ on a set of kv-pairs $X$ is the union of applying $f$ operation on each kv-pair.
+\Paragraph{Aggregate Operation} An \emph{\textbf{aggregate operation}} is a function $g()$ with more than one input values, i.e., $g(Y)$ where $Y=\{y_1, y_2, \ldots, y_n\}$. For example, MAX, MIN, SUM, AVG, and COUNT are commonly used aggregate operations. A special but common case is the \emph{\textbf{group-by aggregation}}. A set of input key-value pairs (i.e., kv-pairs) are first grouped by key, and then an aggregate function is applied on each group to obtain a new set of kv-pairs. Given a set of kv-pairs $Y=\{\langle k_0,v1\rangle,\langle k_1,v2\rangle,\langle k_0,v3\rangle,\ldots\}$ with $n$ unique keys, the group-by aggregation $G(Y)$ applied on $Y$ will output $n$ new kv-pairs, each corresponding to the aggregation result of each group. On the contrary, a \emph{\textbf{non-aggregate operation}} is a function that takes only one value as input, i.e., $f(x)$. The result of non-aggregate operation $F(X)$ on a set of kv-pairs $X$ is the union of applying $f$ operation on each kv-pair.
 %In other words, the group-by aggregation is composed of multiple aggregate operations applied on each group. 
 %Given a set of kv-pairs $Y=\{Y_{k_0} \cup Y_{k_1} \cup ... \cup Y_{k_n}\}$, where $Y_{k_i}=\{\langle k_i,v1\rangle,\langle k_i,v2\rangle,\ldots\}$ denotes the set of kv-pairs that share the same key $k_i$ and there are totally $n$ unique keys. The group-by aggregation $G_k$ applied on $Y$ can be described as follows:
 %\begin{equation}
@@ -74,7 +74,7 @@ $d=d1+d2$,sssp(Y,$d$).
 
 \subsection{Datalog and Evaluation Techniques}
 
-\textcolor{red}{A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n$, where $h$ is the \emph{head} and $b_1,\ldots,b_n$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND). $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for SSSP computation can be written as follows.}
+A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n$, where $h$ is the \emph{head} and $b_1,\ldots,b_n$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND). $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for SSSP is as follows.
 \begin{verbatim}
 Program 1. Single Source Shortest Path
 \end{verbatim}
@@ -86,13 +86,20 @@ r2. sssp(Y,min[$d$])$\leftarrow$ sssp(X,$d1$),edge(X,Y,$d2$),
 $d=d1+d2$;sssp(Y,$d$).
 \end{lstlisting}
 \normalsize
-The distance are computed in rule body by $d=d1+d2$ to all the outgoing neighboor(non aggregate operation), and then the aggregate function $\$min$ is applied to find minimal distance. Evaluating datalog program with naive evaluation technology is inefficient, the non aggregate operation will generate all the paths in each iteration until there is no new fact produced. This method will re-produce existing results in every iteration which incurs many redundant conputation.
-	\begin{equation}
-\label{eq:naive}
-\text{Naive:  }	R=(G\circ F)^k(X^0)\notag
-\end{equation}
-So semi-naive evaluation technology has been proposed. Different with naive evaluation, semi-naive evaluation prun the redundant computation by joining only subgoal in non aggregate operation with at least one new answer produced in the previous iteration, and the final result is the union of all the results obtained in the iterative evaluation.
+The first statement initializes the distance to the source node (with ID 1) as 0. The second statement is a recursive statement declaring that there is a path from source to node Y with length $d1+d2$, if there is a path from source to X with length $d1$ and an edge from X to Y of length $d2$. The shortest path from source to Y is simply the shortest of all the possible paths from source to Y, as expressed by the min operation in the head.  
 
+%The distance are computed in rule body by $d=d1+d2$ to all the outgoing neighboor(non aggregate operation), and then the aggregate function $\$min$ is applied to find minimal distance. 
+Suppose the initial result set is $X^0$, the naive evaluation of Datalog program recursively applies $(G\circ F)$ operation on $X^0$ and finally obtains $(G\circ F)^k(X^0)$ after $k$ iterations. But naive evaluation is inefficient since it re-produces the existing results already contained in previous iterations, which incurs many redundant computations.
+
+\textit{Semi-naive evaluation} is an essential optimization to the efficient execution of recursive Datalog programs. It avoids redundant computation by incrementally computing the results. Semi-naive evaluation can be expressed as follows.
+\begin{equation}
+\label{eq:seminaive}
+\begin{aligned}
+X^{i+1}&=G(X^i \cup F(\Delta X^i)),\notag\\
+  \Delta X^i&=X^i-X^{i-1}, 
+\end{aligned}
+\end{equation}
+where $\Delta X^0=X^0$. The final result is the aggregation of all the results obtained in each iteration, i.e., $R=G(X^0\cup \cup_{i=0}^{k}F(\Delta X^i) )$. Seo et al. \cite{Lam:2013:SDE:2510649.2511289} show that semi-naive evaluation can be applied to recursively-defined aggregation functions, if $G$ are \textit{meet} operations (associative, commutative, and idempotent, e.g., min and max) and that $F$ is monotonic under the partial order induced by the meet operations. Wang et al. \cite{Wang:2015:AFR:2824032.2824052} generalize the conditions by allowing $G$ to be \textit{bag-monotonic} aggregate operations, such as min, max, count and sum. It also requires $F$ to be monotonic with respect to the order defined by $G$.
 
 %\textcolor{red}{Please add datalog background, and rewrite the blue part, introducing semi-naive evaluation by referring other datalog papers.}
 
@@ -100,14 +107,6 @@ So semi-naive evaluation technology has been proposed. Different with naive eval
 
 
 
-\begin{equation}
-\label{eq:seminaive}
-\begin{aligned}
- \text{Semi-naive:  }	R&=G(X^0\cup \cup_{i=0}^{k}F(\Delta X^i) )\notag\\
- 			X^{i+1}&=G(X^i \cup F(\Delta X^i))\notag\\
-    \Delta X^i&=X^i-X^{i-1}
-\end{aligned}
-\end{equation}
-Seo et al. \cite{Lam:2013:SDE:2510649.2511289} show that semi-naive evaluation can be applied to recursively-defined aggregation functions, if $G$ are \textit{meet} operations (associative, commutative, and idempotent, e.g., min and max) and that $F$ is monotonic under the partial order induced by the meet operations. Wang et al. \cite{Wang:2015:AFR:2824032.2824052} generalize the conditions by allowing $G$ to be \textit{bag-monotonic} aggregate operations, such as min, max, count and sum. It also requires $F$ to be monotonic with respect to the order defined by $G$.
+
 
 %Myria \cite{} further proposed $bag$-$monotonic$ conditions. An aggregate function $G_m$: $S\rightarrow V$ and a partial order $\preceq$ on $V$ in which $S$ is a tuple set and $V$ is the kv-pair set. $G_m$ is $bag$-$monotonic$ if for any $x,y\in S \wedge x\preceq y$, we have $G^m(x)\preceq G^m(y)$ .The application scope to more popular aggregate functions including $\$min$, $\$max$, $\$sum$ and $\$count$. These work shows that if aggregate operator is $bag$-$monotonic$ and non-aggregate operation $F$ is monotonic, the recursive program can be evaluated with semi-naive technology. Comparing with naive evaluation technology,semi-naive technology can puring much redudent computation. and acclerating the convergence. }
