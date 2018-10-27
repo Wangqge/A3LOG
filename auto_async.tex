@@ -67,7 +67,7 @@ Fortunately, Some of these computations can be converted to accumulative recursi
 \end{comment}
 
 As discussed above, the primary requirement for asynchronous aggregation is that the recursive program is an accumulated recursive program. %{\color{red} in other words,  The progranm can be semi-naive evaluated}.
-However, a large number of recursive algorithms do not satisfy the accumulable requirement.especially the monotonic requirement of non-aggregate operations $F$ and the ideopotentproperty also restrict the application os asynchronous processing . However some algorithms that doesn't satisfied the monotonic condition still have the posibility to convert to accumulative recursive aggregation .So in this section, we will introduced a convert technology to guide the trasnformation.
+However, a large number of recursive algorithms do not satisfy the accumulable requirement as definition \ref{}.Especially the monotonic requirement of non-aggregate operations $F$ and the ideopotentproperty also restrict the application os asynchronous processing . However some algorithms that doesn't satisfied the monotonic condition still have the posibility to convert to accumulative recursive aggregation .So in this section, we will introduced a convert technology to guide the trasnformation.
 }
 
 \textbf{Example 2: What is the cost of each part}
@@ -193,28 +193,40 @@ PageRank is another recursive program that can be converted to the accumulated r
 
 
 \subsection{Automatation}
-Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these conditions manually. It is also hard to find a new function $F'()$ for converting a normal recursive program into an accumulated recursive program.
- To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this  section, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations\footnote{The $g$ and $f$ operations in Datalog programs can be identified as will be shown in next section.}. To simplify the analysis, we use key-specific operations $g$ and $f$ to describe the automation process instead of using the set oriented operations $G$ and $F$.
+Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these complex conditions manually. And it is also hard to find a new function $F'()$ for converting a normal recursive program into an accumulated recursive program.
+ To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this section, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations. To simplify the analysis, we use key-specific operations $g$ and $f$ to describe the automation process instead of using the set oriented operations $G$ and $F$.
+ 
+\Paragraph{Condition Checker}
+The monotonic conditions can be easily checked by the struct of Datalog program. if the Table is apperaing on both side of the recursive rule with same key, then the monotonic property is satisfied. The other condition verification problems can be thought of as a form of the constraint satisfaction problem, which can be analyzed with the help of \emph{satisfiability modulo theories} (SMT) \cite{53e486195688442995f82bfe28c55731}. The satisfiability of these conditions can then be checked by an SMT solver, such as Z3 \cite{DeMoura:2008:ZES:1792734.1792766}. Next, we show how to reduce these condition verification problems into SMT satisfiability solving problems.
 
-The monotonic conditions can be easily checked by the struct of Datalog program which will be detailed in Section 4.1 The other condition verification problems can be thought of as a form of the constraint satisfaction problem, which can be analyzed with the help of \emph{satisfiability modulo theories} (SMT) \cite{53e486195688442995f82bfe28c55731}. The satisfiability of these conditions can then be checked by an SMT solver, such as Z3 \cite{DeMoura:2008:ZES:1792734.1792766}. Next, we show how to reduce these condition verification problems into SMT satisfiability solving problems.
+The nonaggregate operation is consist of multiple parts, since there might be several output in one rules e.g., the example 2, in \texttt{r2}, the output F is composed with two parts, 
+(1) assb(Part,Sub,$n$), cost(Sub,$c$), $\mathcal{C}=c*n$  
+  the output expression of non aggregate operation. The conditions are only depends on the expressions. There might be multiple expression in one $F$, e.g., as  
+First, the $f()$ and $g()$ functions and the conditions have to be translated into a formula for being verified by an SMT solver. So we implement a serie of unary function $H_{fi}(*)$  to represent the expression output of $F$, and Binary function $H_g(*,*)$ to represent aggregate operation $G$. Then all the condition check problem can be construct with these two function.
 
-First, the $f()$ and $g()$ functions and the conditions have to be translated into a formula for being verified by an SMT solver. Given a function $H=\{f(x_1),\ldots,f(x_m)\}$ or $H=\{g(x_1),...g(x_n)\}$, we are interested in a formula for $H$ of the form $\phi_H^{o_1,\ldots,o_m}$, where $o_1,\ldots,o_m$ are output variables \cite{Liu:2014:ADP:2670979.2670980}. Intuitively, the formula $\phi$ is ``correct'' if an assignment to $\{x_1,\ldots,x_n,o_1,\ldots,o_m\}$ makes $\phi$ be true if and only evaluating $H(x_1,\ldots,x_n)$ returns $o_1,\ldots,o_m$. Then the satisfiability of $\phi$ exactly implies that the function will compute the same output. Based on this formula, we present the formulas for different conditions in the following.
-
-For the accumulative and commutative conditions in Theorem \ref{th:monotone} and the order independent condition in Theorem \ref{th:async}, the condition verification problems can be reduced to SMT satisfiability problems via the following theorem.
+\textcolor{blue}{ Given a function $H=\{f(x_1),\ldots,f(x_m)\}$ or $H=\{g(x_1),...g(x_n)\}$, we are interested in a formula for $H$ of the form $\phi_H^{o_1,\ldots,o_m}$, where $o_1,\ldots,o_m$ are output variables \cite{Liu:2014:ADP:2670979.2670980}. Intuitively, the formula $\phi$ is ``correct'' if an assignment to $\{x_1,\ldots,x_n,o_1,\ldots,o_m\}$ makes $\phi$ be true if and only evaluating $H(x_1,\ldots,x_n)$ returns $o_1,\ldots,o_m$. Then the satisfiability of $\phi$ exactly implies that the function will compute the same output. Based on this formula, we present the formulas for different conditions in the following.
+}
+For the accumulative and commutative conditions in definition \ref{th:monotone} and the order independent condition in definition\ref{th:async}, the condition verification problems can be reduced to SMT satisfiability problems via the following equation.
 
 \newtheorem{corollary}{Corollary}
-\begin{corollary}
+\begin{definition}
 	\label{coro:auto:1}
-	(\textbf{Accumulative, Commutative, and Order Independent}) $\forall_{i=1\to m} \{x_{1i},x_{2i},x_{3i}\}$, the condition 1 or 2 or 3 is true if and only if $\phi_{H_l}^{o1,\ldots,o_m}\wedge \phi_{H_r}^{o_1',\ldots,o_m'}\wedge (\vee_{i=1}^m{o_i\neq o_i'})$ is not satisfiable, where
+	(\textbf{Accumulative, Commutative, Idempotent and Order Independent}) \textcolor{blue}{$\forall_{i=1\to m} \{x_{1i},x_{2i},x_{3i}\}$, the condition 1 or 2 or 3 is true if and only if $\phi_{H_l}^{o1,\ldots,o_m}\wedge \phi_{H_r}^{o_1',\ldots,o_m'}\wedge (\vee_{i=1}^m{o_i\neq o_i'})$ is not satisfiable, where}
+	
+	Denote $e$ as the identical element of binary function $G$,
 	\begin{itemize}
-		\item condition 1: accumulative, $H_l=g(x_1,x_2,x_3)$ and $H_r=g(g(x_1,x_2),x_3)$;
-		\item condition 2: commutative, $H_l=g(x_1,x_2)$ and $H_r=g(x_2,x_1)$;
-		\item condition 3: order independent, $H_l=g(f(g(x_1,x_2)))$ and $H_r=g(f(x_1),f(x_2))$.
+		\item condition 1: accumulative, $H_l=H_g(x_1,H_g(x_2,x_3))$ and $H_r=H_g(H_g(x_1,x_2),x_3)$;
+		\item condition 2: commutative, $H_l=H_g(x_1,x_2)$ and $H_r=H_g(x_2,x_1)$;
+		\item condition 3: idempotent, $H_l=H_g(x_1,x_2)$ and $H_r=H_g(x_2,x_1)$;
+		\item condition 4: order independent, \\		
+		$H_l=H_g(H_f(H_g(x_1,x_2),H_g(x_1,x_2)),e)$\\		
+		 and  $H_r=H_g(H_f(H_g(x_1,x_2)),H_f(H_g(x_1,x_2)))$;
 	\end{itemize}
-\end{corollary}
-
+\end{definition}
+{\color{green}
 Note that, SMT cannot judge ``whether a formula $H$ is always true?'' but only answers ``whether a formula $H$ is satisfiable?''. A formula $H$ is \emph{satisfiable} if there is some assignment of appropriate values to its uninterpreted function and constant symbols under which $H$ evaluates to true. Thus, to verify a condition (that should be always true), we convert the ``$H$ is always true'' problem to the ``not $H$ is not satisfiable'' problem. If $H$ is always true, then ``not $H$'' is always false, and then ``not $H$'' will not have any satisfying assignment
+}
 
-
-Furthermore, SMT solver Z3 can be used to find a qualified $f'$ function. Following Corollary \ref{coro:auto:1}, we first use Z3 to check the satisfiability.
-If the formula is not satisfiable, system will try to find a new $f'$ by the method proposed in sec 3.4. Suppose a new $f'$ is found. If it returns monotonic decreasing values with applying $f'$ more and more times on a real value (i.e., contraction), it can be converted to an accumulated recursive program. Futher, by checking whether $f'$ and $g$ satisfy the order-independent condition, we can determine whether it can be executed asynchronously.
+Furthermore, SMT solver Z3 can be used to find a qualified $f'$ function. Following Corollary \ref{coro:auto:1}, we first use Z3 to check the satisfiability. 
+If the formula is not satisfiable, system will try to find a new $f'$ based on the original non-aggregate operation $f$ by the method proposed in convertiablity. As discuessed above the new operation $f'$ is also consist of tho part, 
+  Suppose a new $f'$ is found. If it returns monotonic decreasing values with applying $f'$ more and more times on a real value (i.e., contraction), it can be converted to an accumulated recursive program. Futher, by checking whether $f'$ and $g$ satisfy the order-independent condition, we can determine whether it can be executed asynchronously.
