@@ -5,16 +5,18 @@
 
 \begin{proof}
 	\label{sec:app:proof:monotonic}
-	It is known that $\Delta Y^k=F(\Delta X^k)$and $\Delta X^0=X^0$.
+	It is known that $\Delta Y^k=F'(\Delta X^k)$and $\Delta X^0=X^0$.
 	\begin{align}
-	&G\Big(\Delta Y^0\cup (F\circ G)(\Delta Y^0)\cup\ldots\cup (F\circ G)^k(\Delta Y^0)\Big)\notag \\
-	=&G\Big(G(\Delta Y^0)\cup (F\circ G)(\Delta Y^0)\cup \ldots \cup (F\circ G)^k( \Delta Y^0)\Big)\tag{2}\\
-	=&G\Big(F\circ G(\Delta Y^0)\cup (F\circ G)^2(\Delta Y^0)\cup \ldots \cup (F\circ G)^k(\Delta Y^0)\Big) \tag{3}\\
-	=& \ldots \notag \\
-	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\tag{4}\\
-	=&(G \circ F)^{k+1}(X^0).\notag
+	&(G\circ F)^n(X^0)\notag\\
+	=&(G\circ F)^{n-1}G(F'(X^0)\cup X^0)\notag\\
+	=&(G\circ F)^{n-1}(G\circ F'(X^0)\cup G(X^0))\notag\\
+	=&(G\circ F)^{n-2}G(F'(G\circ F'(X^0)\cup X^0)\cup G\circ F'(X^0)\cup X^0)\notag\\
+	=&(G\circ F)^{n-2}G((G\circ F')^2(X^0)\cup G\circ F'(X^0)\cup G\circ F'(X^0)\cup X^0)\notag\\
+	=&(G\circ F)^{n-2}G((G\circ F')^2(X^0)\cup G\circ F'(X^0)\cup X^0)\notag\\
+	=&\ldots\notag\\
+	=&G((G\circ F')^{n}(X^0)\cup\ldots\cup (G\circ F')^{n}(X^0)\cup (G\circ F')^{n}(X^0)\cup X^0)\notag
 	\end{align}
-	Line 3 is true because of the accumulative property. Due to the monotonic property line 4 is true .By repeat applying these two properties, we can reduce the original formula to line 5, the result of normal recursive aggregation. 
+	First we start from the Normal recursive aggregation as line 1.	Line 2 is true because of the monotonic property of F. And line 3 is true because \textcolor{red}{orderindependent} property. Line 4 and 5 can be derived  from monotonic and \textcolor{red}{orderindependent} property. Line 6 is true because of the By repeat applying these two properties, we can reduce the original formula to line 8, the accumulatied recursive aggregation. 
 \end{proof}
 
 \subsection{Proof of Theorem Asynchronous}

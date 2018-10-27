@@ -32,7 +32,7 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 		\item \textbf{monotonic}: $X\subseteq F(X)$
 		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$
 		\item \textbf{idempotent}: $G(Y_1\cup Y_1)=G(Y_1)$
-		\item \textbf{order-independent}: $G\circ F\circ G(X)=G\circ F(X)$
+		\item \textcolor{red}{\textbf{order-independent}}: $G\circ F\circ G(X\cup Y)=G\circ F(G(X)\cup G(Y))$
 	\end{itemize}
 	A normal recursive aggregate form can be converted to accumulated recursive aggregations, if the aggregate operation $G$ is communitive and accumulative and idempotent and non-aggregate operations $F$ is monotonic. And further the Order-independent property is satisfied.
 \end{definition}
