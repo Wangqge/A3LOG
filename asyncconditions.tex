@@ -32,7 +32,7 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 		\item \textbf{monotonic}: $X\subseteq F(X)$
 		\item \textbf{accumulative}: $G(Y_1\cup Y_2)=G(G(Y_1)\cup Y_2)$
 		\item \textbf{idempotent}: $G(Y_1\cup Y_1)=G(Y_1)$
-		\item \textcolor{red}{\textbf{order-independent}}: $G\circ F\circ G(X\cup Y)=G\circ F(G(X)\cup G(Y))$
+		\item \textcolor{red}{\textbf{order-independent}}: $G\circ F\circ G(X\cup Y)=G\circ F( G(X)\cup G(Y))$
 	\end{itemize}
 	A normal recursive aggregate form can be converted to accumulated recursive aggregations, if the aggregate operation $G$ is communitive and accumulative and idempotent and non-aggregate operations $F$ is monotonic. And further the Order-independent property is satisfied.
 \end{definition}
@@ -45,7 +45,7 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 	X^{n}&=G(\cup_{i=0}^{n-1} \Delta Y^{i}\Delta X^0)
 	\end{aligned}
 	\end{equation}
-	It starts from $\Delta X^0=X^0$ and terminates when there is no new $\Delta Y^k$ produced. The final result is the aggregation of all intermediate results. We can easily proof that the accumulated recursive aggregation return the same result with normal recursive aggregation as equation \ref{eq:recursive2}.
+	It starts from $\Delta X^0=X^0$ and terminates when there is no new $\Delta Y^k$ produced. The final result is the aggregation of all intermediate results. We can easily proof that the accumulated recursive aggregation return the same result with normal recursive aggregation as equation \ref{eq:recursive2} as shown in Appemdix \ref{sec:app:proof:monotonic}.
 	
 
 \begin{comment}
@@ -57,7 +57,7 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 	=&G\Big((F\circ G)^k(\Delta Y^0)\Big)\notag\\
 	=&(G \circ F)^{k+1}(X^0)\notag
 	\end{align}
-\end{comment}
+
 {\color{yellow}
 	\small
 \begin{align}
@@ -72,6 +72,8 @@ We observed that some of the Recursive aggregation has the potential to be evalu
 	\normalsize
 	Line (2) is true because the accumulative and communitive property and line (3) is true because monotonic property, then we can obtain the final result by repeatly applying these two property, which has the same form with equation \ref{eq:recursive2}
 }
+\end{comment}
+
 {\color{red}
 Accumulative recursive aggregation program has similar form and constraints with seminaive technology. But they are essentially different.
 seminaive technology was target on reducing redundant computation,The increment of each iteration is compuating with the original $F$. While accumulative recursive aggregation aims at incrementally evaluate the original datalog program to support asynchronous processing and remove the monotonic output of the non aggregate operation. However, the accumulative recursive aggregation program can also be evaluated with semi-naive technology. Since the aggregate operator is communitive, idempotent, and accumulative, we can drive that the aggregate operation is \texttt{meet} operation.
@@ -197,13 +199,13 @@ The synchronous aggregate operation has to wait for all the $m$ subset ready to 
 \end{definition}
 This is also the basic form of asynchronous acumulated recursive aggregation. 
 
-As discussed, asynchronous aggregation is possible in accumulated recursive programs. And accumulated recursive programs with asynchronous aggregation will return the same result as that with synchronous aggregation. We demonstrate the sufficient conditions for asynchronous aggregation in the following theorem.
+As discussed, asynchronous aggregation is possible in accumulated recursive programs. But not all  accumulated recursive programs with asynchronous aggregation will return the same result as that with synchronous aggregation. We demonstrate the sufficient conditions for asynchronous aggregation in the following theorem.
 
 \begin{theorem}
 	\label{th:async}
-	(\textbf{Asynchronizability}) With asynchronous aggregation as described in Definition \ref{def:asyncaggre}, an accumulated recursive program will yield to the same result as with synchronous aggregation after the $F$ \textcolor{green}{and $G$} operations are performed {\color{green}infinite}the same times, as long as the following conditions are satisfied.
+	(\textbf{Asynchronizability}) With asynchronous aggregation as described in Definition \ref{def:asyncaggre}, an accumulated recursive program will yield to the same result as with synchronous aggregation after the $F'$ \textcolor{green}{and $G$} operations are performed {\color{green}infinite}the same times, as long as the following conditions are satisfied.
 	\begin{itemize}
-		\item \textbf{\textcolor{red}{ANOTHER name}}: $G\circ F\circ G(X)=G\circ F(X)$;
+		\item \textbf{\textcolor{red}{ANOTHER name}}: $G\circ F'\circ G(X\cup Y)=G\circ F'( G(X)\cup G(Y))$;
 	%	\item \textbf{commutative}: $G(Y_1\cup Y_2)=G(Y_2\cup Y_1)$;
 	\end{itemize}
 \end{theorem}
@@ -231,7 +233,7 @@ We give the formal proof in appendix \ref{},
 %can be found in Appendix \ref{sec:app:proof:correct}
 \end{comment}
 
-For the SSSP example, the $F()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F(X)$ or making aggregation first $F\circ G(X)$, i.e., for each node $j$, $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously.
+For the SSSP example, the $F'()$ operation expands the BFS searching scope to one-hop-away nodes, and the $G()$ operation picks the minimal distance resulted from the shortest path. The shortest distances are the same no matter making expansion first $G\circ F'(X)$ or making aggregation first $F'\circ G(X)$, i.e., for each node $j$, $min_j(d_j+w)=min_j(min_j(d_j)+w)$. There are a broad class of computations that satisfy these conditions and can be executed asynchronously.
 
 %\textcolor{red}{why not using PATH example? I'd like to remove the SSSP example in the paper.}
 \begin{comment}
