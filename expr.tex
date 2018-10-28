@@ -1,77 +1,6 @@
 \section{Performance Evaluation}
 \label{sec:expr}
-\begin{comment}
-\begin{table*}[!t]
-	%\vspace{-0.1in}
-	\caption{The Result of some Common Algorithms }
-	\hspace{-0.15in}
-	\vspace{0.0in}
-	\label{tab:resut}
-	\centering
-	\small
-	\begin{tabular}{c|c|c|c|c|c|c|c}
-		%	\hline
-		%		\multirow{2}{*}{\textbf{Dataset}} & \multirow{2}{*}{\tabincell{c}{\textbf{Nodes}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Edges}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Graph}\\ \textbf{type}}} & \multirow{2}{*}{\tabincell{c}{\textbf{$d$}}}& \multirow{2}{*}{\tabincell{c}{\textbf{$e$}}} & \multicolumn{3}{|c}{\textbf{SSSP}} & \multicolumn{3}{|c}{\textbf{PageRank}} \\
-		%		\cline{7-12}
-		%		&  & & & & & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}} & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}}\\
-		\hline\hline
-		{\textbf{Algorithm}} &
-		{\textbf{$g$}} &
-		{\textbf{$f$:(broadcast, self)}} &
-		{\textbf{Monot}} &
-		{\textbf{Commu}} &
-		{\textbf{Accumu}} &
-		{\textbf{OrderInd}} &
-		{\textbf{Conver}}\\
-		\hline
-		\textbf{Pagerank} & $sum(\centerdot)$ &($(1-c)*x$), $0.15$   &$\times$ & $\surd$ & $\times$  & - &$\surd$\\
-		\hline
-		\textbf{SSSP} & $min(\centerdot)$ & ($x+w$), $x$ &$\surd$ & $\surd$& $\surd$ & $\surd$ & -\\
-		\hline
-		\textbf{CC} & $min(\centerdot)$& ($x$), $x$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
-		\hline
-		\textbf{PATH} & $sum(\centerdot)$ &$(x)$, $x$& $\surd$ &$\surd$& $\surd$ & $\surd$ & -\\
-		\hline
-		\textbf{MAX PRO PATH} & $max(\centerdot)$ &  send$(p_1\& p_2) p=p_1*p_2$, p & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
-		\hline
-		\textbf{COST} & $sum(\centerdot)$&$(x*n)$, $x$ & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
-		\hline
-		\textbf{Viterbi} & $max(\centerdot)$ & $L=L_1*L_2*L_3$, $nothing$ & $\times$ & $\surd$ &  $\surd$ &  - &$\times$\\
-		\hline
-		\textbf{PARTY} & $count(\centerdot)$&$((x)\&(N>3))$,x & $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
-		\hline
-		\textbf{Galaxy evolution} & $count(\centerdot)$ &$pract(gid1\& gid2)$, gid& $\surd$ & $\surd$ & $\surd$ & $\surd$ & -\\
-		\hline
-		\textbf{Belief propagation} & $sum(\centerdot)$ &$w*x*h$, $nothing$ & $\times$ & $\surd$ & $\surd$ & - & $\surd$\\
-		\hline
-		\textbf{Simrank} & $sum(\centerdot)$& $c/(d_1*d_2)*x$, $nothing$ & $\times$ &  $\surd$ &  $\surd$ & - & $\surd$\\
-		\hline
-		\textbf{Jacobi Method} &$sum(\centerdot)$ &$-a_{ij}/a_{ii}*x$, $c$& $\times$ & $\surd$  & $\times$ & - & $\surd$\\
-		\hline
-		\hline
-	\end{tabular}
-	\vspace{-0.1in}
-\end{table*}
-First, we exhibit conditions satisfiability of some common algorithms.
-We empirically evaluate A3Log on Amazon EC2. We will show the comparison results with other systems, with different algorithms, and with different datasets.
-\subsection{Result of Condition Checker}
 
-
-In this section, we test more algorithms to check the asynchronous conditions. We list $f$ and $g$ operations and each property of each algorithm. As shown in table \ref{tab:resut}, SSSP, CC, DAG, PATH, COST and Galaxy evolution algorithm  can be correctly asynchonized directly. Belief Propagation,pagerank, Jacobi Method and Simrank doesn't satisfy the monotonic condition. While all these five algorithm can be converted to accumulative recursive aggregation model and executed asynchronously. Viterbi algorithm  satisfy neither the monotonic condition nor the convertibility condition.
-\end{comment}
-\subsection{Comparison to Other Systems}
-\label{sec:expr:othersystems}
-
-\Paragraph{Competitors}
-A3Log is compared with three state-of-the-art Datalog frameworks. \textbf{SociaLite} \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572} is a Datalog implementation for social network analysis. \textbf{Myria} \cite{Halperin:2014:DMB:2588555.2594530,Wang:2015:AFR:2824032.2824052} supports Datalog asynchronous evaluation. And \textbf{BigDatalog}\cite{Shkapsky:2016:BDA:2882903.2915229} a Datalog implementation based on spark. All these three framework support monotonic aggregation inside recursion.
-%\textbf{GraphLab} \cite{Low:2012:DGF:2212351.2212354} is a graph-based parallel/distributed engine supporting asynchronous iteration. \textbf{Maiter} \cite{maiter} supports delta-based accumulative iterative computation which can be executed asynchronously.
-All these systems are configured with their default parameters.
-%Myria, GraphLab, and Maiter are configured to run with asynchronous model unless particularly mentioned.
- The runtime results are the execution time excluding data loading time, and each is a mean of three runs.
-
-\Paragraph{Algorithms and Dataset}
-We compare A3Log with other systems in the context of three algorithms, including SSSP, Connected Components(Asynchronizable)and PageRank(convertible). These three algorithms are all supported by these systems\footnote{Since BigDatalog doesn't support monotonic aggregate function $msum$ and $mcount$, so it is hard to express PageRank computation with BigDatalog. So we use GraphX as a instead for PageRank experiment.}.
-% For SSSP and CC, the computations terminate as soon as no new update is found. For PageRank in A3Log and Maiter, which has no notion of iterations, the computation terminates when the sum of difference to the theoretical convergence point \cite{Zhang:2011:PDF:2038916.2038929} is less than $10^{-3}$, based on which we know the number of iterations that is required to reach the same point (42 iterations) \cite{Zhang:2011:PDF:2038916.2038929}. Socialite and Myria (Myria does not support asynchronous PageRank) are set to run 42 iterations. GraphLab terminates after the PageRank value of every vertex changes by less than a user-specified threshold $\epsilon$ between two consecutive executions of that vertex. These algorithms are performed on a large graph dataset ClueWeb09 \cite{clueweb}. In order to finish the experiments in a reasonable time, we truncate the original dataset into a smaller ClueWeb20M dataset with 20,000,000 nodes, 243,063,334 edges, and 3.8GB size. Since ClueWeb is an unweighted graph, we assign a random weight to each edge for SSSP computation.
 \begin{table}[!t]
 	%\vspace{-0.1in}
 	\caption{Parameter of RealWorld Graph }
@@ -102,139 +31,80 @@ We compare A3Log with other systems in the context of three algorithms, includin
 	\vspace{-0.1in}
 	
 \end{table}
-We perform all the three algorithm on all datasets in Table \ref{tab:Dataset}.
-\begin{comment}
-\begin{figure}[!t]
-	\vspace{0.08in}
-	\centering
-	\includegraphics[width=3in]{fig/single-result}
-	\vspace{-0.1in}
-	\caption{Performance comparison with other systems (many-core environment)}
-	\label{fig:single-result}
-	\vspace{-0.2in}
-\end{figure}
-\end{comment}
+\Paragraph{Experimental Setup and Datasets.}
+Our experiments are conducted on 16 node Aliyun ECS cluster(ecs.r5.xlarge), each runs Ubuntu 16.04 LTS and has 4 vCPUs and 32GB memory. The network bandwidth between instance workers is 1.5Gbps/s. And all the works uses Hadoop 2.6.4 as distributed file system.
+
+Table \ref{tab:Dataset} shows the real world graphs used for all graph algorithm, And to we syntheticly generate a tree structure Datasets with 128000000 Node and  ** edges. 
+
+We compare A3log with three state-of-the-art Datalog frameworks. \textbf{SociaLite} \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572} is a Datalog implementation for social network analysis. \textbf{Myria} \cite{Halperin:2014:DMB:2588555.2594530,Wang:2015:AFR:2824032.2824052} supports Datalog asynchronous evaluation. And \textbf{BigDatalog}\cite{Shkapsky:2016:BDA:2882903.2915229} a Datalog implementation based on spark. All these three framework support monotonic aggregation inside recursion.
 
 
-
-%In the shared-memory experiment, we run all the systems on an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. We configured all these systems with 32 threads. The normalized runtime results. In general, A3Log outperforms all the competitors. For the PageRank computation, A3Log achieves 22.8X speedup over GraphLab, 22X speedup over Socialite, 6X speedup over Maiter, and much more speedup over Myria\footnote{The runtime results of Myria may be wrong because they are all unexpected long, say 135 times longer for PageRank and 321 times longer for SSSP than A3Log. We are contacting with Myria authors to fix it but cannot find the problem before the submission.} are shown in Fig. \ref{fig:single-result}. There is an exception for SSSP computation. Socialite is 1.6X faster than A3Log. This may be due to their \emph{prioritization} optimization, which is similar to our scheduling technique that leads to Dijkstra algorithm.
+\subsection{Comparison to Other Systems}
 
 \begin{figure*}[!t]
-	\vspace{1in}
-	\centering
-	\includegraphics[width=6.6in]{figuration/compare.eps}
+	\vspace{-0.1in}
+%	\centering
+	\hspace{-0.28in}
+	\includegraphics[width=7.2in]{figuration/compare.eps}
 	\vspace{-0.1in}
 	\caption{Performance comparison with other systems (distributed environment)}
 	\label{fig:dist-result}
 \end{figure*}
-In the distributed comparsion we deploy all the systems on an Aliyun ECS cluster with
-16 ecs.r5.xlarge ECS instances, each with 4 vCPUs and 32GB memory. The network bandwidth between instance workers is  1.5Gbps/s. We configured all these systems with 4 threads for each worker. Myria was configured with one instance of Myria and PostgreSQL. For bigdatalog, we evaluate with one partition per available CPU core, and configured according to\cite{Shkapsky:2016:BDA:2882903.2915229}. For asynchronous A3log we set the Message buffer size to 500, 1000, 2000 in turn and reserve the best one. Runtime results are shown in Fig.\ref{fig:dist-result}. 
-
-\textbf{Connected component} A3log outperform all these three competitor with asynchronous processing. Socialite outperforms the synchronous version of A3log on Orkut datasets. Socialite has run out of memory on wiki-link datasets.
-
-\textbf{SSSP} A3log outperforms all these three competior with asynchronous version .Socialite outperforms the synchronous version of A3log on Orkut datasets. And further asynchronous processing doesn't beat synchronous version in Flickr and LiveJournal, But the later experiments show that our optimization technology performs quite well on big datasets.
-
-\textbf{PageRank}
-For PageRank algorithm, A3log outperforms all the other system except Bigdatalog/GraphX on Orkut dataset with synchronous processing. Asynchronous A3log shows much better performace than GraphX. And without the support of seminaive technology, socialite is no longer competitive.
 
 
-%GraphLab and Socialite on PageRank computation. The synchronous version of GraphLab performs much better than asynchronous Graph-Lab, which is due to its costly distributed locking \cite{Han:2015:GUB:2777598.2777604,Low:2012:DGF:2212351.2212354}.
-%Socialite performs SSSP only a little faster almost negligible.The distributed Myria runs unexpected long without returning results, say 9 hours for PageRank and did not return. The performance of A3Log and Maiter is comparable on these two applications,and Maiter performs pagerank even faster.The reason why A3Log does not show significant better performance in distributed environment is because of the expensive communication and serialization overhead.The performance of communicate and serialize components implemented in java unmatched that of C/C++ implementation.
-%\begin{comment}
-\subsection{Effects of Adaptive Message Buffer}
+For each system, one instance was dedicated as the master and each of the 15 worker nodes was allowed 30GB memory and 4 threads, Myria was configured with one instance of Myria and PostgreSQL per node. Bigdatalog was configured with Single-Job PSN with SetRDD and 60 for shuffle partition. And we configure the asynchronous A3log with adaptive message buffer strategy to obtain asynchronous result. The runtime results are the execution time excluding data loading time, and each is a mean of three runs.
+
+We compare A3Log with other systems in the context of three algorithms, SSSP, Connected Components(Asynchronizable) and PageRank(convertible). These three algorithms are all supported by these systems except PagreRank\footnote{Since BigDatalog doesn't support monotonic aggregate function $msum$ and $mcount$, so it is hard to express PageRank computation with BigDatalog. So we use GraphX as a instead for PageRank experiment.}. Figure \ref{fig:dist-result} shows the experimental result for system comparision. 
+
+\textbf{CC} Connected component program is a label propagation approach for determining the lowest vertex id a vertex is connected to. The aggregate operation is $\$min$ and the nonaggregate operation satisfy the accumulable conditions, which can be asynchronized directly. As reported in Figures \ref{fig:dist-result}(a), asynchronous A3log consistently outperform all these three competitor. Only Socialite beats the synchronous version A3log on Orkut datasets\footnote{Socialite has run out of memory on wiki-link datasets.}. 
+
+\textbf{SSSP} Single source shortest path is another Asynchronus Algorithm. As reported in Figures \ref{fig:dist-result}(b), asynchronous A3log outperforms all these three competior. But asynchronous A3log doesn't beat synchronous A3log on Flickr and LiveJournal datasets, But the later experiments show that our optimization technology performs quite well on big datasets.
+
+\textbf{PageRank} PageRank algorithm, is a link analysis algorithm for web searching which computes the importance of node in a graph. The aggregate operator is $\$sum$ which does not satisfy the acccumulable conditions, but it can be  asynchronized by section \ref{coro:auto:2}. As reported in Figures \ref{fig:dist-result}(c), Synchronous A3log outperforms all the other system except Bigdatalog/GraphX on Orkut dataset. The asynchronous A3log consistently outperforms the other systems and also synchronous processing. The synchronous A3log is slower than Bigdatalog only on Orkut. And Socialite is no longer competitive without the support of seminaive technology.
+
+\subsection{Effectiveness of Adaptive Message Buffer}
 \label{sec:expr:AMBuffer}
-In this section, we evaluate the effectness of adaptive message buffer strategy described in \ref{fig:intro} on the Same three application and \emph{What is the cost of each part}\cite{7113340}. To evaluate the performance with other optimization technology, we also implement priority scheduling technology. We perform the previous three algorithm on four dataset, and for the \textbf{COST} algorithm we synthetically generate a hierarchical (tree-like) dataset with 64000000 tree nodes.
-
-\Paragraph{Overall evaluation}
 \begin{figure*}[!t]
 	\vspace{0.0in}
 	\centering
-	\includegraphics[width=6.6in]{figuration/summary.eps}
+	\includegraphics[width=7.0in]{figuration/summary.eps}
 	\vspace{-0.1in}
 	\caption{Effectiveness of Adaptive Message Buffer}
 	\label{fig:summary}
 	\vspace{-0.1in}
 \end{figure*}
-We perform the three algorithm on four dataset, we compare each query with five cases. Synchronous processing, Asynchronous processing, Asynchronous processing with priority scheduling, Asynchronous processing with Adaptive sending buffer strategy. And Block-centric processing. To get the manual optimized buffer size, we fixed the buffersize to 500, 1000 and 2000 in turn, and choose the best one as result.  and the overall result is shown in figure \ref{fig:summary}.
-For CC and SSSP algorithm, the Adaptive Message buffer strategy shows significent speed up over fixed buffer setting on clueweb09 ahd wiki, says1.7 to   
-
-\begin{comment}
-\begin{table*}[!t]
-	%\vspace{-0.1in}
-	\caption{Performance when varying workloads ($d$ is diameter, $e$ is powerlaw exponent)}
-	\vspace{-0.0in}
-	\hspace{-0.3in}
-	\label{tab:wrokload}
-	%\centering
-	\scriptsize
-	\begin{tabular}{c|c|c|c|c|c|c|c|c|c|c|c}
-		\hline
-		\multirow{2}{*}{\textbf{Dataset}} & \multirow{2}{*}{\tabincell{c}{\textbf{Nodes}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Edges}}} & \multirow{2}{*}{\tabincell{c}{\textbf{Graph}\\ \textbf{type}}} & \multirow{2}{*}{\tabincell{c}{\textbf{$d$}}}& \multirow{2}{*}{\tabincell{c}{\textbf{$e$}}} & \multicolumn{3}{|c}{\textbf{SSSP}} & \multicolumn{3}{|c}{\textbf{PageRank}} \\
-		\cline{7-12}
-		&  & & & & & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}} & \textbf{Sync.} & \textbf{Async.} & \footnotesize{\textbf{Speedup}}\\
-		\hline\hline
-		\textbf{Actor} & 382,219 & 33,115,812 & collaborate & 13 & 2.131 & 34.62s & 1.54s & 22.44X & 63.62s & 7.03s & 9.05X \\
-		\hline
-		\textbf{Amazon} & 403,394 & 3,387,388 & co-purchase & 25 & 3.151 & 79.18s & 1.55s & 51.05X & 53.77s & 1.02s & 52.9X \\
-		\hline
-		\textbf{arXiv} & 28,093 & 4,596,803 & co-author & 9 & 1.731 & 19.7s & 1.51s & 13.03X & 53.2s & 1.01s & 52.7X \\
-		\hline
-		\textbf{DBLP} & 1,314,050 & 18,986,618 & co-author & 24 & 3.221 & 55.38s & 3.18s & 17.41X & 89.76s & 5.06s & 17.75X \\
-		\hline
-		\textbf{Flicker} & 2,302,925 & 33,140,017 & social & 23 & 1.711 & 38.3s & 3.95s & 9.71X & 84.24s & 24.2s & 3.48X \\
-		\hline
-		\textbf{Livejournal} & 5,204,176 & 49,174,464 & social & 23 & 1.537 & 57.26s & 9.41s & 6.08X & 111.09s & 49.43s & \textcolor{blue}{\textbf{2.25X}} \\
-		\hline
-		\textbf{Orkut} & 3,072,441 & 117,184,899 & social & 10 & 1.272 & 58.99s & 14.07s & \textcolor{blue}{\textbf{4.19X}} & 187.74s & 16.18s & 11.6X \\
-		\hline
-		\textbf{Patent-US} & 3,774,768 & 16,518,947 & citation & 26 & 4.001 & 66.83s & 3.21s & 20.8X & 68.06s & 6.11s & 11.15X \\
-		\hline
-		\textbf{Prosper} & 89,269 & 3,394,979 & loan & 8 & 2.191 & 37.75s & 1.51s & 24.93X & 52.61s & 1.02s & 51.58X \\
-		\hline
-		\textbf{RoadCA} & 1,965,206 & 2,766,607 & road net & 865 & 8.991 & 140.43s & 1.55s & 90.31X & 57.06s & 1.03s & \textcolor{red}{\textbf{55.59X}} \\
-		\hline
-		\textbf{RoadTX} & 1,379,917 & 1,921,660 & road net & 1064 & 8.901 & 137.2s & 1.55s & 88.4X & 54.49s & 1.02s & 53.63X \\
-		\hline
-		\textbf{Skitter} & 1,696,415 & 11,095,298 & Internet & 31 & 2.291 & 31.09s & 1.55s & 20.01X & 59.51s & 3.04s & 19.56X \\
-		\hline
-		\textbf{soc-LiveJ} & 4,847,571 & 68,475,391 & social & 20 & 2.651 & 67.2s & 11.2s & 6X & 113.51s & 39.2s & 2.9X \\
-		\hline
-		\textbf{soc-Pokec} & 1,632,803 & 30,622,564 & social & 14 & 3.081 & 53.85s & 4.81s & 11.19X & 76.83s & 15.1s & 5.09X \\
-		\hline
-		\textbf{TREC} & 1,601,787 & 8,063,026 & web & 112 & 2.231 & 130.84s & 1.6s & 81.62X & 55.29s & 2.03s & 27.23X \\
-		\hline
-		\textbf{\footnotesize{web-BerkStan}} & 685,230 & 7,600,595 & web & 208 & 2.601 & 692.08s & 3.1s & \textcolor{red}{\textbf{222.82X}} & 54.13s & 2.02s & 26.76X \\
-		\hline
-		\textbf{web-Google} & 875,713 & 5,105,039 & web & 24 & 2.731 & 70.8s & 1.59s & 44.64X & 54.24s & 2.03s & 26.67X \\
-		\hline
-		\textbf{Wiki-Talk} & 2,987,535 & 24,981,163 & communicate & 9 & 1.811 & 23.81s & 3.1s & 7.68X & 83.57s & 28.27s & 2.96X \\
-		\hline
-		\textbf{Youtube-u} & 3,223,589  & 9,375,374 & social & 31 & 2.211 & 30.6s & 2.43s & 12.6X & 65.91s & 5.08s & 12.96X \\
-		\hline
-		\textbf{\footnotesize{Zhishi-Baidu}} & 2,141,300 & 17,794,839 & web & 20 & 2.291 & 49.19s & 3.29s & 14.96X & 66.72s & 8.09s & 8.25X\\
-		\hline
-	\end{tabular}
-	\vspace{-0.1in}
-\end{table*}
-\end{comment}
-
-\Paragraph{Convergence and buffer changes}
 \begin{figure*}[!t]
-	\vspace{0.0in}
 	\centering
-	\includegraphics[width=6.6in]{figuration/combine.eps}
+	\includegraphics[width=7.0in]{figuration/combine.eps}
 	\vspace{-0.1in}
 	\caption{Effectiveness of Adaptive Message Buffer}
 	\label{fig:details}
 	\vspace{-0.1in}
 \end{figure*}
-%In order to analyze the factors for performance improvement and eliminate the interference from system implementation factors, we also implement a synchronous version of A3Log, which uses synchronous semi-naive evaluation (i.e., synchronous accumulated recursive programs). In addition, we turn off the scheduling then it shows the performance ahieved by pure asynchronous aggregation.
-
-%\noindent\textbf{Algorithms and Datasets}
-%We test more algorithms to see the effect variations on different workloads, including Least Common Ancestor(LCA), ``What is the cost of each part?'' (COST), ``Who will come to the party?'' (PARTY), and ``Computing Paths in a DAG'' (PATH). More details of these algorithms can be found in \cite{fullversion}. For LCA, we use a citation network Patent-US \cite{konect}. For COST, we synthetically generate a hierarchical (tree-like) dataset with 64000000 tree nodes. PARTY is a graph based algorithm, so we use the same ClueWeb20M dataset. For PATH, we synthetically generate a directed acyclic graph (DAG) dataset with 4915 nodes and 56148 edges. PATH is a computation intensive workload since it evaluates the paths between all pairs.
 
 
-%We run these algorithms on the an r3.8xlarge EC2 instance with 32 vCPUs and 244GB memory. All these experiments are run with 32 threads. Fig. \ref{fig:single-optimize} shows the results. The runtime by synchronous semi-naive evaluation is considered as the baseline. The speedups from asynchronous execution and prioritized scheduling exhibit variations for different workloads. Generally speaking, the graph based algorithms benefit from asynchronous aggregation and priority scheduling more. For SSSP and PageRank, great performance gains are achieved by priority scheduling. However, for COST, the priority scheduling brings negative effect. This is because that COST aims to compute all parts' cost in a hierarchical structure and the computations on these parts equally contribute to the output. Using priority scheduling will not bring any benefit but only incurs scheduling overhead. However, we still take advantage of asynchronous aggregation to achieve better performance.
+
+In this section, we evaluate the effeiciency of adaptive message buffer strategy described in \ref{} with four application \texttt{CC}, \texttt{SSSP}, \texttt{PageRank} and \texttt{What is the cost of each part}\cite{7113340} a n algorithm commonly used in cost estimation. And for the \textbf{COST} algorithm we synthetically generate a hierarchical (tree-like) dataset with 128000000 tree nodes.
+
+We compared the performance of adaptive message buffer startegy(denote by Async${amb}$) with (1) Synchronous processing, (2) Asynchronous processing with fixed buffersize (Vertex-centric), (3) Asynchronous processing with fixed buffer size and priority scheduling and (4) Block-centric processing, denoted by Sync, Async$_{fix}$, Async$_{pri}$ and Async$_{block}$. Further we also performed asynchronous processing with both adaptive buffer size and priority scheduling, denote by Async$_{ambp}$. Since determine the optimal message buffer size of Async$_{fix}$ is quite hard, so we fixed the buffersize to 500, 1000 and 2000 in turn, and choose the best one as result.
+
+
+\Paragraph{CC} Figure \ref{fig:summary}(a) report the performance of CC algorithm. Async$_amb$ consistently outperform all these cases. Over clueweb09 (resp. wiki and arabic-2005), it is on average \textcolor{red}{need to calculation} faster than that of Sync, Async$_{fix}$, Async$_{pri}$, Async$_{block}$, respectively. 
+
+\textcolor{blue}{
+The performance gain of Async$amb$ comes from the following:
+(1) reduction of invalid computation and communication latency by the use of adaptive message buffer strategy; 
+(2) the semi-naive evaluation technology;
+(3) ecfficient executing enginee with asynctable for accumulative asynchronous processing.
+Note that other strategy can also benefit from (s) and (3)}
+\Paragraph{Convergence and buffer changes}
+For example in figure \ref{fig:details}(i-l)
+
+
+\Paragraph{SSSP} Figure \ref{fig:summary}(a) report the performance of SSSP algorithm. Async$_amb$ consistently outperform all these cases. Over clueweb09 (resp. wiki and arabic-2005), it is on average \textcolor{red}{need to calculation} faster than that of Sync, Async$_{fix}$, Async$_{pri}$, Async$_{block}$, respectively. 
+
+
+\Paragraph{PageRank} Figure \ref{fig:summary}(a) report the performance of PageRank algorithm. Async$_amb$ consistently outperform all these cases. Over clueweb09 (resp. wiki and arabic-2005), it is on average \textcolor{red}{need to calculation} faster than that of Sync, Async$_{fix}$, Async$_{pri}$, Async$_{block}$, respectively. 
 
 
  \subsection{Scaling Performance}
@@ -266,40 +136,7 @@ For CC and SSSP algorithm, the Adaptive Message buffer strategy shows significen
 	\label{fig:scale}
 	\vspace{-0.1in}
 \end{figure}
-%asynchronous aggregation is expected to achieve better scaling performance. We evaluate the scaling performance of A3Log's share-memory runtime on an r3.8xlarge EC2 instance. We perform PageRank computation with the synchronous and asynchronous versions (without scheduling) of A3Log and vary the number of threads from 1 to 32. The runtime results are shown in Fig.\ref{fig:single-scalability}. We also draw the ideal scaling performance curve based on the runtime result of 1 thread. The asynchronous A3Log's scaling performance curve is closer to its ideal curve, while the synchronous A3Log exhibits larger difference to its ideal curve when running on more threads. Asynchronous execution also shows higher speedup over synchronous execution when running on more threads.
 
-% We also evaluate the scaling performance of A3Log's distributed runtime on a cluster with a number of c4.large EC2 instances, each with 2 vCPUs and 3.75GB memory. We perform PageRank computation with the synchronous and asynchronous executions (without scheduling) and vary the number of workers from 1 to 32. The runtime results are shown in Fig. \ref{fig:dist-scalability}. We also draw the ideal scaling performance curve based on the runtime result of 2-workers. Similar to the results on shared-memory runtime, asynchronous execution also shows better scaling performance. Higher speedup over synchronous execution is achieved when running on larger size cluster.
-
-
-%\subsection{Comparison with Different Workloads}
-%\label{sec:expr:workloads}
-%To see the performance when varying datasets, we choose 20 various graph datasets with various graph structures and various graph properties. All the datasets are downloaded from \cite{konect}. We use two typical graph algorithms SSSP and PageRank for evaluation. We run the shared-memory version of A3Log on a c4-2xlarge EC2 instance with 8 vCPU and 60GB memory. A3Log is configured with 8 threads. We compare the algorithm runtime of synchronous execution and asynchronous execution on these graphs.
-
-%Table \ref{tab:wrokload} shows the graph datasets and the runtime results. The asynchronous execution exhibits 4.19X-222.82X speedup over synchronous execution on SSSP computation, and 2.25X-55.59X speedup over synchronous execution on PageRank computation. Generally speaking, asynchronous SSSP achieves higher speedup on large diameter graphs, and asynchronous PageRank computation achieves higher speedup on the graphs with larger powerlaw exponent. Of course, the performance speedup also relates to the graph structures and graph types. %Note that, in asynchronous execution, the termination check is performed periodically (every 1 second in this experiment). If the runtime results of asynchronous executions shows 1.x second, they may converge less than 1 second. Thus, the performance of asynchronous execution is expected to be even higher.
-
- %\subsection{Effectiveness of Aggregate Operations}
- %\label{sec:expr:aggregations}
- \begin{comment}
- \begin{figure}[!t]
- 	\vspace{-0.1in}
- 	\centerline{
- 		\subfloat[RoadCA]{\includegraphics[width=1.3in, angle=-90]{fig/roadca_aggregate_progress}
- 			\label{fig:single-numagg:roadca}
- 			\vspace{-0.05in}}
- 		\hspace{-5mm}
- 		\subfloat[Livejournal]{\includegraphics[width=1.3in, angle=-90]{fig/livejournal_aggregate_progress}
- 			\label{fig:single-numagg:livejournal}
- 			\vspace{-0.05in}}
- 	}
- 	\vspace{-0.1in}
- 	\caption{Effectiveness of aggregate operations to converging progress}
- 	\label{fig:single-numagg}
- 	\vspace{-0.1in}
- \end{figure}
-\end{comment}
- %In this experiment, we evaluate the effectiveness of asynchronous aggregations on accelerating the computation prog-ress.
-
- %We run PageRank on two datasets, RoadCA and Livejournal, which result in the most speedup and the least speedup comparing to synchronous aggregation as shown in Table \ref{tab:wrokload}. We record the accumulated number of aggregate operations during the computation. In the accumulated version of PageRank (see Sec. \ref{sec:async:convert}), the summation of ranking scores $\sum_i{r_i}$ is approaching to 1 and will finally converge to 1. So we estimate the computation progress by evaluating $\sum_i{r_i}$ periodically. Fig. \ref{fig:single-numagg} shows the results. By using asynchronous aggregation, the converging progress is much faster than using synchronous execution. The scheduling of aggregate operations will further speedup the progress. The asynchronous aggregation with scheduling shows more effectiveness, so that each aggregate operation contributes more. It also shows more effectiveness on the RoadCA graph than on the Lievejournal graph. This is the reason why higher speedup is observed on the RoadCA graph.
 
 \section{Related Works}
 \label{sec:related}
