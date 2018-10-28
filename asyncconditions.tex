@@ -209,6 +209,14 @@ As discussed, asynchronous aggregation is possible in accumulated recursive prog
 	%	\item \textbf{commutative}: $G(Y_1\cup Y_2)=G(Y_2\cup Y_1)$;
 	\end{itemize}
 \end{theorem}
+
+\begin{align}
+&G\circ F\circ G(X\cup Y)=G\circ F( G(X)\cup G(Y))\notag\\
+&G(F'\circ G(X\cup Y)\cup G(X\cup Y) )\notag\\
+&=G(F(G(X)\cup G(Y))\cup G(X)\cup G(Y))\notag\\
+&G(G(X\cup Y))=G(G(X)\cup G(Y))\notag\\
+&G(F'\circ G(X\cup Y) )=G(F(G(X)\cup G(Y)))\notag
+\end{align}
 The \textcolor{blue}{order independent} property implies that no matter the $F()$ operation is first applied or the $G()$ operation is first applied, the effect is the same. As long as the same number of $F()$ operations are applied on all the initial inputs and the final operator is $G()$, the eventual aggregation result will be the same.%Due to de definition ,it is obvious that $G$and $F$ operations also satisfied order-independent and commutative properties in this condition.
 We give the formal proof in appendix \ref{},
 \begin{comment}
