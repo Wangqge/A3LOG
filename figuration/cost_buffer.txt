@@ -1,4 +1,4 @@
-time 	async_{d}	time	async_{1000}	time	async_{2000}
+time 	async_{amb}	time	async_{1000}	time	async_{2000}
 0	2	0	1000	0	2000
 0	176	33.56	1000	33.47	2000
 0	2812				

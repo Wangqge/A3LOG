@@ -1,4 +1,4 @@
-time	async_1000	time	async_p	time	async_{block}	time	async_{d}	time	async_{pd}	time	sync
+time	async_{1000}	time	async_{pri}	time	async_{block}	time	async_{amb}	time	async_{ambp}	time	sync
 1	0.011070148	1	0.009746085	1	0.029777079	1	0.014281814	1	0.014637678	0	0.01
 2	0.028061947	2	0.026393324	2	0.061255802	2	0.03802315	2	0.038243776	10	0.2
 3	0.046210558	3	0.044507259	3	0.107531288	3	0.063929222	3	0.063280763	26	0.36

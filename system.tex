@@ -125,7 +125,19 @@ The termination condition might rely on aggregation of either the accumulation c
 
 \noindent\textbf{Fault Tolerance}
 For large scale operations that involve many machines for a substantial amount of time, it is also important to provide fault tolerance support. A3Log relies on Socialite's fault tolerance scheme \cite{Seo:2013:DSD:2556549.2556572}. The intermediate computation states are checkpointed occasionally on HDFS and restorable as needed. If one or more workers fail, the intermediate states are restored from the latest checkpoint and the evaluation is resumed from that point.
+
+
+\begin{figure*}[!t]
+	\vspace{-0.1in}
+	%	\centering
+	\hspace{-0.28in}
+	\includegraphics[width=7.2in]{figuration/compare.eps}
+	\vspace{-0.1in}
+	\caption{Performance comparison with other systems (distributed environment)}
+	\label{fig:dist-result}
+\end{figure*}
 {\color{red}
+	
 \subsection{Message driven sengding policy}
 
 Previous work proposed two major asynchronous processing strategy in distributed environment, block-centric and verterx centric. The key difference between the two strategies is the message sending policy. Block-centric strategy only sending message after the local shard between this two worker has been completely processed for a pass, all the message is cached in local memory before sending. While vertex-centric processing require as frequent communication as possible within the limit of network e.g., using a small fixed buffer to cache the export message.

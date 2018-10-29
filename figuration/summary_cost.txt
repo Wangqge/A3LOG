@@ -1,0 +1,4 @@
+COST	async_{default}	async_{pri}	async_d	async_p_d	sync	async_{block}
+COST-64	11.991	13.155	10.25	12.192	23.754	16.047
+COST-128	33.743	33.245	29.328	39.417	59.341	37.044
+COST-192	100	100	100	100	100	100

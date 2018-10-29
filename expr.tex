@@ -34,22 +34,14 @@
 \Paragraph{Experimental Setup and Datasets.}
 Our experiments are conducted on 16 node Aliyun ECS cluster(ecs.r5.xlarge), each runs Ubuntu 16.04 LTS and has 4 vCPUs and 32GB memory. The network bandwidth between instance workers is 1.5Gbps/s. And all the works uses Hadoop 2.6.4 as distributed file system.
 
-Table \ref{tab:Dataset} shows the real world graphs used for all graph algorithm, And to we syntheticly generate a tree structure Datasets with 128000000 Node and  ** edges. 
+Table \ref{tab:Dataset} shows the real world graphs used for all graph algorithm, And to we syntheticly generate several tree structure Datasets with 128000000 Node and  ** edges. 
 
 We compare A3log with three state-of-the-art Datalog frameworks. \textbf{SociaLite} \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572} is a Datalog implementation for social network analysis. \textbf{Myria} \cite{Halperin:2014:DMB:2588555.2594530,Wang:2015:AFR:2824032.2824052} supports Datalog asynchronous evaluation. And \textbf{BigDatalog}\cite{Shkapsky:2016:BDA:2882903.2915229} a Datalog implementation based on spark. All these three framework support monotonic aggregation inside recursion.
 
 
 \subsection{Comparison to Other Systems}
 
-\begin{figure*}[!t]
-	\vspace{-0.1in}
-%	\centering
-	\hspace{-0.28in}
-	\includegraphics[width=7.2in]{figuration/compare.eps}
-	\vspace{-0.1in}
-	\caption{Performance comparison with other systems (distributed environment)}
-	\label{fig:dist-result}
-\end{figure*}
+
 
 
 For each system, one instance was dedicated as the master and each of the 15 worker nodes was allowed 30GB memory and 4 threads, Myria was configured with one instance of Myria and PostgreSQL per node. Bigdatalog was configured with Single-Job PSN with SetRDD and 60 for shuffle partition. And we configure the asynchronous A3log with adaptive message buffer strategy to obtain asynchronous result. The runtime results are the execution time excluding data loading time, and each is a mean of three runs.
@@ -58,7 +50,7 @@ We compare A3Log with other systems in the context of three algorithms, SSSP, Co
 
 \textbf{CC} Connected component program is a label propagation approach for determining the lowest vertex id a vertex is connected to. The aggregate operation is $\$min$ and the nonaggregate operation satisfy the accumulable conditions, which can be asynchronized directly. As reported in Figures \ref{fig:dist-result}(a), asynchronous A3log consistently outperform all these three competitor. Only Socialite beats the synchronous version A3log on Orkut datasets\footnote{Socialite has run out of memory on wiki-link datasets.}. 
 
-\textbf{SSSP} Single source shortest path is another Asynchronus Algorithm. As reported in Figures \ref{fig:dist-result}(b), asynchronous A3log outperforms all these three competior. But asynchronous A3log doesn't beat synchronous A3log on Flickr and LiveJournal datasets, But the later experiments show that our optimization technology performs quite well on big datasets.
+\textbf{SSSP} Single source shortest path is another Asynchronus Algorithm. As reported in Figures \ref{fig:dist-result}(b), asynchronous A3log outperforms all these three competior. But asynchronous A3log doesn't beat synchronous A3log on Flickr and LiveJournal the two relatively small datasets, But the later experiments show that our optimization technology performs quite well on big datasets.
 
 \textbf{PageRank} PageRank algorithm, is a link analysis algorithm for web searching which computes the importance of node in a graph. The aggregate operator is $\$sum$ which does not satisfy the acccumulable conditions, but it can be  asynchronized by section \ref{coro:auto:2}. As reported in Figures \ref{fig:dist-result}(c), Synchronous A3log outperforms all the other system except Bigdatalog/GraphX on Orkut dataset. The asynchronous A3log consistently outperforms the other systems and also synchronous processing. The synchronous A3log is slower than Bigdatalog only on Orkut. And Socialite is no longer competitive without the support of seminaive technology.
 
@@ -75,7 +67,7 @@ We compare A3Log with other systems in the context of three algorithms, SSSP, Co
 \end{figure*}
 \begin{figure*}[!t]
 	\centering
-	\includegraphics[width=7.0in]{figuration/combine.eps}
+	\includegraphics[width=7.6in]{figuration/combine.eps}
 	\vspace{-0.1in}
 	\caption{Effectiveness of Adaptive Message Buffer}
 	\label{fig:details}
@@ -89,24 +81,26 @@ In this section, we evaluate the effeiciency of adaptive message buffer strategy
 We compared the performance of adaptive message buffer startegy(denote by Async${amb}$) with (1) Synchronous processing, (2) Asynchronous processing with fixed buffersize (Vertex-centric), (3) Asynchronous processing with fixed buffer size and priority scheduling and (4) Block-centric processing, denoted by Sync, Async$_{fix}$, Async$_{pri}$ and Async$_{block}$. Further we also performed asynchronous processing with both adaptive buffer size and priority scheduling, denote by Async$_{ambp}$. Since determine the optimal message buffer size of Async$_{fix}$ is quite hard, so we fixed the buffersize to 500, 1000 and 2000 in turn, and choose the best one as result.
 
 
-\Paragraph{CC} Figure \ref{fig:summary}(a) report the performance of CC algorithm. Async$_amb$ consistently outperform all these cases. Over clueweb09 (resp. wiki and arabic-2005), it is on average \textcolor{red}{need to calculation} faster than that of Sync, Async$_{fix}$, Async$_{pri}$, Async$_{block}$, respectively. 
+\Paragraph{CC} Figure \ref{fig:summary}(a) report the performance of CC algorithm. Async$_amb$ consistently outperform all these cases. Over clueweb09 (resp. wiki and arabic-2005), it is on average 3.63(resp. 4.89 and 1.34) times, 1.24(resp. 1.82 and 4.44) times and  2.61(resp. 1.50, 1.08) times faster than that of \textbf{Sync}, Async$_{fix}$, Async$_{block}$, respectively. 
 
 \textcolor{blue}{
-The performance gain of Async$amb$ comes from the following:
+The performance gain of Async${amb}$ comes from the following:
 (1) reduction of invalid computation and communication latency by the use of adaptive message buffer strategy; 
 (2) the semi-naive evaluation technology;
 (3) ecfficient executing enginee with asynctable for accumulative asynchronous processing.
-Note that other strategy can also benefit from (s) and (3)}
-\Paragraph{Convergence and buffer changes}
-For example in figure \ref{fig:details}(i-l)
+Note that other strategy can also benefit from (2) and (3)}
+For example in Figure \ref{fig:details}(c) and (d) Both async$_{fix}$ and  async$_{block}$ will slow down at the end of the convergence. since the message amount in this stage is drastically reducing. neighter async$_{block}$ nor async$_{fix}$ can perform their best performance. The async$_{amb}$ makes effective use of network strategy by auto tuning message buffer.
+
+\Paragraph{SSSP} Figure \ref{fig:summary}(b) report the performance of SSSP algorithm. Async$_amb$ consistently outperform all these cases except Async$_{block}$ over arabic-2005 datasets. Over clueweb09 (resp. wiki and arabic-2005), it is on average  \textbf{1.60}(resp. 2.74 and 2.02) times, \textbf{1.21}(resp. 1.85 and 5.02) times and  \textbf{1.62}(resp. 1.66 and 0.97) times faster than that of \textbf{Sync}, Async$_{fix}$, Async$_{block}$, respectively. 
+
+As reported in Figure \ref{fig:details}(c) and (d) Async$_{fix}$ shows disastrous performance when little buffer size meet large amount of message. Async$_amb$ doesn't shows no advantage over arabic-2005 because the amount of message doesn't significantly change.
 
 
-\Paragraph{SSSP} Figure \ref{fig:summary}(a) report the performance of SSSP algorithm. Async$_amb$ consistently outperform all these cases. Over clueweb09 (resp. wiki and arabic-2005), it is on average \textcolor{red}{need to calculation} faster than that of Sync, Async$_{fix}$, Async$_{pri}$, Async$_{block}$, respectively. 
-
-
-\Paragraph{PageRank} Figure \ref{fig:summary}(a) report the performance of PageRank algorithm. Async$_amb$ consistently outperform all these cases. Over clueweb09 (resp. wiki and arabic-2005), it is on average \textcolor{red}{need to calculation} faster than that of Sync, Async$_{fix}$, Async$_{pri}$, Async$_{block}$, respectively. 
-
-
+\Paragraph{PageRank} Figure \ref{fig:summary}(c) report the performance of PageRank algorithm. Unlike the other algorithm, The message of Pagerank doesn't not significant changing, so only some buffer sensitive workload (Clueweb09) can benefit from Async$_{amb}$. Howerver PageRank can benefit a lot from Priority scheduling technology, because Async$_pri$ can transmitted larger update in unit message. So we can use a combine strategy i.e., Async$_{ambp}$ strategy, says 3.04,1.73 and 5.36  times faster than that of \textbf{Sync}.
+ 
+{\color{blue} need some experiment
+\Paragraph{COST} Cost Algorithm can also benefit a lot from asynchronous processing as shown in figure 
+}
  \subsection{Scaling Performance}
  \label{sec:expr:scale}
  \begin{comment}
