@@ -207,13 +207,13 @@ The nonaggregate operation is constract with relation and output expression, and
 Sothe output expression of non aggregate operation is also consist of the part, $\mathcal{C}=c*n$ and  $\mathcal{C}$. The property of $f$ is only depend on the form of unique expression .
 
 
-In order to translate $g$ and $f$ into a formula for being verified by an SMT solver, we implement a serie of unary function $H_{fi}(*)$  to represent the $i$th output expression of $f$, and Binary function $H_g(*,*)$ to represent aggregate operation $g$. If the accumulative property is satisfied
-We can further define $H^n_g()$ for $n$ inputs aggregation by recursively apply $H_g(*,*)$.
+In order to translate $g$ and $f$ into a formula for being verified by an SMT solver, we implement a serie of unary function $H_{fi}(\bullet)$  to represent the $i$th output expression of $f$, and Binary function $H_g(\bullet,\bullet)$ to represent aggregate operation $g$. If the accumulative property is satisfied
+We can further define $H^n_g(\bullet)$ for $n$ inputs aggregation by recursively apply $H_g(\bullet,\bullet)$.
 Then all the condition check problem can be construct with these two function.
 
 \textcolor{blue}{ Given a function $H=\{f(x_1),\ldots,f(x_m)\}$ or $H=\{g(x_1),...g(x_n)\}$, we are interested in a formula for $H$ of the form $\phi_H^{o_1,\ldots,o_m}$, where $o_1,\ldots,o_m$ are output variables \cite{Liu:2014:ADP:2670979.2670980}. Intuitively, the formula $\phi$ is ``correct'' if an assignment to $\{x_1,\ldots,x_n,o_1,\ldots,o_m\}$ makes $\phi$ be true if and only evaluating $H(x_1,\ldots,x_n)$ returns $o_1,\ldots,o_m$. Then the satisfiability of $\phi$ exactly implies that the function will compute the same output. Based on this formula, we present the formulas for different conditions in the following.
 }
-For the accumulative and commutative conditions in definition \ref{th:monotone} and the order independent condition in definition\ref{th:async}, the condition verification problems can be reduced to SMT satisfiability problems via the following equation.
+For the accumulative, idempotent, and commutative conditions in definition \ref{th:monotone} and the order independent condition in definition\ref{th:async}, the condition verification problems can be reduced to SMT satisfiability problems via the following equation.
 
 \begin{definition}
 	\label{coro:auto:1}
@@ -227,8 +227,8 @@ For the accumulative and commutative conditions in definition \ref{th:monotone} 
 		\item condition 2: commutative, $H_l=H_g(x_1,x_2)$ and $H_r=H_g(x_2,x_1)$;
 		\item condition 3: idempotent, $H_l=H_g(x_1,x_2)$ and $H_r=H_g(x_2,x_1)$;
 		\item condition 4: order independent, \\		
-		$H_l=H^*_g(H_f(H^*_g(x_1,x_2),H^*_g(x_1,x_2)),e)$\\		
-		 and  $H_r=H^*_g(H_f(H^*_g(x_1,x_2)),H_f(H^*_g(x_1,x_2)))$;
+		$H_l=H^*_g(H_f(H^*_g(x_1,x_2,x_3,x_4)),e)$\\		
+		 and  $H_r=H^*_g(H_f(H^*_g(x_1,x_2)),H_f(H^*_g(x_3,x_4)))$;
 	\end{itemize}
 \end{definition}
 {\color{green}
