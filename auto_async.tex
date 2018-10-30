@@ -193,6 +193,14 @@ PageRank is another recursive program that can be converted to the accumulated r
 
 
 \subsection{Automatation}
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=3.2in]{fig/automodel}
+	\vspace{-0.1in}
+	\caption{Expression Construction}
+	\label{fig:automodel}
+	\vspace{-0.1in}
+\end{figure}
 Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these complex conditions manually. And it is also hard to find a new function $F'()$ for converting a normal recursive program into an accumulated recursive program.
  To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this section, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations. To simplify the analysis, we use key-specific operations $g$ and $f$ to describe the automation process instead of using the set oriented operations $G$ and $F$.
  
