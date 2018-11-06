@@ -67,7 +67,7 @@ We compare A3Log with other systems in the context of three algorithms, SSSP, Co
 \end{figure*}
 \begin{figure*}[!t]
 	\centering
-	\includegraphics[width=7.6in]{figuration/combine.eps}
+	\includegraphics[width=7.0in]{figuration/combine.eps}
 	\vspace{-0.1in}
 	\caption{Effectiveness of Adaptive Message Buffer}
 	\label{fig:details}
@@ -102,35 +102,20 @@ As reported in Figure \ref{fig:details}(c) and (d) Async$_{fix}$ shows disastrou
 \Paragraph{COST} Cost Algorithm can also benefit a lot from asynchronous processing as shown in figure 
 }
  \subsection{Scaling Performance}
- \label{sec:expr:scale}
- \begin{comment}
-
  \begin{figure}[!t]
- 	\centering
- 	\includegraphics[width=2.8in]{fig/single-scalability}
- 	\vspace{-0.1in}
- 	\caption{Scaling performance (many-core)}
- 	\label{fig:single-scalability}
- \end{figure}
-
- \begin{figure}[!t]
- 	\centering
- 	\includegraphics[width=2.8in]{fig/dist-scalability}
- 	\vspace{-0.1in}
- 	\caption{Scaling performance (distributed)}
- 	\label{fig:dist-scalability}
- \end{figure}
-\end{comment}
-\begin{figure}[!t]
-	\vspace{0.0in}
+	\vspace{0.1in}
 	\centering
 	\includegraphics[width=3.4in]{figuration/scale.eps}
 	\vspace{-0.1in}
-	\caption{ScalePerformance}
+	\caption{Scaling Performance}
 	\label{fig:scale}
-	\vspace{-0.1in}
+	\vspace{-0.2in}
 \end{figure}
 
+ Here we report more experimental result of how Asynchronous Processing scale over different cluster size. 
+ In this set of experiments, we use wiki-link and clueweb09 graphs that can be evaluated on all cluster sizes.
+ We compare the scale performance of Async$_{amb}$ with Sync, Async$_{fix}$ and Async$_{block}$. We also draw the ideal scaling performance curve based on the runtime result of 4 worker.  Figure \ref{fig:scale}(a) and (c) shows the runtime comparision for CC the number of workers increases from 4 to 24 (all with one master), and Figure \ref{fig:scale}(b) and (d)shows the same experiment run for SSSP with the same datasets.
+Thge Async$_amb$ scaling performance curve is closer to its ideal curve. While the sync exhibits larger difference to its ideal curve  when running on larger cluster.  
 
 \section{Related Works}
 \label{sec:related}

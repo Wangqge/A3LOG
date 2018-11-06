@@ -58,17 +58,10 @@ Note that, it is not realistic to perform recursion infinite times. In practice,
 
 \subsection{Converting Nonmonotonic program to Semi-Naive Evaluation}
 \label{sec:async:convert}
-\begin{comment}
-<<<<<<< HEAD
-Some non-monotonic computations cannot be written as accumulated recursive program and are not originally qualified for asynchronous aggregation. For example, the PageRank computation cannot be executed as an accumulated recursive program since the monotonic condition is not satisfied. After applying $F\circ G$ operations, the recursion result $X^{k}$ is replaced by $X^{k+1}$ but not contained in $X^{k+1}$. In other words, there is no incremental computing relationship between $X^k$ and $X^{k-1}$. Further, the aggregate operation $g(\{x_i\})=\sum_i{x_i}+0.15$ does not have the accumulative property due to the additional constant $0.15$.
-
-Fortunately, Some of these computations can be converted to accumulative recursive aggregation.The key of the conversion is to incrementally computing the original problem $X^k=(G\circ F)^n(X^0)$ and iteratively computing the incremental value $\Delta X^k$ of each recursion using normal recursive aggregation. i.e.,
-=======
-\end{comment}
 
 As discussed above, the primary requirement for asynchronous aggregation is that the recursive program is an accumulated recursive program. %{\color{red} in other words,  The progranm can be semi-naive evaluated}.
-However, a large number of recursive algorithms do not satisfy the accumulable requirement as definition \ref{}.Especially the monotonic requirement of non-aggregate operations $F$ and the ideopotentproperty also restrict the application os asynchronous processing . However some algorithms that doesn't satisfied the monotonic condition still have the posibility to convert to accumulative recursive aggregation .So in this section, we will introduced a convert technology to guide the trasnformation.
-}
+However, a large number of recursive algorithms do not satisfy the accumulable requirement as definition \ref{def:araggre}. Especially the monotonic requirement of non-aggregate operations $F$ and the ideopotent property also restrict the application os asynchronous processing . However some algorithms that doesn't satisfied the monotonic condition still have the possibility to convert to accumulative recursive aggregation .So in this section, we will introduced a convert technology to guide the trasnformation.
+
 
 \textbf{Example 2: What is the cost of each part}
 \small
@@ -170,19 +163,7 @@ A convertiable recursive program can be converted to an accumulated recursive pr
 {\color{green}
 Note that, the last condition can be relaxed with condition $lim_{n\rightarrow\infty}(G\circ F')^n(\Delta X^0)=0$ to obtain an approximate result.
 }
-\begin{proof}
-We init the $\Delta^1$ with $\Delta^1=X^1-X^0$.
-\begin{align}
-&G^+(X^0\cup \Delta^1 \cup G^+\circ F'(\Delta^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \notag\\
-=&G^+(X^1 \cup G^+\circ F'(\Delta^1  )\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1  )) \tag{2}\\
-=&G^+(G^+(X^1\cup G^+\circ F'(\Delta^1  ))\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \tag{3}\\
-=&G^+(G\circ F(X^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \tag{4}\\
-=&\ldots \notag\\
-=&G^+((G\circ F)^{k-2}(X^1)\cup(G^+ \circ F')^{k-1}(\Delta^1 )) \notag\\
-=&G\circ F(X^{k-1})\tag{6}
-\end{align}
-Line 2, 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula.
-\end{proof}
+
 
 In System implementation, the initial value of $\Delta^1$ could be init with $X^1-X^0$ by performing naive-evaluation for one time.
 
@@ -193,6 +174,14 @@ PageRank is another recursive program that can be converted to the accumulated r
 
 
 \subsection{Automatation}
+\begin{figure}[!t]
+	\centering
+	\includegraphics[width=3.2in]{figuration/automodel.pdf}
+	\vspace{-0.1in}
+	\caption{Expression Construction}
+	\label{fig:automodel}
+	\vspace{-0.1in}
+\end{figure}
 Though the conditions for asynchronous aggregation have been identified, it is still hard for a non-expert programmer to verify these complex conditions manually. And it is also hard to find a new function $F'()$ for converting a normal recursive program into an accumulated recursive program.
  To alleviate the burden of programmers, an automatic asynchronization scheme is desired. In this section, we discuss how to automatically verify these conditions given the $g()$ and $f()$ operations. To simplify the analysis, we use key-specific operations $g$ and $f$ to describe the automation process instead of using the set oriented operations $G$ and $F$.
  

@@ -40,19 +40,19 @@ Line 8 is the formula of synchronous accumulative recursive aggregation. Since t
  \end{proof}
  \subsection{Proof of Theorem Convertibility}
  \label{sec:app:proof:convert}
- \begin{proof}
- Since we have $\Delta X^0=X^1-X^0$.
- \begin{align}
-&G^+(X^0\cup \Delta X^0 \cup G^+\circ F'(\Delta X^0)\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \notag\\
-=&G^+(X^1 \cup G^+\circ F'(\Delta X^0  )\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0  )) \notag\\
-=&G^+(G^+(X^1\cup G^+\circ F'(\Delta X^0  ))\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \tag{3}\\
-=&G^+(G\circ F(X^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta X^0 )) \tag{4}\\
+\begin{proof}
+We init the $\Delta^1$ with $\Delta^1=X^1-X^0$.
+\begin{align}
+&G^+(X^0\cup \Delta^1 \cup G^+\circ F'(\Delta^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \notag\\
+=&G^+(X^1 \cup G^+\circ F'(\Delta^1  )\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1  )) \tag{2}\\
+=&G^+(G^+(X^1\cup G^+\circ F'(\Delta^1  ))\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \tag{3}\\
+=&G^+(G\circ F(X^1)\cup \ldots (G^+ \circ F')^{k-1}(\Delta^1 )) \tag{4}\\
 =&\ldots \notag\\
-=&G^+((G\circ F)^{k-2}(X^1)\cup(G^+ \circ F')^{k-1}(\Delta X^0 )) \notag\\
+=&G^+((G\circ F)^{k-2}(X^1)\cup(G^+ \circ F')^{k-1}(\Delta^1 )) \notag\\
 =&G\circ F(X^{k-1})\tag{6}
- \end{align}
-Line 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula. 
- \end{proof}
+\end{align}
+Line 2, 3 is true because of the \textbf{accumulative} property.Line 4 is true because the second condition of Theorem \ref{th:convert}. After repeat applying these two property, we can obtain line 6 which is the synchronous recursive program formula.
+\end{proof}
  
 
  \section{Datalog Examples}
