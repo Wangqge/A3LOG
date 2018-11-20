@@ -13,7 +13,7 @@ set origin 0.1,0
 #set key top outside horizontal center maxrows 2 font ",28"
 set key at graph 3.3,1.225 maxrows 1 font ",28" samplen 4
 set ylabel "Time(s)"  offset 3.4
-set xlabel "(1) CC"   font "Times-Roman,40" 
+set xlabel "(1) CC"   font "Times-Roman,32" 
 unset grid
 set yrange [0:10000]
 set logscale y
@@ -41,7 +41,7 @@ unset key
 unset grid
 unset ylabel
 set yrange [0:10000]
-set xlabel "(2) SSSP"   font "Times-Roman,40" 
+set xlabel "(2) SSSP"   font "Times-Roman,32" 
 set logscale y
 set xtics rotate by 340  offset -2,0
 set boxwidth 1
@@ -61,7 +61,7 @@ set size 1,0.9
 set origin 2.1,0
 unset key
 #set title "PageRank"
-set xlabel "(c) PageRank"     font "Times-Roman,40" 
+set xlabel "(c) PageRank"     font "Times-Roman,32" 
 unset grid
 unset ylabel
 #set yrange [0:1000]

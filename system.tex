@@ -4,12 +4,12 @@
 In this section, we propose a Datalog System A3Log to support accumulate asynchronous aggregation, which is built by modifying Socialite \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572}. Datalog is an excellent candidate language for expressing computation logic because of its high-level \emph{declarative} semantics and support for recursion. In particular, Datalog program only defines how the output depends on the inputs but not how the outputs are produced. It operates on a relation at a time, exposing plenty of opportunities for parallelization and asynchronization by virtue of the size of the data sets, so that we have the flexibility to design specific runtime engines to support accumulate recursive program. \emph{automatic} parallelization and \emph{automatic} asynchronization. In addition, the program size of Datalog is much smaller than that of the imperative languages such as Java, C++. %For these reasons, we choose Datalog as the high-level language.
 
 \begin{figure}[!t]
-    \centering
-  \includegraphics[width=3.2in]{fig/overview2}
-  \vspace{-0.1in}
-  \caption{A3Log overview}
-  \label{fig:overview}
-  \vspace{-0.2in}
+	\centering
+	\includegraphics[width=3.2in]{fig/overview2}
+	\vspace{-0.1in}
+	\caption{A3Log overview}
+	\label{fig:overview}
+	\vspace{-0.2in}
 \end{figure}
 
 A3Log is implemented using Java and contains several components as shown in Fig. \ref{fig:overview}. The \textbf{Parser} parses user's Datalog program into an abstract syntax tree (AST) by using ANTLR \cite{antlr}. The \textbf{Analyzer} traverses the AST to performs syntactic and semantic analysis, identifies the recursive rule, and analyzes the aggregate operation $g$ and non-aggregate operation $f$. If the program is a recursive program, it will be further processed by our system, otherwise it will be executed by the Socialite runtime engine \cite{Lam:2013:SDE:2510649.2511289,Seo:2013:DSD:2556549.2556572}. Given the $f$ and $g$ operations retrieved by the Analyzer, the \textbf{Condition Checker} relies on Z3 SMT Solver \cite{DeMoura:2008:ZES:1792734.1792766,z3} to verify the conditions and automatically chooses the appropriate evaluation technique. The \textbf{Code Generator} provides a series of code templates for generating the share-memory runtime code and distributed runtime code, where we use StringTemplate \cite{stringtemplate} to generate source code. Then, the recursive program will be executed by our execution engine (Sec. \ref{sec:system:runtime}). A3Log provides both \textbf{Shared-Memory Runtime Engine} and \textbf{Distributed Runtime Engine}. The shared-memory runtime and distributed runtime share several functionalities, including lock control, scheduling, termination check. The distributed runtime additionally supports data distribution, MPI control, and fault tolerance. We use TROVE \cite{trove} for high performance container operations which are frequently used due to our key table structure, use openmpi \cite{mpich} for  communication, and use ProtoStuff \cite{Protostuff} for efficient serialization and deserialization. As implemented in Socialite, A3Log also relies on HDFS to store data and to checkpoint intermediate computation state.
@@ -18,20 +18,20 @@ A3Log is implemented using Java and contains several components as shown in Fig.
 In Program 1, rule \texttt{r1} initializes the predicate \texttt{sssp} by specifying the source node $X=1$ and the shortest distance from source as $d=0$. \texttt{r2} is a recursive rule since it has the \texttt{sssp} predicate in both its head and body. \texttt{r2} will recursively produce \texttt{sssp} fact by joining the old \texttt{sssp} and \texttt{edge}. If there is a path from source to $X$ of length $d_1$ and an edge from $X$ to $Y$ of length $d_2$, there is a path from source to $Y$ with length $d=d_1+d_2$. If there is already a path to $Y$ found before, it should be also considered. Hence, the shortest distance from source to $Y$ is updated by the minimum of these possible distances, i.e., min$[d]$. The recursion will terminate as soon as no shortest distance is updated.
 \end{comment}
 \begin{comment}
- \begin{verbatim}
- Program 1. Computing Paths in a DAG
- \end{verbatim}\vspace{-0.1in}\small
- \begin{lstlisting}
- r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
- r2. cpaths(X,Y,count[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
-                          edges(Z,Y),
-                          cpaths(X,Y,$c$).
- \end{lstlisting}
- \normalsize
- \end{comment}
- \begin{comment}
- Program 4 counts the paths between pairs of vertices in an acyclic graph. \texttt{r1} counts each edge as one path between its vertices. In \texttt{r2}, any \texttt{edge(Z,Y)} that extends from a computed path count \texttt{cpath(X,Z,$c$)} establishes $c$ distinct paths from \texttt{X} to \texttt{Y} through \texttt{Z}.
- 
+\begin{verbatim}
+Program 1. Computing Paths in a DAG
+\end{verbatim}\vspace{-0.1in}\small
+\begin{lstlisting}
+r1. cpaths(X,Y,$c$) $\leftarrow$ edge(X,Y), $c=1$.
+r2. cpaths(X,Y,count[$c$]) $\leftarrow$ cpaths(X,Z,$c$),
+edges(Z,Y),
+cpaths(X,Y,$c$).
+\end{lstlisting}
+\normalsize
+\end{comment}
+\begin{comment}
+Program 4 counts the paths between pairs of vertices in an acyclic graph. \texttt{r1} counts each edge as one path between its vertices. In \texttt{r2}, any \texttt{edge(Z,Y)} that extends from a computed path count \texttt{cpath(X,Z,$c$)} establishes $c$ distinct paths from \texttt{X} to \texttt{Y} through \texttt{Z}.
+
 Originally, the Datalog program terminates when no new fact can be found. However, some programs will never stop since it continuously produces ``tiny'' facts. For example, the PageRank computation will continuously update the PageRank scores even though the changes are less and less. In order to help users express more termination conditions, we allow users to specify the termination conditions using aggregations.
 
 
@@ -44,7 +44,7 @@ Program 2 PageRank
 r1. degree(X,count[Y])$\leftarrow$ edge(X,Y).
 r2. rank(X,$r$) $\leftarrow$ node(X),$r=1$.
 r3. rank(Y,sum[$r$]+0.15) $\leftarrow$ rank(X,$r1$),edge(X,Y),
-			degree(X,$d$),$r=0.85\cdot r1/d$,
+degree(X,$d$),$r=0.85\cdot r1/d$,
 \end{lstlisting}
 \normalsize
 
@@ -57,18 +57,18 @@ Besides PATH and PageRank, we list 11 more example Datalog programs that can be 
 \label{sec:system:condition}
 
 \begin{figure}[!t]
-    \centering
-  \includegraphics[width=2.8in]{fig/flow}
-  \vspace{-0.1in}
-  \caption{Condition checking flow chart}
-  \label{fig:flow}
-  \vspace{-0.2in}
+	\centering
+	\includegraphics[width=2.8in]{fig/flow}
+	\vspace{-0.1in}
+	\caption{Condition checking flow chart}
+	\label{fig:flow}
+	\vspace{-0.2in}
 \end{figure}
 
 A3Log is able to automatically verify the conditions for asynchronous aggregation and accordingly selects the appropriate optimization technique according to the satisfiable conditions. The $g$ operation is identified as the update operation in the recursive rule's head predicate, e.g., min[$d$] in SSSP and sum[$r$] in PageRank where [$d$] and [$r$] are the inputs, respectively. The $f$ operation is identified as the computation in the recursive rule's certain body predicate that updates the input variables of $g$ operation, e.g., $d=d1+d2$ in SSSP and $r=0.85\cdot r1/d$ in PageRank. The input variable of $f$ operation is the variable that appears in the recursive predicate, e.g., $d1$ in \texttt{sssp(X,$d1$)} and $r1$ in \texttt{rank(X,$r1$)}.
 
-	
-	need to rewrite
+
+need to rewrite
 There are two techniques for executing recursive Datalog programs. The first is \emph{\textbf{Naive Evaluation}}. For instance, in Program 1, the recursive rule \texttt{r2} will be repeatedly evaluated. The \texttt{edge} facts keep being joined with the \texttt{sssp} facts discovered so far in each iteration, until no new fact is produced. This approach will inefficiently re-produce known facts in every iteration. To address this inefficiency issue, the \emph{\textbf{Semi-Naive Evaluation}} for recursive programs with aggregation was proposed \cite{Lam:2013:SDE:2510649.2511289,Wang:2015:AFR:2824032.2824052}, which is efficient and produces no duplicates. However, the semi-naive evaluation requires the program to be set-containment monotonic in order to guarantee the correctness. This is the same as the monotonizability condition that we have defined in Theorem \ref{th:monotone}. Therefore, as long as the program satisfies monotonizability condition or can be converted to be monotonic according to Theorem \ref{th:convert}, it can be executed with semi-naive evaluation. Furthermore, we propose \emph{\textbf{asynchronous evaluation}} as a yet another optimization technique, which allows asynchronous aggregation. We provide the sufficient conditions for asynchronous aggregation in Theorem \ref{th:async}. The prerequisite for asynchronous aggregation is the monotonic condition. Asynchronous evaluation is possible only when the recursive program is monotonic and satisfies order independent condition.
 
 Condition Checker first translates the $f$ and $g$ operations into Z3 \cite{DeMoura:2008:ZES:1792734.1792766} satisfiability formulas (see Sec. \ref{sec:async:autoasync}). By applying $f$ and $g$ to the built-in condition checking templates, the Z3 SMT solver will answer satisfiable, unsatisfiable, or unknown. Following the condition checking flow as shown in Fig. \ref{fig:flow}, our system can automatically select the appropriate evaluation technique.
@@ -79,12 +79,12 @@ Condition Checker first translates the $f$ and $g$ operations into Z3 \cite{DeMo
 Before launching the recursive computation, the key table structure, AsyncTable, should be first prepared. AsyncTable maintains the computation states, which are initialized based on user's Datalog program and keeps being updated during the whole recursive computation process.
 
 \begin{figure}[!t]
-    \centering
-  \includegraphics[width=3.2in]{fig/asynctable}
-  \vspace{-0.0in}
-  \caption{AsyncTable update}
-  \label{fig:asynctable}
-  \vspace{-0.0in}
+	\centering
+	\includegraphics[width=3.2in]{fig/asynctable}
+	\vspace{-0.0in}
+	\caption{AsyncTable update}
+	\label{fig:asynctable}
+	\vspace{-0.0in}
 \end{figure}
 
 
@@ -100,12 +100,12 @@ A few additional facts should be noticed: 1) It is possible that two or more ite
 \label{sec:system:runtime}
 
 \begin{figure}[!t]
-    \centering
-  \includegraphics[width=2.9in]{fig/runtime}
-  \vspace{-0.0in}
-  \caption{Execution Runtime Engine}
-  \label{fig:runtime}
-  \vspace{-0.1in}
+	\centering
+	\includegraphics[width=2.9in]{fig/runtime}
+	\vspace{-0.0in}
+	\caption{Execution Runtime Engine}
+	\label{fig:runtime}
+	\vspace{-0.1in}
 \end{figure}
 
 \noindent\textbf{Overall Architecure}
@@ -138,27 +138,40 @@ For large scale operations that involve many machines for a substantial amount o
 \end{figure*}
 {\color{red}
 	
-\subsection{Message driven sengding policy}
+	\subsection{Message driven sengding policy}
+	
+	Previous work proposed two major asynchronous processing strategy in distributed environment, block-centric and verterx centric. The key difference between these two strategies is the message sending policy. Block-centric strategy only sending message after the local shard between each two worker has been completely processed for a pass. While vertex-centric processing require  frequent communication between workers. However real time communication in distributed environment is unreachable, so previous work proposed\cite{} using a small message buffer to cache the export message in local memory.
+	
+In practical usage, neither block-centric nor vertex-centric asynchronous processing consistently outperforms the other with different workloads. In block-centric mode, the earlier message should wait for all the shard to be completed, the long inverval between message production and consumption may increasing invalid computation on all workers. In vertec-centric mode, frequent communication might also has many problems,especailly in share-nothing enginee. (To frequent Message may result in implicit message processing cost, and  funther too much message crowding in network and local buffer may also increasing the invalid compuatation. 
+	
+	Moreover the communicate frequency is not only depend on the property of workload. The amount of the message generated by each worker is also changing in different, which require different sending policy. Take SSSP as example, the as the computation and spread from the source to all node ,the amount of message is increasing, and during the convergence the computation amount is also decreasing. So neither of these two strategy can suit for the whole running cycle.
+	Further due to different sharding strategy and data distribution, the message amount between workers is also different, So we need a more flexiable Message strategy to  
+	Based on these observation, we propose a adaptive message buffer scheme that adaptively adjusts the sending buffer size by monitoring the heaviness of workload on each worker. This strategy isdesigned by levraging both vertex-centric mode and block-centric mode. 
+	
+	To adaptively adjust the message sending frequency and maxmize the advantage of both vertex/block-centric modes, we proposed to dynamicly changing the message buffer to suit for different workload and maximized the async. performance.
+	
+	
+	\Paragraph{setting}
+	The data is partition into $N$ shard, and assigned each shard to one share-nothing worker $W_i$ for $i \in [1,N]$.
+	Each worker $i$ maintain the following:
+	
+	(1) a message buffer list. $M(i,j)$ to keep track of the export messages from $W_i$ to other worker $W_j$ in which $j\in[1,N],i \neq j$.
+	
+	(2) a threshold list, $\beta(i,j)$ for each message buffer $M_j$ to control the message sending.
+	
+	\Paragraph{Message passing} Similar to Grape$+$, A3log adopt a point to point communication and push-based  message passing. Since the $g$ and $f$ operation is vertex-centric, the message sending doesn't need to wait for all the vertex been processed for one pass. Local worker $W_i$ will send the message buffer $M(i,j)$ to worker $W_j$ as soon as the size of $M(i,j)$ reach the threshold $\beta{(i,j)}$. We name it as a trigger. In practical design, system also provide a time threshold $\tau$, if message buffer size doesn't reach the $\beta(i,j)$ until time threshold $\tau$ has been triggered, $W_i$ will still send $M(i,*)$ to the others. 
 
-Previous work proposed two major asynchronous processing strategy in distributed environment, block-centric and verterx centric. The key difference between the two strategies is the message sending policy. Block-centric strategy only sending message after the local shard between this two worker has been completely processed for a pass, all the message is cached in local memory before sending. While vertex-centric processing require as frequent communication as possible within the limit of network e.g., using a small fixed buffer to cache the export message.
-
-However in practical usage, neither block-centric nor vertex-centric asynchronous processing consistently outperforms the other with different workloads. In block-centric mode, the earlier message should wait for all the shard to be completed, the long inverval between message production and consumption may increasing invalid computation on other workers. In vertec-centric mode, frequent communicationmight also has many problems,especailly in share-nothing enginee. (To frequent Message may result in implicit message processing cost, and too much mesage crowding in network and local buffer may also increasing the message updating interval. 
-  
-Moreover the communicate frequency is not only depend on the property of workload. The amount of the message generated by each worker is also changing in different, which require different sending policy(From low frequency to high frequency). Take SSSP as example, the computating range is start from one node and sperad to all node and converge to the last few points. neither of these two method can suit for the whole stage.
-Further due to the sharding strategy, and data distribution,  the message amount between workers is also different, so we need a more flexiable Message strategy to  
-Based on these observation, we propose a dynamic buffer scheme that adaptively adjusts the
-sending buffer size by monitoring the heaviness of workload on each worker. we proposed a message driven sengding policy by levraging both vertex-centric mode and block-centric mode. 
-
-To adaptively adjust the message sending frequency and maxmize the advantage of both vertex/block-centric modes, we proposed to dynamicly changing the message buffer to suit for different workload and maximized the async. performance.
-
-\Paragraph{Message passing.}Similar to Grape$+_{AP}$,  share-nothing enginee adopt a point to point communication and push-based  message passing: local worker $W_i$sends message $M(i,j)$ to worker$W_j$ as soon as the size of $M(i,j)$ reach the threshold $\beta{(i,j)}$.
-Each work $W_j$ maintiain a threshold list $\beta{(i,*)}$ with size of worker number $N$. Define each Each threshold trigger as a knock.
-\Paragraph{Adjust Strategy}
-To suit different workload and suiting multithreads environment, we define unit time message volume as the total Message amount between two knock, denote $\Delta M_t(i,j)$ as the total message amount from $W_i$ to $W_j$ after $t$'s knock. Then system can dynamicly adjusting the threshold $\beta_{t}{(i,j)}$ according to the following equation.
-\begin{equation}
-\begin{aligned}
-\beta_t(i,j)=\frac{\alpha\sum_{i=1}^{c}|\Delta M_{t-i}(i,j)|}{c}
-\end{aligned}
+	\Paragraph{Adjust Strategy}
+	According to the message passing design, the message update frequency can be easily tuned by the threshold $\beta$.
+	In order to adapt to different workload and reduce system adjustment costs, we design a low overhead adjustment strategy. Denote the size of message buffer that has been sent from $W_i$ to $Wj$ by $|M_t(i,j)|$ after the threshold triggered. And take $\delta T_t$ as the time cost between each two trigger($t$ and $t-1$). Then system can dynamicly adjusting the threshold $\beta_{(i,j)}$ according to the following strategy.
+	\begin{equation}
+\left\{         
+\begin{array}{lr}            
+ \beta(i,j)=\frac{\alpha}{c}\sum_{k=1}^{c}| M_{t-k}(i,j)|,&   \delta T_t  \ge \tau  \\
+ &\\
+\beta(i,j)=\alpha| M_{t-i}(i,j)|  & \delta T_t  < \tau
+\end{array}
+\right.
 \end{equation}
-In which $c$ denote as the number of knocks be take in account, this parameter controls the flexiability of dynamic adjustment. If set with a large value, the change might not on time if take too much previous information into account. And if set with a small value, the buffer size will change on time. $alpha$ is a const number which controls the relation between message amount and buffer size. In the experiment, we set $c$ as 2 and set $\alpha$ as $0.8$.
+	In which $c$ denote as the number of trigger which been take into account, this parameter controls the flexiability of dynamic adjustment. If set with a large value, the change might out of time since current message status might changing. And if set with a small value, the buffer size will change on time but might also incurs invalid changing. $\alpha$ is a const number which controls the relation between message amount and buffer size. In the experiment, we set $c$ as 2 and set $\alpha$ as $0.8$. In practical usage, System adopted a pessimistic adjustment method, The message buffer $\beta(i,j)$ will be changed only if new $\beta(i,j)$ is $r$ times larger or smaller than the old threshold. in which $r$ is a retracting factor. We found that $r$ is not sensitive when set in a reasonable range i.e., $1.2<r<2$ so we set r with $2$ in our experimental evaluation.
 }

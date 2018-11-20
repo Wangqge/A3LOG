@@ -11,7 +11,7 @@ set multiplot layout 1,4
 set size 1,0.9
 set origin 0,0
 #set key top outside horizontal center maxrows 2 font ",28"
-set key at graph 3.1,1.225 maxrows 1 font ",30" samplen 4
+set key at graph 4.2,1.225 maxrows 1 font ",40" samplen 4
 set ylabel "Times(s)" offset 2.6
 set xlabel "(a) CC"    font "Times-Roman,40"   
 unset grid
@@ -23,6 +23,7 @@ set boxwidth 1
 set style fill solid 2 border lt -1
 set style histogram cluster gap 1
 set style data  histogram
+fn(v) = sprintf("%.1f", v)
 plot for [COL=2:7:1] 'summary_cc.txt' using COL:xticlabels(1) title columnheader(COL),\
  'summary_cc.txt' u ($0-1-2./7):2:(fn($2)) w labels  rotate by 90 font ",18" offset char -0.5,0.5 t '' ,\
  'summary_cc.txt' u ($0-1-1./7):3:(fn($3)) w labels  rotate by 90 font ",18" offset char -0.5,0.5 t '' ,\

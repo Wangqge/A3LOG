@@ -74,7 +74,7 @@ $d=d1+d2$,sssp(Y,$d$).
 
 \subsection{Datalog and Evaluation Techniques}
 
-A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n$, where $h$ is the \emph{head} and $b_1,\ldots,b_n$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND). $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for SSSP is as follows.
+A Datalog program is a set of rules. A \emph{rule} \texttt{r} has the form $h\leftarrow b_1,\ldots,b_n;d_1,\ldots,d_n\ldots$, where $h$ is the \emph{head} and $b_1,\ldots,b_n;d_1\ldots$ is the \emph{body}. The comma separating literals in a body is a logical conjunction (AND) and the semicolon separating literals is the logical OR operation. $h$ and $b_i$ can be with the form $p_i(t_1,\ldots,t_j)$ where $p_i$ is a \emph{predicate} and $t_1,\ldots,t_j$ are terms which can be \emph{constants}, \emph{variables} or \emph{functions}. For example, the Datalog program for SSSP is as follows.
 \begin{verbatim}
 Program 1. Single Source Shortest Path
 \end{verbatim}

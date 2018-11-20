@@ -1,4 +1,4 @@
-SSSP	Bigdatalog/graphX	Myria	A3LOG/SYNC	A3LOG/ASYNC	socialite
+SSSP	Bigdatalog/graphX	Myria	A3LOG/SYNC	A3LOG/ASYNC	Socialite
 Flick	39.526	60.296	3.258	5.578	11.961
 LiveJournal	95.06	110.692	3.972	7.815	13.598
 orkut	70.914	191.756	21.228	7.657	12.288

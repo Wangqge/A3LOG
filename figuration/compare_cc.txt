@@ -1,4 +1,4 @@
-CC	Bigdatalog/graphX	Myria	A3LOG/SYNC	A3LOG/ASYNC	socialite
+CC	Bigdatalog/graphX	Myria	A3LOG/SYNC	A3LOG/ASYNC	Socialite
 Flick	61.901	55.895	6.684	4.844	39.566
 LiveJournal	160.477	166.261	12.87	8.102	68.345
 orkut	205.946	176.658	27.036	6.831	7.805

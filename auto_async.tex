@@ -71,6 +71,7 @@ However, a large number of recursive algorithms do not satisfy the accumulable r
 }
 
 \textbf{Example 2: What is the cost of each part}
+As described in section \ref{sec:async}, A recursive rule is composed of 
 \small
 \begin{lstlisting}
 r1. cost(Part,$\mathcal{C}$) $\leftarrow$ basic(Part,cost).
@@ -193,6 +194,11 @@ PageRank is another recursive program that can be converted to the accumulated r
 
 
 \subsection{Automatation}
+\textcolor{red}{
+\Paragraph{Determine $f$ and $g$ from datalog program}
+As descriped in sec \ref{sec:async}, an recursive rule is composed of a head and body.
+the $g$ operation a system specific function, which user can call directly 
+}
 \begin{figure}[!t]
 	\centering
 	\includegraphics[width=3.2in]{fig/automodel}

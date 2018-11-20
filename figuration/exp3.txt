@@ -1,0 +1,12 @@
+#exp-3
+Êý¾Ý¼¯                 RC-Local    RC-Orient    RC-Hybrid
+Amazon £¨wwwww£©        10         28             17      
+arXiv                    20        36                  18
+Brightkite               19          31                 17
+CAIDA                    24             55               20
+California               34           45                30
+DBLP       16        32         17
+Douban                   55      78          60
+Facebook     38         55          34
+Flickr                   58        66         50
+Flixster                 65       78         55
